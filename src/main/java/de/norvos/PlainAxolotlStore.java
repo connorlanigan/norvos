@@ -33,6 +33,9 @@ public class PlainAxolotlStore implements AxolotlStore {
 
 	int localRegistrationId;
 
+	/**
+	 * Generates new keys for a new store and uses a random localRegistrationId between 1 and 16380.
+	 */	
 	public PlainAxolotlStore() {
 		identityKey = KeyHelper.generateIdentityKeyPair();
 		oneTimePreKeys = KeyHelper.generatePreKeys(2, 100);
@@ -86,6 +89,15 @@ public class PlainAxolotlStore implements AxolotlStore {
 	}
 
 	@Override
+	public void removePreKey(int pId) {
+		for (PreKeyRecord record : oneTimePreKeys) {
+			if (record.getId() == pId) {
+				oneTimePreKeys.remove(record);
+			}
+		}
+	}
+
+	@Override
 	public PreKeyRecord loadPreKey(int pId) throws InvalidKeyIdException {
 		for (PreKeyRecord record : oneTimePreKeys) {
 			if (record.getId() == pId) {
@@ -94,15 +106,6 @@ public class PlainAxolotlStore implements AxolotlStore {
 		}
 		Logger.debug("loadPreKey(" + pId + ") could not find the requested key.");
 		throw new InvalidKeyIdException("Connor: There is no corresponding key record in the store.");
-	}
-
-	@Override
-	public void removePreKey(int pId) {
-		for (PreKeyRecord record : oneTimePreKeys) {
-			if (record.getId() == pId) {
-				oneTimePreKeys.remove(record);
-			}
-		}
 	}
 
 	@Override
@@ -201,8 +204,17 @@ public class PlainAxolotlStore implements AxolotlStore {
 	public void storeSignedPreKey(int pId, SignedPreKeyRecord pSignedRecord) {
 		signedPreKeys.add(pSignedRecord);
 	}
-	
-	public static PlainAxolotlStore loadFromStream(InputStream stream) throws IOException, ClassNotFoundException{
+
+	/**
+	 * Creates a PlainAxolotlStore from a stream.
+	 * 
+	 * @param stream
+	 *            the stream supplying the serialized PlainAxolotlStore data.
+	 * @return a saved instance of PlainAxolotlStore
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public static PlainAxolotlStore loadFromStream(InputStream stream) throws IOException, ClassNotFoundException {
 		ObjectInputStream os = new ObjectInputStream(stream);
 		PlainAxolotlStore store = (PlainAxolotlStore) os.readObject();
 		return store;
