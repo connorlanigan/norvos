@@ -38,6 +38,8 @@ public class PlainAxolotlStoreManager{
 	 */
 	public static boolean loadStore() {
 
+		//TODO rewrite this: do not use java serialization
+		
 		File axolotlStoreFile = getFile();
 		if (axolotlStoreFile.exists()) {
 			try {
@@ -68,7 +70,7 @@ public class PlainAxolotlStoreManager{
 
 	/**
 	 * Sets the filename used for loading and saving.
-	 * @param newFileName
+	 * @param newFileName the new name for the file
 	 */
 	public static void setFileName(String newFileName) {
 		axolotlStoreFileName = newFileName;
@@ -87,13 +89,19 @@ public class PlainAxolotlStoreManager{
 	 * @see #setFileName(String)
 	 */
 	public static void saveStore() {
+		//TODO rewrite this: do not use java serialization
+		
 		File outputFile = getFile();
 		ObjectOutputStream os;
 		try {
 			os = new ObjectOutputStream(new FileOutputStream(outputFile));
+			Logger.debug("Created ObjectOutputStream.");
 			os.writeObject(axolotlStore);
+			Logger.debug("Wrote store to stream.");
+			os.flush();
+			Logger.debug("Flushed the stream.");
 		} catch (IOException e) {
-			Logger.critical("Could not save the AxolotlStore.");
+			Logger.critical("Could not save the AxolotlStore: ["+outputFile.getAbsolutePath()+"]");
 			Main.handleCriticalError(ErrorMessages.axolotlCouldNotBeSaved);
 		}
 	}

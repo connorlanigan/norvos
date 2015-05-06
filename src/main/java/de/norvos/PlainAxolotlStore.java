@@ -3,6 +3,8 @@ package de.norvos;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +23,10 @@ import org.whispersystems.libaxolotl.util.KeyHelper;
 
 public class PlainAxolotlStore implements AxolotlStore {
 
+	private static final long serialVersionUID = 3019149551024125429L;
+	
 	IdentityKeyPair identityKey;
-	List<PreKeyRecord> oneTimePreKeys;
+	List<PreKeyRecord> oneTimePreKeys; // LinkedList
 	PreKeyRecord lastResortKey;
 	SignedPreKeyRecord signedPreKeyRecord;
 
@@ -34,8 +38,9 @@ public class PlainAxolotlStore implements AxolotlStore {
 	int localRegistrationId;
 
 	/**
-	 * Generates new keys for a new store and uses a random localRegistrationId between 1 and 16380.
-	 */	
+	 * Generates new keys for a new store and uses a random localRegistrationId
+	 * between 1 and 16380.
+	 */
 	public PlainAxolotlStore() {
 		identityKey = KeyHelper.generateIdentityKeyPair();
 		oneTimePreKeys = KeyHelper.generatePreKeys(2, 100);
@@ -53,6 +58,7 @@ public class PlainAxolotlStore implements AxolotlStore {
 		localRegistrationId = (new Random()).nextInt(maximumId - minimumId) + minimumId;
 	}
 
+	
 	@Override
 	public IdentityKeyPair getIdentityKeyPair() {
 		return identityKey;
@@ -212,9 +218,12 @@ public class PlainAxolotlStore implements AxolotlStore {
 	 *            the stream supplying the serialized PlainAxolotlStore data.
 	 * @return a saved instance of PlainAxolotlStore
 	 * @throws IOException
+	 *             if the InputStream throws an IOException
 	 * @throws ClassNotFoundException
+	 *             if the PlainAxolotlStore class is not in memory
 	 */
 	public static PlainAxolotlStore loadFromStream(InputStream stream) throws IOException, ClassNotFoundException {
+		//TODO rewrite/probably delete this: do not use java serialization
 		ObjectInputStream os = new ObjectInputStream(stream);
 		PlainAxolotlStore store = (PlainAxolotlStore) os.readObject();
 		return store;
