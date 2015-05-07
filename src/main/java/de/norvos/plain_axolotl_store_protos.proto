@@ -1,0 +1,29 @@
+package norvos;
+
+option java_package = "de.norvos";
+
+message PlainAxolotlStoreStructure {
+	required bytes identityKey = 1;
+
+	repeated bytes oneTimePreKeys = 2;
+
+	required bytes lastResortKey = 3;
+	required bytes signedPreKeyRecord = 4;
+
+	repeated bytes signedPreKeys = 5;
+
+	repeated Identity remoteIdentities = 6;
+	repeated Session sessions = 7;
+
+	required int32 localRegistrationId = 8;
+
+	message Identity {
+		required string name = 9;
+		required bytes identityKey = 10;
+  	}
+
+	message Session {
+		required bytes axolotlAddress = 11;
+		optional bytes sessionRecord = 12;
+	}
+}
