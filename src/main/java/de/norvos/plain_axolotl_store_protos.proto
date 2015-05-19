@@ -23,7 +23,11 @@ message PlainAxolotlStoreStructure {
   	}
 
 	message Session {
-		required bytes axolotlAddress = 11;
-		optional bytes sessionRecord = 12;
+		required axolotlAddress address = 11;
+		required bytes sessionRecord = 12;
+	}
+	message axolotlAddress {
+		required string name = 13;
+		required int32 deviceId = 14;
 	}
 }
