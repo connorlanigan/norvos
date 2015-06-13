@@ -1,4 +1,4 @@
-package de.norvos.store;
+package de.norvos.store.axolotl;
 
 import java.io.IOException;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 
 import de.norvos.log.Logger;
+import de.norvos.store.CircularBuffer;
 
 import org.whispersystems.libaxolotl.InvalidKeyIdException;
 import org.whispersystems.libaxolotl.state.PreKeyRecord;

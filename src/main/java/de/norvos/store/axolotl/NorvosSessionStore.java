@@ -1,4 +1,4 @@
-package de.norvos.store;
+package de.norvos.store.axolotl;
 
 import java.io.IOException;
 import java.util.ArrayList;

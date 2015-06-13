@@ -1,9 +1,10 @@
-package de.norvos.store;
+package de.norvos.store.axolotl;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.norvos.log.Errors;
 import de.norvos.log.Logger;
 
 import org.whispersystems.libaxolotl.IdentityKeyPair;
@@ -28,8 +29,14 @@ public class NorvosSignedPreKeyStore implements SignedPreKeyStore {
 		return initialSignedPreKeyRecord;
 	}
 
-	public NorvosSignedPreKeyStore(IdentityKeyPair identityKey) throws InvalidKeyException {
-		initialSignedPreKeyRecord = KeyHelper.generateSignedPreKey(identityKey, 5);
+	public NorvosSignedPreKeyStore(IdentityKeyPair identityKey){
+		for(int i = 0; i < 100; i++){
+			try{
+				initialSignedPreKeyRecord = KeyHelper.generateSignedPreKey(identityKey, 5);
+				return;
+			}catch(Exception e){}
+		}
+		Errors.handleCritical(null);
 	}
 
 	@Override

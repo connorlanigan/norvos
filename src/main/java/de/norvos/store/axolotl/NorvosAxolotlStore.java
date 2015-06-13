@@ -1,4 +1,4 @@
-package de.norvos.store;
+package de.norvos.store.axolotl;
 
 import java.io.IOException;
 import java.util.List;
@@ -41,7 +41,7 @@ public class NorvosAxolotlStore implements AxolotlStore {
 	 * @throws InvalidKeyException
 	 *             when the generated IdentityKeyPair is invalid
 	 */
-	public NorvosAxolotlStore() throws InvalidKeyException {
+	public NorvosAxolotlStore(){
 		identityKeyStore = new NorvosIdentityKeyStore();
 		preKeyStore = new NorvosPreKeyStore();
 		sessionStore = new NorvosSessionStore();
