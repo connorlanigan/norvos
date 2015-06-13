@@ -16,18 +16,20 @@ import org.whispersystems.libaxolotl.state.SessionRecord;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
-public class PlainAxolotlStoreTest {
+import de.norvos.store.NorvosAxolotlStore;
 
-	PlainAxolotlStore store;
-	PlainAxolotlStore secondStore;
+public class AxolotlStoreTest {
+
+	NorvosAxolotlStore store;
+	NorvosAxolotlStore secondStore;
 
 	int ANY_NUMBER;
 
 	@Before
 	public void setUp() throws Exception {
-		store = new PlainAxolotlStore();
+		store = new NorvosAxolotlStore();
 		Thread.sleep(10);
-		secondStore = new PlainAxolotlStore();
+		secondStore = new NorvosAxolotlStore();
 		Random r = new Random();
 		ANY_NUMBER = r.nextInt(10) + 1;
 	}
@@ -102,7 +104,7 @@ public class PlainAxolotlStoreTest {
 	@Test
 	public void loadPreKey() throws InvalidKeyIdException {
 		PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
-		store.storePreKey(42, preKey);
+		store.storePreKey(preKey.getId(), preKey);
 		PreKeyRecord newKey = store.loadPreKey(preKey.getId());
 		assertEquals(preKey, newKey);
 	}

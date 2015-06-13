@@ -1,4 +1,4 @@
-package de.norvos;
+package de.norvos.log;
 
 public class Logger {
 
@@ -24,8 +24,8 @@ public class Logger {
 		default:
 			prepend = "[UNDEFINED]";
 		}
-		System.out.println(prepend + " " + message);
 		// TODO implement file logging
+		System.out.println(prepend + " " + message);
 	}
 
 	public static void debug(String message) {

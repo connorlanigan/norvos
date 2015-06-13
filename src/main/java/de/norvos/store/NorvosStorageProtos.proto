@@ -1,0 +1,46 @@
+syntax = "proto2";
+
+package de.norvos;
+
+message AxolotlStoreStructure{
+	required bytes identityKeyStore = 1;
+	required bytes preKeyStore = 2;
+	required bytes sessionStore = 3;
+	required bytes signedPreKeyStore = 4;
+}
+
+
+message IdentityKeyStoreStructure {
+	required int32 registrationId = 1;
+	required bytes identityKeyPair = 2;
+	repeated IdentityStructure storedIdentity = 3;
+	message IdentityStructure {
+		required string name = 4;
+		required bytes identitykey = 5;
+	}
+
+}
+
+message PreKeyStoreStructure {
+	repeated PreKeyStructure oneTimePreKey = 1;
+	message PreKeyStructure {
+		required int32 keyId = 1;
+		required bytes preKeyRecord = 2;
+	}
+
+}
+
+message SessionStoreStructure {
+	repeated SessionStructure session = 1;
+	message SessionStructure {
+		required string axolotlAddressName = 1;
+		required int32 axolotlAddressId = 2;
+		required bytes sessionRecord = 3;
+	}
+
+}
+
+message SignedPreKeyStoreStructure {
+	repeated bytes signedPreKey = 1;
+	required bytes initialSignedPreKey = 2;
+}
