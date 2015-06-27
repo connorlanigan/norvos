@@ -2,11 +2,7 @@ package de.norvos.store.axolotl;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
-
-import de.norvos.log.Logger;
-import de.norvos.store.CircularBuffer;
 
 import org.whispersystems.libaxolotl.InvalidKeyIdException;
 import org.whispersystems.libaxolotl.state.PreKeyRecord;
@@ -19,6 +15,8 @@ import com.google.protobuf.ByteString;
 import de.norvos.NorvosStorageProtos.PreKeyStoreStructure;
 import de.norvos.NorvosStorageProtos.PreKeyStoreStructure.Builder;
 import de.norvos.NorvosStorageProtos.PreKeyStoreStructure.PreKeyStructure;
+import de.norvos.log.Logger;
+import de.norvos.store.CircularBuffer;
 
 public class NorvosPreKeyStore implements PreKeyStore {
 
@@ -28,6 +26,9 @@ public class NorvosPreKeyStore implements PreKeyStore {
 
 	public PreKeyRecord getLastResortKey() {
 		return lastResortKey;
+	}
+	public List<PreKeyRecord> getPreKeys(){
+		return oneTimePreKeys.getAll();
 	}
 
 	public NorvosPreKeyStore() {
@@ -78,10 +79,10 @@ public class NorvosPreKeyStore implements PreKeyStore {
 
 	synchronized public byte[] serialize() {
 		Builder builder = PreKeyStoreStructure.newBuilder();
-		for (Entry<Integer, PreKeyRecord> entry : oneTimePreKeys.getAll()) {
+		for (PreKeyRecord entry : oneTimePreKeys.getAll()) {
 			PreKeyStructure struct =
-					PreKeyStructure.newBuilder().setKeyId(entry.getKey())
-							.setPreKeyRecord(ByteString.copyFrom(entry.getValue().serialize())).build();
+					PreKeyStructure.newBuilder().setKeyId(entry.getId())
+							.setPreKeyRecord(ByteString.copyFrom(entry.serialize())).build();
 			builder.addOneTimePreKey(struct);
 		}
 

@@ -15,7 +15,6 @@ public class NorvosTrustStore implements TrustStore {
 
 	@Override
 	public InputStream getKeyStoreInputStream() {
-		// TODO This stream has to point to a store containing the server's TLS certificate.
 		try {
 			return new FileInputStream(Locations.TRUST_STORE.toFile());
 		} catch (FileNotFoundException e) {

@@ -103,11 +103,11 @@ public class CircularBuffer<T> {
 	 * 
 	 * @return List containing all current elements
 	 */
-	public List<Entry<Integer, T>> getAll() {
-		List<Entry<Integer, T>> newList = new ArrayList<>();
+	public List<T> getAll() {
+		List<T> newList = new ArrayList<>();
 		for (int i = 0; i < array.size(); i++) {
 			Entry<Integer, T> obj = array.get((pointer + i) % array.size());
-			newList.add(new AbstractMap.SimpleImmutableEntry<>(obj.getKey(), obj.getValue()));
+			newList.add(obj.getValue());
 		}
 
 		return newList;

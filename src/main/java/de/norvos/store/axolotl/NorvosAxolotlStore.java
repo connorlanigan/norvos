@@ -13,7 +13,9 @@ import org.whispersystems.libaxolotl.state.IdentityKeyStore;
 import org.whispersystems.libaxolotl.state.PreKeyRecord;
 import org.whispersystems.libaxolotl.state.PreKeyStore;
 import org.whispersystems.libaxolotl.state.SessionRecord;
+import org.whispersystems.libaxolotl.state.SessionStore;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
+import org.whispersystems.libaxolotl.state.SignedPreKeyStore;
 
 import com.google.protobuf.ByteString;
 
@@ -28,12 +30,12 @@ import de.norvos.NorvosStorageProtos.AxolotlStoreStructure.Builder;
  * @author Connor Lanigan {@literal <dev@connorlanigan.com>}
  *
  */
-public class NorvosAxolotlStore implements AxolotlStore {
+public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKeyStore, SessionStore, SignedPreKeyStore {
 
-	NorvosIdentityKeyStore identityKeyStore;
-	NorvosPreKeyStore preKeyStore;
-	NorvosSessionStore sessionStore;
-	NorvosSignedPreKeyStore signedPreKeyStore;
+	private NorvosIdentityKeyStore identityKeyStore;
+	private NorvosPreKeyStore preKeyStore;
+	private NorvosSessionStore sessionStore;
+	private NorvosSignedPreKeyStore signedPreKeyStore;
 
 	/**
 	 * Initializes all substores with their default constructor.
@@ -46,6 +48,16 @@ public class NorvosAxolotlStore implements AxolotlStore {
 		preKeyStore = new NorvosPreKeyStore();
 		sessionStore = new NorvosSessionStore();
 		signedPreKeyStore = new NorvosSignedPreKeyStore(identityKeyStore.getIdentityKeyPair());
+	}
+	
+	public PreKeyRecord getLastResortKey() {
+		return preKeyStore.getLastResortKey();
+	}
+	public SignedPreKeyRecord getSignedPreKey(){
+		return signedPreKeyStore.getInitialSignedPreKey();
+	}
+	public List<PreKeyRecord> getOneTimePreKeys(){
+		return preKeyStore.getPreKeys();
 	}
 
 	@Override
