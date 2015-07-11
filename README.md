@@ -1,6 +1,8 @@
 # Desktop messenger for TextSecure
 
-Norvos is a *desktop* application written in Java, that allows users to send and receive messages via the [TextSecure](https://github.com/WhisperSystems/TextSecure) system. Messages are *encrypted* and can only be read by the legitimate receiver of the message.
+[Norvos](https://norvos.de) is a *desktop* application written in Java, that allows users to send and receive messages via the [TextSecure](https://github.com/WhisperSystems/TextSecure) system. Messages are *encrypted* and can only be read by the legitimate receiver of the message.
+
+The project website is at [https://norvos.de/](https://norvos.de).
 
 
 ## Cryptography Notice
