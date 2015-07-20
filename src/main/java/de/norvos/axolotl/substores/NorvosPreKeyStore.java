@@ -1,4 +1,4 @@
-package de.norvos.store.axolotl;
+package de.norvos.axolotl.substores;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,8 +15,8 @@ import com.google.protobuf.ByteString;
 import de.norvos.NorvosStorageProtos.PreKeyStoreStructure;
 import de.norvos.NorvosStorageProtos.PreKeyStoreStructure.Builder;
 import de.norvos.NorvosStorageProtos.PreKeyStoreStructure.PreKeyStructure;
+import de.norvos.axolotl.CircularBuffer;
 import de.norvos.log.Logger;
-import de.norvos.store.CircularBuffer;
 
 public class NorvosPreKeyStore implements PreKeyStore {
 

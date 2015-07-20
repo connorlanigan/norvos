@@ -12,8 +12,8 @@ import org.whispersystems.textsecure.api.messages.TextSecureAttachment;
 import org.whispersystems.textsecure.api.messages.TextSecureMessage;
 import org.whispersystems.textsecure.api.push.TextSecureAddress;
 
-import de.norvos.store.ConfigStore;
-import de.norvos.store.DurableStoreManager;
+import de.norvos.account.ServerAccount;
+import de.norvos.account.Settings;
 
 public class Communicator {
 
@@ -32,8 +32,9 @@ public class Communicator {
 	}
 
 	private TextSecureMessageSender getMessageSender() {
-		return new TextSecureMessageSender(ConfigStore.getURL(), ConfigStore.getTrustStore(),
-				ConfigStore.getUsername(), ConfigStore.getPassword(), DurableStoreManager.getAxolotlStore(),
+		ServerAccount serverConfiguration = Settings.getCurrent().getServerConfiguration();
+		return new TextSecureMessageSender(serverConfiguration.getURL(), serverConfiguration.getTrustStore(),
+				serverConfiguration.getUsername(), serverConfiguration.getPassword(), Settings.getCurrent().getAxolotlStore(),
 				Optional.absent());
 	}
 	

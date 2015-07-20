@@ -16,7 +16,7 @@ import org.whispersystems.libaxolotl.state.SessionRecord;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
-import de.norvos.store.axolotl.NorvosAxolotlStore;
+import de.norvos.axolotl.NorvosAxolotlStore;
 
 public class AxolotlStoreTest {
 

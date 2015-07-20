@@ -1,4 +1,4 @@
-package de.norvos.store.axolotl;
+package de.norvos.axolotl.substores;
 
 import java.io.IOException;
 import java.util.HashMap;

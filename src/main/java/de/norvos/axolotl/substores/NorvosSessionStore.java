@@ -1,4 +1,4 @@
-package de.norvos.store.axolotl;
+package de.norvos.axolotl.substores;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import de.norvos.i18n.Translations;
 import de.norvos.log.Errors;
-import de.norvos.log.Errors.Message;
 import de.norvos.log.Logger;
 
 import org.whispersystems.libaxolotl.AxolotlAddress;
@@ -29,7 +29,7 @@ public class NorvosSessionStore implements SessionStore {
 	}
 
 	@Override
-	synchronized public SessionRecord loadSession(AxolotlAddress address) {
+	synchronized public SessionRecord loadSession(AxolotlAddress address) throws NullPointerException{
 		if (sessions.containsKey(address)) {
 			SessionRecord original = sessions.get(address);
 			if (original == null) {
@@ -40,8 +40,8 @@ public class NorvosSessionStore implements SessionStore {
 				SessionRecord copy = new SessionRecord(original.serialize());
 				return copy;
 			} catch (IOException e) {
-				Logger.debug("The requested ession copy could not be created.");
-				Errors.handleCritical(Message.sessionCopyCouldNotBeCreated);
+				Logger.debug("The requested ession copy could not be created. Reason: "+e.getMessage());
+				Errors.critical(Translations.format("errors", "sessionCopyCouldNotBeCreated"));
 				return new SessionRecord();
 			}
 		} else {

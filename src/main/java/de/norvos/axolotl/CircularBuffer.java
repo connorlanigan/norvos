@@ -1,4 +1,4 @@
-package de.norvos.store;
+package de.norvos.axolotl;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;

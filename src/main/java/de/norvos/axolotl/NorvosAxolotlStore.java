@@ -1,4 +1,4 @@
-package de.norvos.store.axolotl;
+package de.norvos.axolotl;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,6 +21,11 @@ import com.google.protobuf.ByteString;
 
 import de.norvos.NorvosStorageProtos.AxolotlStoreStructure;
 import de.norvos.NorvosStorageProtos.AxolotlStoreStructure.Builder;
+import de.norvos.axolotl.substores.NorvosIdentityKeyStore;
+import de.norvos.axolotl.substores.NorvosPreKeyStore;
+import de.norvos.axolotl.substores.NorvosSessionStore;
+import de.norvos.axolotl.substores.NorvosSignedPreKeyStore;
+import de.norvos.log.Logger;
 
 /**
  * An implementation of the AxolotlStore interface. This class only bundles the
@@ -47,7 +52,11 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 		identityKeyStore = new NorvosIdentityKeyStore();
 		preKeyStore = new NorvosPreKeyStore();
 		sessionStore = new NorvosSessionStore();
-		signedPreKeyStore = new NorvosSignedPreKeyStore(identityKeyStore.getIdentityKeyPair());
+		try {
+			signedPreKeyStore = new NorvosSignedPreKeyStore(identityKeyStore.getIdentityKeyPair());
+		} catch (InvalidKeyException e) {
+			Logger.critical("Creation of the SignedPreKeyStore failed. Reason: "+e.getMessage());
+		}
 	}
 	
 	public PreKeyRecord getLastResortKey() {
@@ -172,7 +181,6 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 		preKeyStore = new NorvosPreKeyStore(struct.getPreKeyStore().toByteArray());
 		sessionStore = new NorvosSessionStore(struct.getSessionStore().toByteArray());
 		signedPreKeyStore = new NorvosSignedPreKeyStore(struct.getSignedPreKeyStore().toByteArray());
-
 	}
 
 	/**
