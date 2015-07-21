@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright (C) 2015 Connor Lanigan (email: dev@connorlanigan.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *******************************************************************************/
 package de.norvos.account;
 
 import java.io.IOException;
@@ -5,7 +21,6 @@ import java.math.BigInteger;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -16,7 +31,6 @@ import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedExce
 
 import de.norvos.axolotl.NorvosAxolotlStore;
 import de.norvos.axolotl.NorvosTrustStore;
-import de.norvos.gui.RegistrationHandler;
 
 public class Registrator {
 
@@ -42,35 +56,15 @@ public class Registrator {
 						account.getPassword());
 
 		accountManager.requestSmsVerificationCode();
-
 		String receivedVerificationCode = handler.getCode();
 
-		accountManager.verifyAccount(receivedVerificationCode, generateRandomSignalingKey(), SMS_UNSUPPORTED,
+		accountManager.verifyAccount(receivedVerificationCode, Settings.getCurrent().getServerAccount().getSignalingKey(), SMS_UNSUPPORTED,
 				generateRandomInstallId());
 
 		NorvosAxolotlStore axolotlStore = Settings.getCurrent().getAxolotlStore();
 		accountManager.setPreKeys(axolotlStore.getIdentityKeyPair().getPublicKey(), axolotlStore.getLastResortKey(),
 				axolotlStore.getSignedPreKey(), axolotlStore.getOneTimePreKeys());
 
-	}
-
-	/**
-	 * Generates a random array of 52 bytes. <br>
-	 * <br>
-	 * Taken from
-	 * {@link org.whispersystems.textsecure.api.TextSecureAccountManager#verifyAccount
-	 * TextSecureAccountManager.verifyAccount()}, which uses this value:<br>
-	 * "52 random bytes. A 32 byte AES key and a 20 byte Hmac256 key, concatenated."
-	 * 
-	 * @return a random 52-byte array.
-	 */
-	public static String generateRandomSignalingKey() {
-		int size = 52;
-		byte[] array = new byte[size];
-
-		random.nextBytes(array);
-
-		return new String(array, StandardCharsets.US_ASCII);
 	}
 
 	/**

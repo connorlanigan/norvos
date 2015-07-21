@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright (C) 2015 Connor Lanigan (email: dev@connorlanigan.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *******************************************************************************/
 package de.norvos;
 
 import java.io.IOException;
@@ -11,10 +27,10 @@ import org.whispersystems.libaxolotl.logging.AxolotlLogger;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
 
+import de.norvos.account.RegistrationHandler;
 import de.norvos.account.Registrator;
 import de.norvos.account.ServerAccount;
 import de.norvos.account.Settings;
-import de.norvos.gui.RegistrationHandler;
 import de.norvos.persistence.DiskPersistence;
 
 public class Main implements RegistrationHandler{
@@ -48,7 +64,7 @@ public class Main implements RegistrationHandler{
 			String number = in.nextLine();
 			number = "+4915788471709";
 			try {
-				Registrator.register(new ServerAccount(number, randomPassword()), new Main());
+				Registrator.register(new ServerAccount(number, ServerAccount.generateRandomBytes(128), ServerAccount.generateRandomBytes(52)), new Main());
 				System.out.println("The registration was succesful!");
 			} catch (AuthorizationFailedException e) {
 				System.out.println("Unfortunately your code was wrong.");
@@ -60,10 +76,6 @@ public class Main implements RegistrationHandler{
 		} else {
 			System.out.println("Welcome back!");
 		}
-	}
-
-	private static String randomPassword() {
-		return "arsch34asdjhjfll";
 	}
 
 	@Override

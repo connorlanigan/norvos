@@ -14,33 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.i18n;
+package de.norvos.account;
 
-import static org.junit.Assert.*;
+public interface RegistrationHandler {
 
-import java.util.Locale;
-
-import org.junit.Test;
-
-import de.norvos.account.Settings;
-
-public class TranslationsTest {
-
-	@Test
-	public void translationAvailable() {
-		Settings.getCurrent().setLocale(Locale.ENGLISH);
-		String translated = Translations.format("errors", "registrationFailed", "TestReason");
-		assertEquals("Registration failed. Reason: TestReason", translated);
-	}
-	
-	@Test
-	public void translationUnavailable() {
-		Settings.getCurrent().setLocale(Locale.ENGLISH);
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
-		
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
-	}
+	/**
+	 * Returns the received verification code that the user enters.
+	 * 
+	 * @return the verification code
+	 */
+	public String getCode();
 
 }
