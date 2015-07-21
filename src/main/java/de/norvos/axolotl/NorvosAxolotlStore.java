@@ -26,6 +26,10 @@ import de.norvos.axolotl.substores.NorvosPreKeyStore;
 import de.norvos.axolotl.substores.NorvosSessionStore;
 import de.norvos.axolotl.substores.NorvosSignedPreKeyStore;
 import de.norvos.log.Logger;
+import de.norvos.observers.Notifiable;
+import de.norvos.observers.NotificatorMap;
+import de.norvos.observers.Observable;
+import de.norvos.persistence.DiskPersistence;
 
 /**
  * An implementation of the AxolotlStore interface. This class only bundles the
@@ -35,8 +39,21 @@ import de.norvos.log.Logger;
  * @author Connor Lanigan {@literal <dev@connorlanigan.com>}
  *
  */
-public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKeyStore, SessionStore, SignedPreKeyStore {
+public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKeyStore, SessionStore, SignedPreKeyStore, Observable{
 
+	NotificatorMap notifiables = new NotificatorMap();
+	
+	@Override
+	public void register(Notifiable n, String event) {
+		notifiables.register(event, n);
+	}
+
+	@Override
+	public void unregister(Notifiable n) {
+		notifiables.unregister(n);
+	}
+	
+	
 	private NorvosIdentityKeyStore identityKeyStore;
 	private NorvosPreKeyStore preKeyStore;
 	private NorvosSessionStore sessionStore;
@@ -57,6 +74,7 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 		} catch (InvalidKeyException e) {
 			Logger.critical("Creation of the SignedPreKeyStore failed. Reason: "+e.getMessage());
 		}
+		register(new DiskPersistence(), "axolotlStoreChange");
 	}
 	
 	public PreKeyRecord getLastResortKey() {
@@ -82,6 +100,7 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	@Override
 	public void saveIdentity(String name, IdentityKey identityKey) {
 		identityKeyStore.saveIdentity(name, identityKey);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
@@ -97,6 +116,7 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	@Override
 	public void storePreKey(int preKeyId, PreKeyRecord record) {
 		preKeyStore.storePreKey(preKeyId, record);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
@@ -107,6 +127,7 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	@Override
 	public void removePreKey(int preKeyId) {
 		preKeyStore.removePreKey(preKeyId);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
@@ -122,6 +143,7 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	@Override
 	public void storeSession(AxolotlAddress address, SessionRecord record) {
 		sessionStore.storeSession(address, record);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
@@ -132,11 +154,13 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	@Override
 	public void deleteSession(AxolotlAddress address) {
 		sessionStore.deleteSession(address);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
 	public void deleteAllSessions(String name) {
 		sessionStore.deleteAllSessions(name);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
@@ -152,6 +176,7 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	@Override
 	public void storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record) {
 		signedPreKeyStore.storeSignedPreKey(signedPreKeyId, record);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
@@ -162,6 +187,7 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	@Override
 	public void removeSignedPreKey(int signedPreKeyId) {
 		signedPreKeyStore.removeSignedPreKey(signedPreKeyId);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	/**

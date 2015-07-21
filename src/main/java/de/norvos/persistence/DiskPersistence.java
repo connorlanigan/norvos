@@ -10,22 +10,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import de.norvos.account.Settings;
+import de.norvos.axolotl.NorvosAxolotlStore;
 import de.norvos.i18n.Translations;
 import de.norvos.log.Errors;
-import de.norvos.log.Logger;
+import de.norvos.observers.Notifiable;
 
-public class DiskPersistence {
+public class DiskPersistence implements Notifiable {
 	private static final Path basePath = FileSystems.getDefault().getPath(System.getProperty("user.home"), "Norvos");
 
 	public static void save(String objectId, byte[] obj) throws IOException {
 		File writeFile = basePath.resolve(objectId).toFile();
 		if (!writeFile.exists()) {
 			writeFile.getParentFile().mkdirs();
-		}
-		if (!writeFile.canWrite()) {
-			Logger.critical("Cannot write to '" + writeFile.toString() + "'. Permission denied.");
-			Errors.critical(Translations.format("errors", "cantWrite", objectId));
-			return;
 		}
 
 		File tempFile = File.createTempFile("norvos_" + objectId, ".data.tmp");
@@ -40,15 +37,13 @@ public class DiskPersistence {
 
 		Files.move(tempFile.toPath(), basePath.resolve(objectId), StandardCopyOption.REPLACE_EXISTING);
 	}
-	
+
 	public static void append(String objectId, byte[] obj) throws IOException {
 		File writeFile = basePath.resolve(objectId).toFile();
 		if (!writeFile.exists()) {
 			writeFile.getParentFile().mkdirs();
 		}
 		if (!writeFile.canWrite()) {
-			Logger.critical("Cannot write to '" + writeFile.toString() + "'. Permission denied.");
-			Errors.critical(Translations.format("errors", "cantWrite", objectId));
 			return;
 		}
 
@@ -60,7 +55,6 @@ public class DiskPersistence {
 			stream.close();
 		}
 	}
-	
 
 	public static byte[] load(String objectId) throws IOException {
 		File readFile = basePath.resolve(objectId).toFile();
@@ -72,5 +66,23 @@ public class DiskPersistence {
 		dataStream.close();
 
 		return data;
+	}
+
+	@Override
+	public void notify(String event, Object notificationData) {
+		if (notificationData instanceof NorvosAxolotlStore && event.equals("axolotlStoreChange")) {
+			try {
+				save("axolotlStore", ((NorvosAxolotlStore) notificationData).serialize());
+			} catch (IOException e) {
+				Errors.critical(Translations.format("errors", "axolotlCouldNotBeSaved"));
+			}
+		} else if (notificationData instanceof Settings && event.equals("settingsChange")) {
+			try {
+				save("settings", ((Settings) notificationData).serialize());
+			} catch (IOException e) {
+				Errors.critical(Translations.format("errors", "settingsCouldNotBeSaved"));
+			}
+		}
+
 	}
 }

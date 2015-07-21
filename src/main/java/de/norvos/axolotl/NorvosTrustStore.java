@@ -1,14 +1,12 @@
 package de.norvos.axolotl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import org.whispersystems.textsecure.api.push.TrustStore;
 
 import de.norvos.i18n.Translations;
 import de.norvos.log.Errors;
-import de.norvos.persistence.DiskPersistence;
+import de.norvos.log.Logger;
 
 public class NorvosTrustStore implements TrustStore {
 	
@@ -44,13 +42,12 @@ public class NorvosTrustStore implements TrustStore {
 	 */
 	@Override
 	public InputStream getKeyStoreInputStream() {
-		try {
-			return new ByteArrayInputStream(DiskPersistence.load("truststore"));
-		} catch (IOException e) {
+		InputStream in = ClassLoader.getSystemResourceAsStream("whisper.store");
+		if(in == null){
+			Logger.critical("TLS certificate missing.");
 			Errors.critical(Translations.format("errors", "trustStoreNotFound"));
-			System.exit(1);
-			return null;
 		}
+		return in;
 	}
 
 	/**

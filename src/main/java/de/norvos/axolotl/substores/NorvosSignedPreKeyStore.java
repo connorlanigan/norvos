@@ -87,7 +87,7 @@ public class NorvosSignedPreKeyStore implements SignedPreKeyStore {
 		for (SignedPreKeyRecord entry : signedPreKeys) {
 			builder.addSignedPreKey(ByteString.copyFrom(entry.serialize()));
 		}
-		return builder.build().toByteArray();
+		return builder.setInitialSignedPreKey(ByteString.copyFrom(initialSignedPreKeyRecord.serialize())).build().toByteArray();
 	}
 
 }

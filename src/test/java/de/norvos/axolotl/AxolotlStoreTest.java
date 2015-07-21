@@ -1,4 +1,4 @@
-package de.norvos;
+package de.norvos.axolotl;
 
 import static org.junit.Assert.*;
 

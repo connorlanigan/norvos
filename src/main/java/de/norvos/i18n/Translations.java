@@ -24,7 +24,7 @@ public class Translations {
 	 * @return translated message
 	 */
 	private static String getMessage(String resourceBundle, String stringId) {
-		String translated = "<I18N:" + stringId + ">";
+		String translated = "<I18N:" + resourceBundle + "." +stringId + ">";
 
 		try {
 			String resourceBundlePath = "de.norvos.i18n.strings." + resourceBundle.toLowerCase() + "." + resourceBundle;
