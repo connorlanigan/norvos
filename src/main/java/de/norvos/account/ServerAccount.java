@@ -58,18 +58,4 @@ public class ServerAccount {
 	public String getSignalingKey(){
 		return SIGNALING_KEY;
 	}
-	
-
-	/**
-	 * Generates a random array of n bytes.
-	 * 
-	 * @return a random array of the given size
-	 */
-	public static String generateRandomBytes(int size) {
-		byte[] array = new byte[size];
-
-		random.nextBytes(array);
-
-		return new String(array, StandardCharsets.US_ASCII);
-	}
 }

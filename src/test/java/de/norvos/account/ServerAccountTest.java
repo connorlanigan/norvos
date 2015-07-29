@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import de.norvos.axolotl.NorvosTrustStore;
+import de.norvos.utils.RandomUtils;
 
 public class ServerAccountTest {
 	
@@ -29,7 +30,7 @@ public class ServerAccountTest {
 
 	@Test
 	public void test() {
-		ServerAccount account = new ServerAccount(username, password, ServerAccount.generateRandomBytes(52));
+		ServerAccount account = new ServerAccount(username, password, RandomUtils.randomAlphanumerical(52));
 		assertEquals(account.getPassword(), password);
 		assertEquals(account.getUsername(), username);
 		

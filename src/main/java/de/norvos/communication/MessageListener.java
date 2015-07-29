@@ -16,11 +16,23 @@
  *******************************************************************************/
 package de.norvos.communication;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.whispersystems.libaxolotl.DuplicateMessageException;
+import org.whispersystems.libaxolotl.InvalidKeyException;
+import org.whispersystems.libaxolotl.InvalidKeyIdException;
+import org.whispersystems.libaxolotl.InvalidMessageException;
+import org.whispersystems.libaxolotl.InvalidVersionException;
+import org.whispersystems.libaxolotl.LegacyMessageException;
+import org.whispersystems.libaxolotl.NoSessionException;
+import org.whispersystems.libaxolotl.UntrustedIdentityException;
+import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureMessagePipe;
 import org.whispersystems.textsecure.api.TextSecureMessageReceiver;
 import org.whispersystems.textsecure.api.crypto.TextSecureCipher;
+import org.whispersystems.textsecure.api.messages.TextSecureContent;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 
@@ -33,12 +45,13 @@ public class MessageListener implements Runnable {
 	private boolean listeningForMessages = true;
 
 	@Override
-	public void run() {
+	public void run(){
+		System.out.println("##### Listening for messages!");
 		ServerAccount account = Settings.getCurrent().getServerAccount();
 		TextSecureMessageReceiver messageReceiver =
-				new TextSecureMessageReceiver(account.getURL(),
-						NorvosTrustStore.get(), account.getUsername(), account.getPassword(), account.getSignalingKey());
-		
+				new TextSecureMessageReceiver(account.getURL(), NorvosTrustStore.get(), account.getUsername(),
+						account.getPassword(), account.getSignalingKey());
+
 		TextSecureMessagePipe messagePipe = null;
 
 		try {
@@ -48,11 +61,34 @@ public class MessageListener implements Runnable {
 				TextSecureEnvelope envelope = messagePipe.read(1000, TimeUnit.DAYS);
 				TextSecureCipher cipher =
 						new TextSecureCipher(envelope.getSourceAddress(), Settings.getCurrent().getAxolotlStore());
-				TextSecureDataMessage message = cipher.decrypt(envelope);
+				TextSecureContent content = cipher.decrypt(envelope);
 
-				System.out.println("Received message: " + message.getBody().get());
+				Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
+
+				System.out.println("####### Received message!!");
+				
+				// We currently drop the synchronization messages, because they
+				// seem not to be officially published as of now.
+				//
+				// Optional<TextSecureSyncMessage> syncMessage =
+				// content.getSyncMessage();
+				//
+
+				if (dataMessage.isPresent()) {
+					TextSecureDataMessage message = dataMessage.get();
+					String sender = envelope.getSource();
+					if(message.isEndSession()){
+						System.out.println("Session ended by "+sender+".");
+					}else{
+						System.out.println("Received message: " + message.getBody().get());
+					}
+				}
+
 			}
 
+		} catch (InvalidVersionException | IOException | TimeoutException | InvalidMessageException | InvalidKeyException | DuplicateMessageException | InvalidKeyIdException | UntrustedIdentityException | LegacyMessageException | NoSessionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			if (messagePipe != null)
 				messagePipe.shutdown();

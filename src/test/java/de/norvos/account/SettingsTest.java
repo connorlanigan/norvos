@@ -25,6 +25,7 @@ import java.util.Locale;
 import org.junit.Test;
 
 import de.norvos.axolotl.NorvosAxolotlStore;
+import de.norvos.utils.RandomUtils;
 
 public class SettingsTest {
 
@@ -45,7 +46,7 @@ public class SettingsTest {
 
 	@Test
 	public void serverAccount() {
-		ServerAccount account = new ServerAccount("username", "password", ServerAccount.generateRandomBytes(52));
+		ServerAccount account = new ServerAccount("username", "password", RandomUtils.randomAlphanumerical(52));
 		settingsInstance.setServerAccount(account);
 		assertEquals(account, Settings.getCurrent().getServerAccount());
 	}
@@ -59,7 +60,7 @@ public class SettingsTest {
 	@Test
 	public void serialization() throws IOException {
 		settingsInstance.setLocale(Locale.ENGLISH);
-		settingsInstance.setServerAccount(new ServerAccount("username", "password", ServerAccount.generateRandomBytes(52)));
+		settingsInstance.setServerAccount(new ServerAccount("username", "password", RandomUtils.randomAlphanumerical(52)));
 		settingsInstance.setAxolotlStore(new NorvosAxolotlStore());
 		Settings.load(settingsInstance.serialize());
 		
@@ -70,10 +71,10 @@ public class SettingsTest {
 	
 	@Test
 	public void generateRandomBytes(){
-		String bytes = ServerAccount.generateRandomBytes(52);
+		String bytes = RandomUtils.randomAlphanumerical(52);
 		assertEquals(52, bytes.getBytes(StandardCharsets.US_ASCII).length);
 		
-		bytes = ServerAccount.generateRandomBytes(128);
+		bytes = RandomUtils.randomAlphanumerical(128);
 		assertEquals(128, bytes.getBytes(StandardCharsets.US_ASCII).length);
 	}
 }

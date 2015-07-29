@@ -18,7 +18,6 @@ package de.norvos.account;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.util.Locale;
 
 import de.norvos.axolotl.NorvosAxolotlStore;
@@ -68,6 +67,7 @@ public class Settings implements Observable{
 	public void setSetupFinished(boolean finished){
 		setupFinished = finished;
 		notifiables.notify("settingsChange", this);
+		notifiables.notify("axolotlStoreChange", store);
 	}
 	public boolean isSetupFinished(){
 		return setupFinished;

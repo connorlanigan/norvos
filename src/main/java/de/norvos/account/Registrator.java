@@ -26,6 +26,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Enumeration;
 
+import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureAccountManager;
 import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
 
@@ -36,6 +37,7 @@ public class Registrator {
 
 	final static SecureRandom random = new SecureRandom();
 	final static boolean SMS_UNSUPPORTED = false;
+	public static final String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
 
 	/**
 	 * Registers a ServerAccount with its server. The input of the verification
@@ -58,8 +60,11 @@ public class Registrator {
 		accountManager.requestSmsVerificationCode();
 		String receivedVerificationCode = handler.getCode();
 
-		accountManager.verifyAccount(receivedVerificationCode, Settings.getCurrent().getServerAccount().getSignalingKey(), SMS_UNSUPPORTED,
+		accountManager.verifyAccount(receivedVerificationCode, account.getSignalingKey(), SMS_UNSUPPORTED,
 				generateRandomInstallId());
+
+		accountManager.setGcmId(Optional.of("This is an invalid push ID. That doesn't harm anything, as the"
+				+ "application pulls the messages manually from the server."));
 
 		NorvosAxolotlStore axolotlStore = Settings.getCurrent().getAxolotlStore();
 		accountManager.setPreKeys(axolotlStore.getIdentityKeyPair().getPublicKey(), axolotlStore.getLastResortKey(),
@@ -70,7 +75,8 @@ public class Registrator {
 	/**
 	 * Generates an install ID with a maximum of 14bit. The number is based on
 	 * the SHA-1 hash of the first MAC adress in the system. If no such adress
-	 * is found, a random number is chosen.<br><br>
+	 * is found, a random number is chosen.<br>
+	 * <br>
 	 * Taken from
 	 * {@link org.whispersystems.textsecure.api.TextSecureAccountManager#verifyAccount
 	 * TextSecureAccountManager.verifyAccount()}, which uses this value:<br>
@@ -97,8 +103,11 @@ public class Registrator {
 
 	/**
 	 * Returns the first <code>bitlength</code> bits of the given int.
-	 * @param value the int to shorten
-	 * @param bitlength the amount of bits to return
+	 * 
+	 * @param value
+	 *            the int to shorten
+	 * @param bitlength
+	 *            the amount of bits to return
 	 * @return the <code>bitlength</code> most significant bits of the value
 	 */
 	private static int limitInt(int value, int bitlength) {
@@ -107,8 +116,10 @@ public class Registrator {
 
 	/**
 	 * Returns the first MAC adress that is found in the system.
+	 * 
 	 * @return MAC adress
-	 * @throws SocketException if an I/O error occurs.
+	 * @throws SocketException
+	 *             if an I/O error occurs.
 	 */
 	private static byte[] getFirstMACAdress() throws SocketException {
 		Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();

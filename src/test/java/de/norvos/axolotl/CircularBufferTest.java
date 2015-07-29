@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.norvos.axolotl.CircularBuffer;
+import de.norvos.utils.CircularBuffer;
 
 public class CircularBufferTest {
 	CircularBuffer<String> buffer;

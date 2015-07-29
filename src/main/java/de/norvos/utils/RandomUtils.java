@@ -14,18 +14,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.account;
+package de.norvos.utils;
 
-import static org.junit.Assert.*;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 
-import org.junit.Test;
+public class RandomUtils {
 
-public class RegistratorTest {
+	private static SecureRandom random = new SecureRandom();
 
-	@Test
-	public void test() throws Exception {
-		int id = Registrator.generateRandomInstallId();
-		assertTrue(id < Math.pow(2, 15) && id > 0);
+	static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	
+	
+	public static String randomAlphanumerical(int len) {
+		StringBuilder sb = new StringBuilder(len);
+		for (int i = 0; i < len; i++)
+			sb.append(AB.charAt(random.nextInt(AB.length())));
+		return sb.toString();
 	}
+	
+	public static String randomASCII(int size){
+		byte[] array = new byte[size];
+
+		random.nextBytes(array);
+
+		return new String(array, StandardCharsets.US_ASCII);
+	}
+	
+	
+
+	
 
 }

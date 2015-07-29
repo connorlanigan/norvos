@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import de.norvos.account.ServerAccount;
 import de.norvos.account.Settings;
+import de.norvos.utils.RandomUtils;
 
 
 public class DiskPersistenceTest {
@@ -38,7 +39,7 @@ public class DiskPersistenceTest {
 	
 	@Test
 	public void notification() throws IOException{
-		Settings.getCurrent().setServerAccount(new ServerAccount("username", "password", ServerAccount.generateRandomBytes(52)));
+		Settings.getCurrent().setServerAccount(new ServerAccount("username", "password", RandomUtils.randomAlphanumerical(52)));
 		Settings.getCurrent().setLocale(Locale.ENGLISH);
 		Settings.getCurrent().setSetupFinished(true);
 		

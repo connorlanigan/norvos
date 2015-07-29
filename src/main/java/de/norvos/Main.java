@@ -17,7 +17,11 @@
 package de.norvos;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Security;
+import java.util.AbstractMap;
+import java.util.List;
 import java.util.Scanner;
 
 import javax.swing.UIManager;
@@ -25,23 +29,34 @@ import javax.swing.UIManager;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.whispersystems.libaxolotl.logging.AxolotlLogger;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
+import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
 
 import de.norvos.account.RegistrationHandler;
 import de.norvos.account.Registrator;
 import de.norvos.account.ServerAccount;
 import de.norvos.account.Settings;
+import de.norvos.communication.MessageListener;
+import de.norvos.communication.MessageSender;
+import de.norvos.observers.Notifiable;
 import de.norvos.persistence.DiskPersistence;
+import de.norvos.utils.OSCustomizations;
+import de.norvos.utils.PersistentSet;
+import de.norvos.utils.PersistentSet.PersistentBytes;
+import de.norvos.utils.RandomUtils;
 
-public class Main implements RegistrationHandler{
-	static Scanner in = new Scanner(System.in);
+public class Main implements RegistrationHandler, Notifiable {
+	private static Scanner in = new Scanner(System.in);
 
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) throws Exception {
+		OSCustomizations.initialize();
+		OSCustomizations.setLookAndFeel();
+
 		AxolotlLoggerProvider.setProvider(new AxolotlLogger() {
 
 			@Override
 			public void log(int priority, String tag, String message) {
-				System.err.println("Priority "+priority + ": [" + tag + "] " + message);
+				System.err.println("Priority " + priority + ": [" + tag + "] " + message);
 			}
 
 		});
@@ -63,20 +78,42 @@ public class Main implements RegistrationHandler{
 
 			String number = in.nextLine();
 			number = "+4915788471709";
+			Settings.getCurrent().setServerAccount(
+					new ServerAccount(number, RandomUtils.randomAlphanumerical(128), RandomUtils.randomAlphanumerical(52)));
 			try {
-				Registrator.register(new ServerAccount(number, ServerAccount.generateRandomBytes(128), ServerAccount.generateRandomBytes(52)), new Main());
+				Registrator.register(Settings.getCurrent().getServerAccount(), new Main());
 				System.out.println("The registration was succesful!");
+				Settings.getCurrent().setSetupFinished(true);
+				System.out.println("Settings saved.");
 			} catch (AuthorizationFailedException e) {
 				System.out.println("Unfortunately your code was wrong.");
+				System.exit(1);
 			} catch (IOException e) {
 				System.out.println("There was an error in communicating with the server. Please try again later.");
+				System.exit(1);
 			}
-
 
 		} else {
 			System.out.println("Welcome back!");
 		}
+		
+		
+		Thread messageListener = new Thread(new MessageListener());
+		messageListener.start();
+		
+		(new MessageSender()).register(new Main(), "messageSent");
+
+		System.out.println("-- Write your messages here:");
+		String input = "";
+		input = in.nextLine();
+
+		while (!input.equals("/exit")) {
+			MessageSender.sendTextMessage("+491788174362", input);
+			input = in.nextLine();
+		}
+		System.out.println("-- Thanks for using Norvos. Bye!");
 	}
+
 
 	@Override
 	public String getCode() {
@@ -84,6 +121,16 @@ public class Main implements RegistrationHandler{
 				.println("Great! You will now get an SMS to your phone with a number. Please enter this number here:");
 		String code = in.nextLine();
 
-		return code.replaceAll("\\D+","");
+		return code.replaceAll("\\D+", "");
 	}
+
+	@Override
+	public void notify(String event, Object notificationData) {
+		if (event.equals("messageSent")) {
+			AbstractMap.SimpleEntry<String, TextSecureDataMessage> entry =
+					(AbstractMap.SimpleEntry<String, TextSecureDataMessage>) notificationData;
+			System.err.println("Message sent: " + entry.getValue().getBody().get());
+		}
+	}
+
 }

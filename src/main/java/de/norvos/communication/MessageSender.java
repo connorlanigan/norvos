@@ -41,6 +41,7 @@ public class MessageSender implements Observable{
 	protected static NotificatorMap notifiables = new NotificatorMap();
 
 	public static void sendTextMessage(String recipientId, String message) throws UntrustedIdentityException, IOException {
+		System.err.println("About to send message: "+message);
 		TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
 		getMessageSender().sendMessage(new TextSecureAddress(recipientId),
 				messageBody);
