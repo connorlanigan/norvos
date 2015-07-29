@@ -17,7 +17,7 @@ import java.awt.Color;
 import javax.swing.border.BevelBorder;
 
 public class MessageEntry extends JPanel {
-	final static private int border = 5;
+	final static private int border = 2;
 	
 	private boolean sent;
 	
@@ -31,8 +31,10 @@ public class MessageEntry extends JPanel {
 		
 		
 		JLabel messageLabel = new JLabel(processText(message));
+		messageLabel.setOpaque(false);
 		
 		add(messageLabel);
+		setOpaque(false);
 	}
 	
 	private String processText(String text){
@@ -56,13 +58,13 @@ public class MessageEntry extends JPanel {
                 RenderingHints.VALUE_ANTIALIAS_ON);
 		Color baseColor;
 		if(sent){
-			baseColor = Color.decode("0xFF7873");
+			baseColor = Color.WHITE;
 		}else{
-			baseColor = Color.decode("0x5AFF93");
+			baseColor = Color.decode("0xFFCB00");
 		}
 		g2.setStroke(new BasicStroke(4));
 		
-		int abstand = 3;
+		int abstand = 1;
 		
 		g2.setColor(baseColor.darker());
 		g2.drawRoundRect(3, 3, getWidth()-7, getHeight()-7, 5, 5);

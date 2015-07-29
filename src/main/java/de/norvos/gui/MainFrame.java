@@ -71,6 +71,7 @@ public class MainFrame extends JFrame{
 					MainFrame frame = new MainFrame();
 					frame.setVisible(true);
 					frame.t.display();
+					frame.setLocationRelativeTo(null);
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -84,14 +85,17 @@ public class MainFrame extends JFrame{
 	 */
 
 	public MainFrame() {
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		getRootPane().setBackground(Color.WHITE);
 
 		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setBackground(Color.WHITE);
 
 		MessageList list = new MessageList();
 		getContentPane().add(list);
@@ -101,6 +105,34 @@ public class MainFrame extends JFrame{
 		t.register(list, "messageSent");
 		t.register(list, "messageReceived");
 		
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
 		list.notify("messageSent", "Hallo!");
 		list.notify("messageReceived", "Hallo Du!");
 
