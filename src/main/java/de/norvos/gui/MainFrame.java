@@ -18,6 +18,7 @@ package de.norvos.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -29,24 +30,49 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
 
-public class MainFrame extends JFrame {
+import de.norvos.observers.Notifiable;
+
+import javax.swing.JLabel;
+
+import java.awt.Insets;
+
+import javax.swing.BoxLayout;
+
+import java.awt.FlowLayout;
+import java.awt.Component;
+
+import javax.swing.Box;
+
+public class MainFrame extends JFrame{
 
 	private JPanel contentPane;
 	private JPanel mainList;
+	private TestDialog t;
 	int i = 0;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					MainFrame frame = new MainFrame();
 					frame.setVisible(true);
+					frame.t.display();
+					frame.setLocationRelativeTo(null);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -65,46 +91,50 @@ public class MainFrame extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		
+		getRootPane().setBackground(Color.WHITE);
 
-		setLayout(new BorderLayout());
+		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setBackground(Color.WHITE);
 
-		mainList = new JPanel(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridwidth = GridBagConstraints.REMAINDER;
-		gbc.weightx = 1;
-		gbc.weighty = 1;
-		mainList.add(new JPanel(), gbc);
+		MessageList list = new MessageList();
+		getContentPane().add(list);
+		
 
-		contentPane.add(new JScrollPane(mainList));
+		t = new TestDialog();
+		t.register(list, "messageSent");
+		t.register(list, "messageReceived");
+		
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
 
-		JButton add = new JButton("Add");
-		add.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				JPanel panel = new JPanel();
-				String a = "Hello";
-				int b = 0;
-				while (b < i) {
-					a += " Hello";
-					b++;
-				}
-				i++;
-				JTextArea label = new JTextArea(a);
-				label.setLineWrap(true);
-				panel.add(label);
-				panel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-				GridBagConstraints gbc = new GridBagConstraints();
-				gbc.gridwidth = GridBagConstraints.REMAINDER;
-				gbc.weightx = 1;
-				gbc.fill = GridBagConstraints.HORIZONTAL;
-				mainList.add(panel, gbc, 0);
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
 
-				validate();
-				repaint();
-			}
-		});
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
 
-		contentPane.add(add, BorderLayout.SOUTH);
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
+		list.notify("messageSent", "Hallo!");
+		list.notify("messageReceived", "Hallo Du!");
 
 	}
 }
