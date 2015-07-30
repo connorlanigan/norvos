@@ -60,6 +60,7 @@ public class PersistentSet {
 	public PersistentSet(Path directory, int nameLength) throws AccessDeniedException {
 		this.directory = directory;
 		directory.toFile().mkdirs();
+		sizeExponent = nameLength;
 		if (!directory.toFile().exists()) {
 			throw new AccessDeniedException("The directory [" + directory + "] could not be created.");
 		}
@@ -122,7 +123,8 @@ public class PersistentSet {
 	public void add(byte[] bytes) throws IOException {
 		File storeFile;
 		do {
-			storeFile = directory.resolve(RandomUtils.randomAlphanumerical(sizeExponent)).toFile();
+			String fileName = RandomUtils.randomAlphanumerical(sizeExponent);
+			storeFile = directory.resolve(fileName).toFile();
 		} while (storeFile.exists());
 
 		File tempFile = File.createTempFile(directory.getFileName().toString(), "persistentSetFile");
