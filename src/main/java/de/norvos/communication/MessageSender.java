@@ -35,52 +35,55 @@ import de.norvos.observers.Notifiable;
 import de.norvos.observers.NotificatorMap;
 import de.norvos.observers.Observable;
 
-public class MessageSender implements Observable{
-	
+public class MessageSender implements Observable {
 
 	protected static NotificatorMap notifiables = new NotificatorMap();
 
-	public static void sendTextMessage(String recipientId, String message) throws UntrustedIdentityException, IOException {
-		System.err.println("About to send message: "+message);
-		TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
-		getMessageSender().sendMessage(new TextSecureAddress(recipientId),
-				messageBody);
-		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
-	}
-
-	public static void sendMediaMessage(String recipientId, String message, File attachment) throws UntrustedIdentityException,
-			IOException {
-
-		TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).withAttachment(createAttachment(attachment)).build();
-		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
+	private static TextSecureAttachment createAttachment(final File attachmentFile) throws FileNotFoundException {
+		final FileInputStream attachmentStream = new FileInputStream(attachmentFile);
+		return TextSecureAttachment.newStreamBuilder().withStream(attachmentStream)
+				.withContentType(getMimeType(attachmentFile)).withLength(attachmentFile.length()).build();
 	}
 
 	private static TextSecureMessageSender getMessageSender() {
-		ServerAccount serverConfiguration = Settings.getCurrent().getServerAccount();
+		final ServerAccount serverConfiguration = Settings.getCurrent().getServerAccount();
 		return new TextSecureMessageSender(serverConfiguration.getURL(), serverConfiguration.getTrustStore(),
-				serverConfiguration.getUsername(), serverConfiguration.getPassword(), Settings.getCurrent().getAxolotlStore(),
-				Optional.absent());
+				serverConfiguration.getUsername(), serverConfiguration.getPassword(), Settings.getCurrent()
+						.getAxolotlStore(), Optional.absent());
 	}
-	
-	private static TextSecureAttachment createAttachment(File attachmentFile) throws FileNotFoundException{
-		FileInputStream attachmentStream = new FileInputStream(attachmentFile);
-		return TextSecureAttachment.newStreamBuilder().withStream(attachmentStream).withContentType(getMimeType(attachmentFile))
-				.withLength(attachmentFile.length()).build();
-	}
-	
-	private static String getMimeType(File file){
+
+	private static String getMimeType(final File file) {
 		// TODO Communicator: use mime-type library
 		return "application/octet-stream";
 	}
-	
+
+	public static void sendMediaMessage(final String recipientId, final String message, final File attachment) throws UntrustedIdentityException,
+	IOException {
+
+		final TextSecureDataMessage messageBody =
+				TextSecureDataMessage.newBuilder().withBody(message).withAttachment(createAttachment(attachment))
+						.build();
+		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
+		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId,
+				messageBody));
+	}
+
+	public static void sendTextMessage(final String recipientId, final String message) throws UntrustedIdentityException,
+			IOException {
+		System.err.println("About to send message: " + message);
+		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
+		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
+		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId,
+				messageBody));
+	}
+
 	@Override
-	public void register(Notifiable n, String event){
+	public void register(final Notifiable n, final String event) {
 		notifiables.register(event, n);
 	}
-	
+
 	@Override
-	public void unregister(Notifiable n){
+	public void unregister(final Notifiable n) {
 		notifiables.unregister(n);
 	}
 

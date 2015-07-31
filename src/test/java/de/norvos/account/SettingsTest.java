@@ -16,7 +16,8 @@
  *******************************************************************************/
 package de.norvos.account;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,49 +33,50 @@ public class SettingsTest {
 	Settings settingsInstance = Settings.getCurrent();
 
 	@Test
+	public void axolotlStore() {
+		final NorvosAxolotlStore store = new NorvosAxolotlStore();
+		settingsInstance.setAxolotlStore(store);
+		assertSame(store, Settings.getCurrent().getAxolotlStore());
+	}
+
+	@Test
+	public void generateRandomBytes() {
+		String bytes = RandomUtils.randomAlphanumerical(52);
+		assertEquals(52, bytes.getBytes(StandardCharsets.US_ASCII).length);
+
+		bytes = RandomUtils.randomAlphanumerical(128);
+		assertEquals(128, bytes.getBytes(StandardCharsets.US_ASCII).length);
+	}
+
+	@Test
 	public void locale() {
 		settingsInstance.setLocale(Locale.CHINESE);
 		assertEquals(Locale.CHINESE, Settings.getCurrent().getLocale());
 	}
 
 	@Test
-	public void axolotlStore() {
-		NorvosAxolotlStore store = new NorvosAxolotlStore();
-		settingsInstance.setAxolotlStore(store);
-		assertSame(store, Settings.getCurrent().getAxolotlStore());
+	public void serialization() throws IOException {
+		settingsInstance.setLocale(Locale.ENGLISH);
+		settingsInstance.setServerAccount(new ServerAccount("username", "password", RandomUtils
+				.randomAlphanumerical(52)));
+		settingsInstance.setAxolotlStore(new NorvosAxolotlStore());
+		Settings.load(settingsInstance.serialize());
+
+		assertEquals(Locale.ENGLISH, Settings.getCurrent().getLocale());
+		assertEquals("username", Settings.getCurrent().getServerAccount().getUsername());
+		assertEquals("password", Settings.getCurrent().getServerAccount().getPassword());
 	}
 
 	@Test
 	public void serverAccount() {
-		ServerAccount account = new ServerAccount("username", "password", RandomUtils.randomAlphanumerical(52));
+		final ServerAccount account = new ServerAccount("username", "password", RandomUtils.randomAlphanumerical(52));
 		settingsInstance.setServerAccount(account);
 		assertEquals(account, Settings.getCurrent().getServerAccount());
 	}
 
 	@Test
 	public void singleton() {
-		Settings secondSettings = Settings.getCurrent();
+		final Settings secondSettings = Settings.getCurrent();
 		assertSame(settingsInstance, secondSettings);
-	}
-
-	@Test
-	public void serialization() throws IOException {
-		settingsInstance.setLocale(Locale.ENGLISH);
-		settingsInstance.setServerAccount(new ServerAccount("username", "password", RandomUtils.randomAlphanumerical(52)));
-		settingsInstance.setAxolotlStore(new NorvosAxolotlStore());
-		Settings.load(settingsInstance.serialize());
-		
-		assertEquals(Locale.ENGLISH, Settings.getCurrent().getLocale());
-		assertEquals("username", Settings.getCurrent().getServerAccount().getUsername());
-		assertEquals("password", Settings.getCurrent().getServerAccount().getPassword());	
-	}
-	
-	@Test
-	public void generateRandomBytes(){
-		String bytes = RandomUtils.randomAlphanumerical(52);
-		assertEquals(52, bytes.getBytes(StandardCharsets.US_ASCII).length);
-		
-		bytes = RandomUtils.randomAlphanumerical(128);
-		assertEquals(128, bytes.getBytes(StandardCharsets.US_ASCII).length);
 	}
 }

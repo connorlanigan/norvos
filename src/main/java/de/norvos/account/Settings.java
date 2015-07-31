@@ -19,40 +19,56 @@ package de.norvos.account;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import de.norvos.axolotl.NorvosAxolotlStore;
-import de.norvos.log.Logger;
 import de.norvos.observers.Notifiable;
 import de.norvos.observers.NotificatorMap;
 import de.norvos.observers.Observable;
-import de.norvos.persistence.DiskPersistence;
 
-public class Settings implements Observable{
+public class Settings implements Observable {
 
-	final private NotificatorMap notifiables = new NotificatorMap();
-	
-	private Locale locale = Locale.US;
-	private NorvosAxolotlStore store;
-	private ServerAccount serverAccount = null;
-	private boolean setupFinished = false;
-	
-	final private static String SEPARATOR_TAG = "\n";
-	
-	
 	private static Settings instance = null;
-	private Settings(){
-		store = new NorvosAxolotlStore();
-		register(new DiskPersistence(), "settingsChange");
-	}
-	
+
+	final private static String SEPARATOR_TAG = "\n";
+
 	public static Settings getCurrent() {
-		if(instance == null){
+		if (instance == null) {
 			instance = new Settings();
 		}
 		return instance;
 	}
-	
-	public Locale getLocale(){
+
+	public static void load(final byte[] bytes) throws IOException {
+		final String serialized = new String(bytes, StandardCharsets.UTF_8);
+		final String[] strings = serialized.split(SEPARATOR_TAG);
+		Logger.debug("Loading settings: [Locale:" + strings[0] + "], [User:" + strings[1] + "], [password hidden]");
+		getCurrent().setLocale(Locale.forLanguageTag(strings[0]));
+		getCurrent().setServerAccount(new ServerAccount(strings[1], strings[2], strings[3]));
+		getCurrent().setAxolotlStore(new NorvosAxolotlStore(DiskPersistence.load("axolotlStore")));
+
+		getCurrent().setSetupFinished(true);
+	}
+
+	private Locale locale = Locale.US;
+
+	final private NotificatorMap notifiables = new NotificatorMap();
+
+	private ServerAccount serverAccount = null;
+	private boolean setupFinished = false;
+
+	private NorvosAxolotlStore store;
+
+	private Settings() {
+		store = new NorvosAxolotlStore();
+		register(new DiskPersistence(), "settingsChange");
+	}
+
+	public NorvosAxolotlStore getAxolotlStore() {
+		return store;
+	}
+
+	public Locale getLocale() {
 		return locale;
 	}
 
@@ -60,67 +76,51 @@ public class Settings implements Observable{
 		return serverAccount;
 	}
 
-	public NorvosAxolotlStore getAxolotlStore() {
-		return store;
-	}
-	
-	public void setSetupFinished(boolean finished){
-		setupFinished = finished;
-		notifiables.notify("settingsChange", this);
-		notifiables.notify("axolotlStoreChange", store);
-	}
-	public boolean isSetupFinished(){
+	public boolean isSetupFinished() {
 		return setupFinished;
 	}
-	
-	public void setLocale(Locale newLocale){
+
+	private void notifyIfSetupFinished(final String event, final Object data) {
+		if (setupFinished) {
+			notifiables.notify(event, data);
+		}
+	}
+
+	@Override
+	public void register(final Notifiable n, final String event) {
+		notifiables.register(event, n);
+	}
+
+	public byte[] serialize() throws IOException {
+		final String serialized =
+				locale.toLanguageTag() + SEPARATOR_TAG + serverAccount.getUsername() + SEPARATOR_TAG
+						+ serverAccount.getPassword() + SEPARATOR_TAG + serverAccount.getSignalingKey();
+		DiskPersistence.save("axolotlStore", store.serialize());
+		return serialized.getBytes(StandardCharsets.UTF_8);
+	}
+
+	public void setAxolotlStore(final NorvosAxolotlStore store) {
+		this.store = store;
+	}
+
+	public void setLocale(final Locale newLocale) {
 		locale = newLocale;
 		notifyIfSetupFinished("localeChange", locale);
 		notifyIfSetupFinished("settingsChange", this);
 	}
 
-	public byte[] serialize() throws IOException{
-		String serialized =  locale.toLanguageTag() + SEPARATOR_TAG + serverAccount.getUsername() + SEPARATOR_TAG + serverAccount.getPassword() + SEPARATOR_TAG + serverAccount.getSignalingKey();
-		DiskPersistence.save("axolotlStore", store.serialize());
-		return serialized.getBytes(StandardCharsets.UTF_8);
+	public void setServerAccount(final ServerAccount account) {
+		serverAccount = account;
 	}
-	
-	public static void load(byte[] bytes) throws IOException{
-		String serialized = new String(bytes, StandardCharsets.UTF_8);
-		String[] strings = serialized.split(SEPARATOR_TAG);
-		Logger.debug("Loading settings: [Locale:"+strings[0]+"], [User:"+strings[1]+"], [password hidden]");
-		getCurrent().setLocale(Locale.forLanguageTag(strings[0]));
-		getCurrent().setServerAccount(new ServerAccount(strings[1], strings[2], strings[3]));
-		getCurrent().setAxolotlStore(new NorvosAxolotlStore(DiskPersistence.load("axolotlStore")));
-		
-		getCurrent().setSetupFinished(true);
-	}
-	
-	
-	
-	
-	public void setAxolotlStore(NorvosAxolotlStore store){
-		this.store = store;
-	}
-	
-	public void setServerAccount(ServerAccount account){
-		this.serverAccount = account;
-	}
-	
-	
-	private void notifyIfSetupFinished(String event, Object data){
-		if(setupFinished){
-			notifiables.notify(event, data);
-		}
-	}
-	
-	@Override
-	public void register(Notifiable n, String event) {
-		notifiables.register(event, n);
+
+	public void setSetupFinished(final boolean finished) {
+		setupFinished = finished;
+		notifiables.notify("settingsChange", this);
+		notifiables.notify("axolotlStoreChange", store);
 	}
 
 	@Override
-	public void unregister(Notifiable n) {
+	public void unregister(final Notifiable n) {
 		notifiables.unregister(n);
 	}
 }

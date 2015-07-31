@@ -16,46 +16,43 @@
  *******************************************************************************/
 package de.norvos.account;
 
-
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 
 import de.norvos.axolotl.NorvosTrustStore;
 
 public class ServerAccount {
-	
 
 	private final static SecureRandom random = new SecureRandom();
-	
-	private final String URL = "https://textsecure-service.whispersystems.org";
-	private final NorvosTrustStore TRUST_STORE = NorvosTrustStore.get();
-	private final String USERNAME;	
+
 	private final String PASSWORD;
 	private final String SIGNALING_KEY;
+	private final NorvosTrustStore TRUST_STORE = NorvosTrustStore.get();
+	private final String URL = "https://textsecure-service.whispersystems.org";
+	private final String USERNAME;
 
-	public ServerAccount(String username, String password, String signalingKey){
-		this.USERNAME = username;
-		this.PASSWORD = password;
-		this.SIGNALING_KEY = signalingKey;
+	public ServerAccount(final String username, final String password, final String signalingKey) {
+		USERNAME = username;
+		PASSWORD = password;
+		SIGNALING_KEY = signalingKey;
 	}
 
-	public String getURL() {
-		return URL;
+	public String getPassword() {
+		return PASSWORD;
+	}
+
+	public String getSignalingKey() {
+		return SIGNALING_KEY;
 	}
 
 	public NorvosTrustStore getTrustStore() {
 		return TRUST_STORE;
 	}
 
-	public String getUsername() {
-		return USERNAME;
+	public String getURL() {
+		return URL;
 	}
 
-	public String getPassword() {
-		return PASSWORD;
-	}
-	
-	public String getSignalingKey(){
-		return SIGNALING_KEY;
+	public String getUsername() {
+		return USERNAME;
 	}
 }

@@ -37,70 +37,97 @@ import com.google.protobuf.ByteString;
 
 import de.norvos.NorvosStorageProtos.AxolotlStoreStructure;
 import de.norvos.NorvosStorageProtos.AxolotlStoreStructure.Builder;
-import de.norvos.axolotl.substores.NorvosIdentityKeyStore;
-import de.norvos.axolotl.substores.NorvosPreKeyStore;
-import de.norvos.axolotl.substores.NorvosSessionStore;
-import de.norvos.axolotl.substores.NorvosSignedPreKeyStore;
-import de.norvos.log.Logger;
+import de.norvos.axolotl.old_substores.NorvosIdentityKeyStore;
+import de.norvos.axolotl.old_substores.NorvosPreKeyStore;
+import de.norvos.axolotl.old_substores.NorvosSessionStore;
+import de.norvos.axolotl.old_substores.NorvosSignedPreKeyStore;
+import de.norvos.log.Errors;
 import de.norvos.observers.Notifiable;
 import de.norvos.observers.NotificatorMap;
 import de.norvos.observers.Observable;
-import de.norvos.persistence.DiskPersistence;
 
 /**
  * An implementation of the AxolotlStore interface. This class only bundles the
  * interfaces {@link IdentityKeyStore},{@link PreKeyStore}, {@link SessionStore}
  * and {@link SignedPreKeyStore}.
- * 
+ *
  * @author Connor Lanigan {@literal <dev@connorlanigan.com>}
  *
  */
-public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKeyStore, SessionStore, SignedPreKeyStore, Observable{
+public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKeyStore, SessionStore,
+		SignedPreKeyStore, Observable {
+
+	private final NorvosIdentityKeyStore identityKeyStore;
 
 	NotificatorMap notifiables = new NotificatorMap();
-	
-	@Override
-	public void register(Notifiable n, String event) {
-		notifiables.register(event, n);
-	}
 
-	@Override
-	public void unregister(Notifiable n) {
-		notifiables.unregister(n);
-	}
-	
-	
-	private NorvosIdentityKeyStore identityKeyStore;
-	private NorvosPreKeyStore preKeyStore;
-	private NorvosSessionStore sessionStore;
+	private final NorvosPreKeyStore preKeyStore;
+
+	private final NorvosSessionStore sessionStore;
 	private NorvosSignedPreKeyStore signedPreKeyStore;
 
 	/**
 	 * Initializes all substores with their default constructor.
-	 * 
+	 *
 	 * @throws InvalidKeyException
 	 *             when the generated IdentityKeyPair is invalid
 	 */
-	public NorvosAxolotlStore(){
+	public NorvosAxolotlStore() {
 		identityKeyStore = new NorvosIdentityKeyStore();
 		preKeyStore = new NorvosPreKeyStore();
 		sessionStore = new NorvosSessionStore();
 		try {
 			signedPreKeyStore = new NorvosSignedPreKeyStore(identityKeyStore.getIdentityKeyPair());
-		} catch (InvalidKeyException e) {
-			Logger.critical("Creation of the SignedPreKeyStore failed. Reason: "+e.getMessage());
+		} catch (final InvalidKeyException e) {
+			Errors.critical("Creation of the SignedPreKeyStore failed. Reason: " + e.getMessage());
 		}
 		register(new DiskPersistence(), "axolotlStoreChange");
 	}
-	
-	public PreKeyRecord getLastResortKey() {
-		return preKeyStore.getLastResortKey();
+
+	/**
+	 * Reconstructs a NorvosAxolotlStore from a given byte-array. The byte-array
+	 * needs to have been created by calling serialize() on a
+	 * NorvosAxolotlStore.
+	 *
+	 * @param serialized
+	 *            the byte-array containing the store
+	 * @throws IOException
+	 *             if the byte-array does not represent a valid
+	 *             NorvosAxolotlStore
+	 */
+	public NorvosAxolotlStore(final byte[] serialized) throws IOException {
+		final AxolotlStoreStructure struct = AxolotlStoreStructure.parseFrom(serialized);
+		identityKeyStore = new NorvosIdentityKeyStore(struct.getIdentityKeyStore().toByteArray());
+		preKeyStore = new NorvosPreKeyStore(struct.getPreKeyStore().toByteArray());
+		sessionStore = new NorvosSessionStore(struct.getSessionStore().toByteArray());
+		signedPreKeyStore = new NorvosSignedPreKeyStore(struct.getSignedPreKeyStore().toByteArray());
 	}
-	public SignedPreKeyRecord getSignedPreKey(){
-		return signedPreKeyStore.getInitialSignedPreKey();
+
+	@Override
+	public boolean containsPreKey(final int preKeyId) {
+		return preKeyStore.containsPreKey(preKeyId);
 	}
-	public List<PreKeyRecord> getOneTimePreKeys(){
-		return preKeyStore.getPreKeys();
+
+	@Override
+	public boolean containsSession(final AxolotlAddress address) {
+		return sessionStore.containsSession(address);
+	}
+
+	@Override
+	public boolean containsSignedPreKey(final int signedPreKeyId) {
+		return signedPreKeyStore.containsSignedPreKey(signedPreKeyId);
+	}
+
+	@Override
+	public void deleteAllSessions(final String name) {
+		sessionStore.deleteAllSessions(name);
+		notifiables.notify("axolotlStoreChange", this);
+	}
+
+	@Override
+	public void deleteSession(final AxolotlAddress address) {
+		sessionStore.deleteSession(address);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
@@ -108,79 +135,45 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 		return identityKeyStore.getIdentityKeyPair();
 	}
 
+	public PreKeyRecord getLastResortKey() {
+		return preKeyStore.getLastResortKey();
+	}
+
 	@Override
 	public int getLocalRegistrationId() {
 		return identityKeyStore.getLocalRegistrationId();
 	}
 
-	@Override
-	public void saveIdentity(String name, IdentityKey identityKey) {
-		identityKeyStore.saveIdentity(name, identityKey);
-		notifiables.notify("axolotlStoreChange", this);
+	public List<PreKeyRecord> getOneTimePreKeys() {
+		return preKeyStore.getPreKeys();
+	}
+
+	public SignedPreKeyRecord getSignedPreKey() {
+		return signedPreKeyStore.getInitialSignedPreKey();
 	}
 
 	@Override
-	public boolean isTrustedIdentity(String name, IdentityKey identityKey) {
-		return identityKeyStore.isTrustedIdentity(name, identityKey);
-	}
-
-	@Override
-	public PreKeyRecord loadPreKey(int preKeyId) throws InvalidKeyIdException {
-		return preKeyStore.loadPreKey(preKeyId);
-	}
-
-	@Override
-	public void storePreKey(int preKeyId, PreKeyRecord record) {
-		preKeyStore.storePreKey(preKeyId, record);
-		notifiables.notify("axolotlStoreChange", this);
-	}
-
-	@Override
-	public boolean containsPreKey(int preKeyId) {
-		return preKeyStore.containsPreKey(preKeyId);
-	}
-
-	@Override
-	public void removePreKey(int preKeyId) {
-		preKeyStore.removePreKey(preKeyId);
-		notifiables.notify("axolotlStoreChange", this);
-	}
-
-	@Override
-	public SessionRecord loadSession(AxolotlAddress address) {
-		return sessionStore.loadSession(address);
-	}
-
-	@Override
-	public List<Integer> getSubDeviceSessions(String name) {
+	public List<Integer> getSubDeviceSessions(final String name) {
 		return sessionStore.getSubDeviceSessions(name);
 	}
 
 	@Override
-	public void storeSession(AxolotlAddress address, SessionRecord record) {
-		sessionStore.storeSession(address, record);
-		notifiables.notify("axolotlStoreChange", this);
+	public boolean isTrustedIdentity(final String name, final IdentityKey identityKey) {
+		return identityKeyStore.isTrustedIdentity(name, identityKey);
 	}
 
 	@Override
-	public boolean containsSession(AxolotlAddress address) {
-		return sessionStore.containsSession(address);
+	public PreKeyRecord loadPreKey(final int preKeyId) throws InvalidKeyIdException {
+		return preKeyStore.loadPreKey(preKeyId);
 	}
 
 	@Override
-	public void deleteSession(AxolotlAddress address) {
-		sessionStore.deleteSession(address);
-		notifiables.notify("axolotlStoreChange", this);
+	public SessionRecord loadSession(final AxolotlAddress address) {
+		return sessionStore.loadSession(address);
 	}
 
 	@Override
-	public void deleteAllSessions(String name) {
-		sessionStore.deleteAllSessions(name);
-		notifiables.notify("axolotlStoreChange", this);
-	}
-
-	@Override
-	public SignedPreKeyRecord loadSignedPreKey(int signedPreKeyId) throws InvalidKeyIdException {
+	public SignedPreKeyRecord loadSignedPreKey(final int signedPreKeyId) throws InvalidKeyIdException {
 		return signedPreKeyStore.loadSignedPreKey(signedPreKeyId);
 	}
 
@@ -190,54 +183,64 @@ public class NorvosAxolotlStore implements AxolotlStore, PreKeyStore, IdentityKe
 	}
 
 	@Override
-	public void storeSignedPreKey(int signedPreKeyId, SignedPreKeyRecord record) {
-		signedPreKeyStore.storeSignedPreKey(signedPreKeyId, record);
+	public void register(final Notifiable n, final String event) {
+		notifiables.register(event, n);
+	}
+
+	@Override
+	public void removePreKey(final int preKeyId) {
+		preKeyStore.removePreKey(preKeyId);
 		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	@Override
-	public boolean containsSignedPreKey(int signedPreKeyId) {
-		return signedPreKeyStore.containsSignedPreKey(signedPreKeyId);
-	}
-
-	@Override
-	public void removeSignedPreKey(int signedPreKeyId) {
+	public void removeSignedPreKey(final int signedPreKeyId) {
 		signedPreKeyStore.removeSignedPreKey(signedPreKeyId);
 		notifiables.notify("axolotlStoreChange", this);
 	}
 
-	/**
-	 * Reconstructs a NorvosAxolotlStore from a given byte-array. The byte-array
-	 * needs to have been created by calling serialize() on a
-	 * NorvosAxolotlStore.
-	 * 
-	 * @param serialized
-	 *            the byte-array containing the store
-	 * @throws IOException
-	 *             if the byte-array does not represent a valid
-	 *             NorvosAxolotlStore
-	 */
-	public NorvosAxolotlStore(byte[] serialized) throws IOException {
-		AxolotlStoreStructure struct = AxolotlStoreStructure.parseFrom(serialized);
-		identityKeyStore = new NorvosIdentityKeyStore(struct.getIdentityKeyStore().toByteArray());
-		preKeyStore = new NorvosPreKeyStore(struct.getPreKeyStore().toByteArray());
-		sessionStore = new NorvosSessionStore(struct.getSessionStore().toByteArray());
-		signedPreKeyStore = new NorvosSignedPreKeyStore(struct.getSignedPreKeyStore().toByteArray());
+	@Override
+	public void saveIdentity(final String name, final IdentityKey identityKey) {
+		identityKeyStore.saveIdentity(name, identityKey);
+		notifiables.notify("axolotlStoreChange", this);
 	}
 
 	/**
 	 * Serializes this store to a byte-array. It can later be reconstructed by
 	 * using the constructor(byte[]).
-	 * 
+	 *
 	 * @return Bytearray representing this store
 	 */
 	public byte[] serialize() {
-		Builder builder = AxolotlStoreStructure.newBuilder();
+		final Builder builder = AxolotlStoreStructure.newBuilder();
 		builder.setIdentityKeyStore(ByteString.copyFrom(identityKeyStore.serialize()));
 		builder.setPreKeyStore(ByteString.copyFrom(preKeyStore.serialize()));
 		builder.setSessionStore(ByteString.copyFrom(sessionStore.serialize()));
 		builder.setSignedPreKeyStore(ByteString.copyFrom(signedPreKeyStore.serialize()));
 		return builder.build().toByteArray();
+	}
+
+	@Override
+	public void storePreKey(final int preKeyId, final PreKeyRecord record) {
+		preKeyStore.storePreKey(preKeyId, record);
+		notifiables.notify("axolotlStoreChange", this);
+	}
+
+	@Override
+	public void storeSession(final AxolotlAddress address, final SessionRecord record) {
+		sessionStore.storeSession(address, record);
+		notifiables.notify("axolotlStoreChange", this);
+	}
+
+	@Override
+	public void storeSignedPreKey(final int signedPreKeyId, final SignedPreKeyRecord record) {
+		signedPreKeyStore.storeSignedPreKey(signedPreKeyId, record);
+		notifiables.notify("axolotlStoreChange", this);
+	}
+
+	@Override
+	public void unregister(final Notifiable n) {
+		notifiables.unregister(n);
 	}
 
 }

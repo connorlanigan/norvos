@@ -16,14 +16,48 @@
  *******************************************************************************/
 package de.norvos.log;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import javax.swing.JOptionPane;
 
-public class Errors {	
-	public static void warning(String message){
-		JOptionPane.showMessageDialog(null, message, "Norvos – Warning", JOptionPane.WARNING_MESSAGE);
+import de.norvos.i18n.Translations;
+
+public class Errors {
+	private static void critical(final String message) {
+		log("[CRITICAL] " + message);
 	}
-	
-	public static void critical(String message){
-		JOptionPane.showMessageDialog(null, message, "Norvos – Error", JOptionPane.ERROR_MESSAGE);
+
+	public static void critical(final String stringId, final Object... args) {
+		final String messageText = Translations.format("errors", stringId, args);
+		critical(messageText);
+		JOptionPane.showMessageDialog(null, messageText, "Norvos – Error", JOptionPane.ERROR_MESSAGE);
 	}
+
+	public static void debug(final String message) {
+		log("[DEBUG] " + message);
+	}
+
+	private static void log(final String message) {
+		System.out.println(message);
+		writeToFile(message);
+	}
+
+	private static void warning(final String message) {
+		log("[WARNING] " + message);
+	}
+
+	public static void warning(final String stringId, final Object... args) {
+		final String messageText = Translations.format("errors", stringId, args);
+		warning(messageText);
+		JOptionPane.showMessageDialog(null, messageText, "Norvos – Warning", JOptionPane.WARNING_MESSAGE);
+	}
+
+	private static void writeToFile(final String fullMessage) {
+		try {
+			DiskPersistence.append("application.log", fullMessage.getBytes(StandardCharsets.UTF_8));
+		} catch (final IOException e) {
+		}
+	}
+
 }

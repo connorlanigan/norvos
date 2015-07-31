@@ -14,22 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.axolotl;
+package de.norvos.utils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import de.norvos.utils.CircularBuffer;
-
 public class CircularBufferTest {
 	CircularBuffer<String> buffer;
-
-	@Before
-	public void setUp() throws Exception {
-		buffer = new CircularBuffer<>(3);
-	}
 
 	@Test
 	public void addGet() {
@@ -61,6 +55,11 @@ public class CircularBufferTest {
 		buffer.add(1, "One");
 		buffer.remove(1);
 		assertEquals(null, buffer.get(1));
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		buffer = new CircularBuffer<>(3);
 	}
 
 }

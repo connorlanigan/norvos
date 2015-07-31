@@ -16,7 +16,7 @@
  *******************************************************************************/
 package de.norvos.account;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class RegistratorTest {
 
 	@Test
 	public void test() throws Exception {
-		int id = Registrator.generateRandomInstallId();
+		final int id = Registrator.generateRandomInstallId();
 		assertTrue(id < Math.pow(2, 15) && id > 0);
 	}
 

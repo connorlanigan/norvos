@@ -24,7 +24,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  * system. On first use, the method
  * {@link de.norvos.os_customizing#initialize() initialize()} has to be called
  * to determine which operating system is used.
- * 
+ *
  * @author Connor Lanigan {@literal <dev@connorlanigan.com>}
  *
  */
@@ -34,20 +34,19 @@ public class OSCustomizations {
 	 * Represents an operating system type.
 	 */
 	private enum OSType {
-		WINDOWS, MAC, OTHER
+		MAC, OTHER, WINDOWS
 	}
 
 	private static OSType os = OSType.OTHER;
 
 	/**
-	 * Call this method at the beginning of your application.
-	 * <br><br>
-	 * Determines the
-	 * operating system type and saves the value for later use throughout the
-	 * customizing.
+	 * Call this method at the beginning of your application. <br>
+	 * <br>
+	 * Determines the operating system type and saves the value for later use
+	 * throughout the customizing.
 	 */
 	public static void initialize() {
-		String osname = System.getProperty("os.name").toLowerCase();
+		final String osname = System.getProperty("os.name").toLowerCase();
 
 		if (osname.indexOf("mac") >= 0) {
 			os = OSType.MAC;

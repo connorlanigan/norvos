@@ -14,28 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.account;
+package de.norvos.persistence.tables;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-import de.norvos.axolotl.NorvosTrustStore;
-import de.norvos.utils.RandomUtils;
-
-public class ServerAccountTest {
-
-	private final String password = "somePassword";
-	private final String username = "+4912345678";
-
-	@Test
-	public void test() {
-		final ServerAccount account = new ServerAccount(username, password, RandomUtils.randomAlphanumerical(52));
-		assertEquals(account.getPassword(), password);
-		assertEquals(account.getUsername(), username);
-
-		assertTrue(account.getTrustStore() instanceof NorvosTrustStore);
-	}
-
+public interface Table {
+	public String getCreationStatement();
 }

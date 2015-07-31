@@ -14,28 +14,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.account;
+package de.norvos;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import java.io.ByteArrayInputStream;
+import java.sql.PreparedStatement;
 
-import org.junit.Test;
+import de.norvos.persistence.Database;
+import de.norvos.persistence.tables.IdentityKeyTable;
 
-import de.norvos.axolotl.NorvosTrustStore;
-import de.norvos.utils.RandomUtils;
+public class Testing {
 
-public class ServerAccountTest {
+	public static void main(final String[] args) throws Exception {
+		final String name = "connor";
+		final byte[] bytes = new byte[] { 1, 1, 1, 1 };
 
-	private final String password = "somePassword";
-	private final String username = "+4912345678";
+		final String query = "MERGE INTO identity_keystore VALUES (?, ?)";
 
-	@Test
-	public void test() {
-		final ServerAccount account = new ServerAccount(username, password, RandomUtils.randomAlphanumerical(52));
-		assertEquals(account.getPassword(), password);
-		assertEquals(account.getUsername(), username);
+		try (final PreparedStatement stmt =
+				Database.ensureTableExists(IdentityKeyTable.getInstance()).prepareStatement(query)) {
 
-		assertTrue(account.getTrustStore() instanceof NorvosTrustStore);
+			stmt.setString(1, name);
+			stmt.setBinaryStream(2, new ByteArrayInputStream(bytes));
+
+			stmt.execute();
+		}
 	}
-
 }

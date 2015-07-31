@@ -14,39 +14,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.log;
+package de.norvos.utils;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import de.norvos.i18n.Translations;
-import de.norvos.persistence.DiskPersistence;
+public class FileUtils {
 
-public class Logger {
-
-	public static void debug(String message) {
-		log("[DEBUG] "+message);
+	public static Path getDatabaseDirectory() {
+		return getDataDirectory().resolve("configuration");
 	}
 
-	public static void warning(String message) {
-		log("[WARNING] "+message);
-	}
-	
-	public static void critical(String message) {
-		log("[CRITICAL] "+message);
-	}
-	
-	private static void log(String message) {
-		System.out.println(message);
-		writeToFile(message);
-	}
-
-	private static void writeToFile(String fullMessage) {
+	public static Path getDataDirectory() {
+		final Path directory = FileSystems.getDefault().getPath(System.getProperty("user.home"), "Norvos");
+		directory.toFile().mkdirs();
 		try {
-			DiskPersistence.append("application.log", fullMessage.getBytes(StandardCharsets.UTF_8));
-		} catch (IOException e) {
-			Errors.warning(Translations.format("errors", "logFileNotWritable"));
-		}		
+			Files.setAttribute(directory, "dos:hidden", true);
+		} catch (final IOException e) {
+		}
+		return directory;
 	}
-	
+
+	private FileUtils() {
+	}
 }

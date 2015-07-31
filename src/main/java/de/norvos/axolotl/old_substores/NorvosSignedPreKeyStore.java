@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.axolotl.substores;
+package de.norvos.axolotl.old_substores;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.norvos.log.Logger;
+import java.util.logging.Logger;
 
 import org.whispersystems.libaxolotl.IdentityKeyPair;
 import org.whispersystems.libaxolotl.InvalidKeyException;
@@ -36,21 +35,39 @@ import de.norvos.NorvosStorageProtos.SignedPreKeyStoreStructure.Builder;
 
 public class NorvosSignedPreKeyStore implements SignedPreKeyStore {
 
-	private List<SignedPreKeyRecord> signedPreKeys = new LinkedList<>();
+	private final SignedPreKeyRecord initialSignedPreKeyRecord;
 
-	private SignedPreKeyRecord initialSignedPreKeyRecord;
+	private final List<SignedPreKeyRecord> signedPreKeys = new LinkedList<>();
+
+	public NorvosSignedPreKeyStore(final byte[] serialized) throws IOException {
+		final SignedPreKeyStoreStructure struct = SignedPreKeyStoreStructure.parseFrom(serialized);
+		for (final ByteString key : struct.getSignedPreKeyList()) {
+			signedPreKeys.add(new SignedPreKeyRecord(key.toByteArray()));
+		}
+		initialSignedPreKeyRecord = new SignedPreKeyRecord(struct.getInitialSignedPreKey().toByteArray());
+	}
+
+	public NorvosSignedPreKeyStore(final IdentityKeyPair identityKey) throws InvalidKeyException {
+		initialSignedPreKeyRecord = KeyHelper.generateSignedPreKey(identityKey, 5);
+	}
+
+	@Override
+	synchronized public boolean containsSignedPreKey(final int pId) {
+		for (final SignedPreKeyRecord record : signedPreKeys) {
+			if (record.getId() == pId) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public SignedPreKeyRecord getInitialSignedPreKey() {
 		return initialSignedPreKeyRecord;
 	}
 
-	public NorvosSignedPreKeyStore(IdentityKeyPair identityKey) throws InvalidKeyException {
-		initialSignedPreKeyRecord = KeyHelper.generateSignedPreKey(identityKey, 5);
-	}
-
 	@Override
-	synchronized public SignedPreKeyRecord loadSignedPreKey(int pId) throws InvalidKeyIdException {
-		for (SignedPreKeyRecord record : signedPreKeys) {
+	synchronized public SignedPreKeyRecord loadSignedPreKey(final int pId) throws InvalidKeyIdException {
+		for (final SignedPreKeyRecord record : signedPreKeys) {
 			if (record.getId() == pId) {
 				return record;
 			}
@@ -65,24 +82,9 @@ public class NorvosSignedPreKeyStore implements SignedPreKeyStore {
 	}
 
 	@Override
-	synchronized public void storeSignedPreKey(int pId, SignedPreKeyRecord pSignedRecord) {
-		signedPreKeys.add(pSignedRecord);
-	}
-
-	@Override
-	synchronized public boolean containsSignedPreKey(int pId) {
-		for (SignedPreKeyRecord record : signedPreKeys) {
-			if (record.getId() == pId) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	synchronized public void removeSignedPreKey(int pId) {
+	synchronized public void removeSignedPreKey(final int pId) {
 		SignedPreKeyRecord foundRecord = null;
-		for (SignedPreKeyRecord record : signedPreKeys) {
+		for (final SignedPreKeyRecord record : signedPreKeys) {
 			if (record.getId() == pId) {
 				foundRecord = record;
 			}
@@ -90,20 +92,18 @@ public class NorvosSignedPreKeyStore implements SignedPreKeyStore {
 		signedPreKeys.remove(foundRecord);
 	}
 
-	public NorvosSignedPreKeyStore(byte[] serialized) throws IOException {
-		SignedPreKeyStoreStructure struct = SignedPreKeyStoreStructure.parseFrom(serialized);
-		for (ByteString key : struct.getSignedPreKeyList()) {
-			signedPreKeys.add(new SignedPreKeyRecord(key.toByteArray()));
-		}
-		initialSignedPreKeyRecord = new SignedPreKeyRecord(struct.getInitialSignedPreKey().toByteArray());
-	}
-
 	synchronized public byte[] serialize() {
-		Builder builder = SignedPreKeyStoreStructure.newBuilder();
-		for (SignedPreKeyRecord entry : signedPreKeys) {
+		final Builder builder = SignedPreKeyStoreStructure.newBuilder();
+		for (final SignedPreKeyRecord entry : signedPreKeys) {
 			builder.addSignedPreKey(ByteString.copyFrom(entry.serialize()));
 		}
-		return builder.setInitialSignedPreKey(ByteString.copyFrom(initialSignedPreKeyRecord.serialize())).build().toByteArray();
+		return builder.setInitialSignedPreKey(ByteString.copyFrom(initialSignedPreKeyRecord.serialize())).build()
+				.toByteArray();
+	}
+
+	@Override
+	synchronized public void storeSignedPreKey(final int pId, final SignedPreKeyRecord pSignedRecord) {
+		signedPreKeys.add(pSignedRecord);
 	}
 
 }

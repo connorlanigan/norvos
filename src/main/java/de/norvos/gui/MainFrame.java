@@ -18,67 +18,42 @@ package de.norvos.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.MatteBorder;
 
-import de.norvos.observers.Notifiable;
-
-import javax.swing.JLabel;
-
-import java.awt.Insets;
-
-import javax.swing.BoxLayout;
-
-import java.awt.FlowLayout;
-import java.awt.Component;
-
-import javax.swing.Box;
-
-public class MainFrame extends JFrame{
-
-	private JPanel contentPane;
-	private JPanel mainList;
-	private TestDialog t;
-	int i = 0;
+public class MainFrame extends JFrame {
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		try {
 			UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainFrame frame = new MainFrame();
-					frame.setVisible(true);
-					frame.t.display();
-					frame.setLocationRelativeTo(null);
+		EventQueue.invokeLater(() -> {
+			try {
+				final MainFrame frame = new MainFrame();
+				frame.setVisible(true);
+				frame.t.display();
+				frame.setLocationRelativeTo(null);
 
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+			} catch (final Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
+
+	private final JPanel contentPane;
+	int i = 0;
+
+	private final TestDialog t;
 
 	/**
 	 * Create the frame.
@@ -91,20 +66,19 @@ public class MainFrame extends JFrame{
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
-		
+
 		getRootPane().setBackground(Color.WHITE);
 
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().setBackground(Color.WHITE);
 
-		MessageList list = new MessageList();
+		final MessageList list = new MessageList();
 		getContentPane().add(list);
-		
 
 		t = new TestDialog();
 		t.register(list, "messageSent");
 		t.register(list, "messageReceived");
-		
+
 		list.notify("messageSent", "Hallo!");
 		list.notify("messageReceived", "Hallo Du!");
 		list.notify("messageSent", "Hallo!");

@@ -42,13 +42,13 @@ import de.norvos.axolotl.NorvosTrustStore;
 
 public class MessageListener implements Runnable {
 
-	private boolean listeningForMessages = true;
+	private final boolean listeningForMessages = true;
 
 	@Override
-	public void run(){
+	public void run() {
 		System.out.println("##### Listening for messages!");
-		ServerAccount account = Settings.getCurrent().getServerAccount();
-		TextSecureMessageReceiver messageReceiver =
+		final ServerAccount account = Settings.getCurrent().getServerAccount();
+		final TextSecureMessageReceiver messageReceiver =
 				new TextSecureMessageReceiver(account.getURL(), NorvosTrustStore.get(), account.getUsername(),
 						account.getPassword(), account.getSignalingKey());
 
@@ -58,15 +58,15 @@ public class MessageListener implements Runnable {
 			messagePipe = messageReceiver.createMessagePipe();
 
 			while (listeningForMessages) {
-				TextSecureEnvelope envelope = messagePipe.read(1000, TimeUnit.DAYS);
-				TextSecureCipher cipher =
+				final TextSecureEnvelope envelope = messagePipe.read(1000, TimeUnit.DAYS);
+				final TextSecureCipher cipher =
 						new TextSecureCipher(envelope.getSourceAddress(), Settings.getCurrent().getAxolotlStore());
-				TextSecureContent content = cipher.decrypt(envelope);
+				final TextSecureContent content = cipher.decrypt(envelope);
 
-				Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
+				final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
 
 				System.out.println("####### Received message!!");
-				
+
 				// We currently drop the synchronization messages, because they
 				// seem not to be officially published as of now.
 				//
@@ -75,23 +75,26 @@ public class MessageListener implements Runnable {
 				//
 
 				if (dataMessage.isPresent()) {
-					TextSecureDataMessage message = dataMessage.get();
-					String sender = envelope.getSource();
-					if(message.isEndSession()){
-						System.out.println("Session ended by "+sender+".");
-					}else{
+					final TextSecureDataMessage message = dataMessage.get();
+					final String sender = envelope.getSource();
+					if (message.isEndSession()) {
+						System.out.println("Session ended by " + sender + ".");
+					} else {
 						System.out.println("Received message: " + message.getBody().get());
 					}
 				}
 
 			}
 
-		} catch (InvalidVersionException | IOException | TimeoutException | InvalidMessageException | InvalidKeyException | DuplicateMessageException | InvalidKeyIdException | UntrustedIdentityException | LegacyMessageException | NoSessionException e) {
+		} catch (InvalidVersionException | IOException | TimeoutException | InvalidMessageException
+				| InvalidKeyException | DuplicateMessageException | InvalidKeyIdException | UntrustedIdentityException
+				| LegacyMessageException | NoSessionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (messagePipe != null)
+			if (messagePipe != null) {
 				messagePipe.shutdown();
+			}
 		}
 
 	}

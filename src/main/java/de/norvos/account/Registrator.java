@@ -40,39 +40,6 @@ public class Registrator {
 	public static final String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
 
 	/**
-	 * Registers a ServerAccount with its server. The input of the verification
-	 * code is handled in the RegistrationHandler.
-	 * 
-	 * @param account
-	 *            the account that should get registered
-	 * @param handler
-	 *            the verification code input handler
-	 * @return <code>true</code> if and only if the registration was successful
-	 * @throws IOException
-	 */
-	public static void register(ServerAccount account, RegistrationHandler handler) throws IOException,
-			AuthorizationFailedException,
-			Exception {
-		TextSecureAccountManager accountManager =
-				new TextSecureAccountManager(account.getURL(), NorvosTrustStore.get(), account.getUsername(),
-						account.getPassword());
-
-		accountManager.requestSmsVerificationCode();
-		String receivedVerificationCode = handler.getCode();
-
-		accountManager.verifyAccount(receivedVerificationCode, account.getSignalingKey(), SMS_UNSUPPORTED,
-				generateRandomInstallId());
-
-		accountManager.setGcmId(Optional.of("This is an invalid push ID. That doesn't harm anything, as the"
-				+ "application pulls the messages manually from the server."));
-
-		NorvosAxolotlStore axolotlStore = Settings.getCurrent().getAxolotlStore();
-		accountManager.setPreKeys(axolotlStore.getIdentityKeyPair().getPublicKey(), axolotlStore.getLastResortKey(),
-				axolotlStore.getSignedPreKey(), axolotlStore.getOneTimePreKeys());
-
-	}
-
-	/**
 	 * Generates an install ID with a maximum of 14bit. The number is based on
 	 * the SHA-1 hash of the first MAC adress in the system. If no such adress
 	 * is found, a random number is chosen.<br>
@@ -83,7 +50,7 @@ public class Registrator {
 	 * "A random 14-bit number that identifies this TextSecure install. This
 	 * value should remain consistent across registrations for the same install,
 	 * but probabilistically differ across registrations for separate installs."
-	 * 
+	 *
 	 * @return a random number with a maximum of 14 bit;
 	 * @throws UnknownHostException
 	 * @throws SocketException
@@ -91,47 +58,80 @@ public class Registrator {
 	 */
 	public static int generateRandomInstallId() {
 		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-1");
-			byte[] hashedMac = digest.digest(getFirstMACAdress());
+			final MessageDigest digest = MessageDigest.getInstance("SHA-1");
+			final byte[] hashedMac = digest.digest(getFirstMACAdress());
 			return limitInt(new BigInteger(hashedMac).intValue(), 14);
 
-		} catch (Exception e) {
-			int size = (int) Math.pow(2, 14 + 1);
+		} catch (final Exception e) {
+			final int size = (int) Math.pow(2, 14 + 1);
 			return random.nextInt(size);
 		}
 	}
 
 	/**
+	 * Returns the first MAC adress that is found in the system.
+	 *
+	 * @return MAC adress
+	 * @throws SocketException
+	 *             if an I/O error occurs.
+	 */
+	private static byte[] getFirstMACAdress() throws SocketException {
+		final Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+
+		while (networkInterfaces.hasMoreElements()) {
+			final NetworkInterface network = networkInterfaces.nextElement();
+
+			final byte[] bmac = network.getHardwareAddress();
+			if (bmac != null) {
+				return bmac;
+			}
+		}
+		throw new SocketException("No network interfaces with a MAC adress found.");
+	}
+
+	/**
 	 * Returns the first <code>bitlength</code> bits of the given int.
-	 * 
+	 *
 	 * @param value
 	 *            the int to shorten
 	 * @param bitlength
 	 *            the amount of bits to return
 	 * @return the <code>bitlength</code> most significant bits of the value
 	 */
-	private static int limitInt(int value, int bitlength) {
+	private static int limitInt(final int value, final int bitlength) {
 		return Integer.parseInt(Integer.toBinaryString(value).substring(0, bitlength), 2);
 	}
 
 	/**
-	 * Returns the first MAC adress that is found in the system.
-	 * 
-	 * @return MAC adress
-	 * @throws SocketException
-	 *             if an I/O error occurs.
+	 * Registers a ServerAccount with its server. The input of the verification
+	 * code is handled in the RegistrationHandler.
+	 *
+	 * @param account
+	 *            the account that should get registered
+	 * @param handler
+	 *            the verification code input handler
+	 * @return <code>true</code> if and only if the registration was successful
+	 * @throws IOException
 	 */
-	private static byte[] getFirstMACAdress() throws SocketException {
-		Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+	public static void register(final ServerAccount account, final RegistrationHandler handler) throws IOException,
+	AuthorizationFailedException,
+	Exception {
+		final TextSecureAccountManager accountManager =
+				new TextSecureAccountManager(account.getURL(), NorvosTrustStore.get(), account.getUsername(),
+						account.getPassword());
 
-		while (networkInterfaces.hasMoreElements()) {
-			NetworkInterface network = networkInterfaces.nextElement();
+		accountManager.requestSmsVerificationCode();
+		final String receivedVerificationCode = handler.getCode();
 
-			byte[] bmac = network.getHardwareAddress();
-			if (bmac != null) {
-				return bmac;
-			}
-		}
-		throw new SocketException("No network interfaces with a MAC adress found.");
+		accountManager.verifyAccount(receivedVerificationCode, account.getSignalingKey(), SMS_UNSUPPORTED,
+				generateRandomInstallId());
+
+		accountManager.setGcmId(Optional.of("This is an invalid push ID. That doesn't harm anything, as the"
+				+ "application pulls the messages manually from the server."));
+
+		final NorvosAxolotlStore axolotlStore = Settings.getCurrent().getAxolotlStore();
+		accountManager.setPreKeys(axolotlStore.getIdentityKeyPair().getPublicKey(), axolotlStore.getLastResortKey(),
+				axolotlStore.getSignedPreKey(), axolotlStore.getOneTimePreKeys());
+
 	}
 }

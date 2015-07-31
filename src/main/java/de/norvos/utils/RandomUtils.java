@@ -21,20 +21,20 @@ import java.security.SecureRandom;
 
 public class RandomUtils {
 
+	static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 	private static SecureRandom random = new SecureRandom();
 
-	static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	
-	
-	public static String randomAlphanumerical(int len) {
-		StringBuilder sb = new StringBuilder(len);
-		for (int i = 0; i < len; i++)
+	public static String randomAlphanumerical(final int len) {
+		final StringBuilder sb = new StringBuilder(len);
+		for (int i = 0; i < len; i++) {
 			sb.append(AB.charAt(random.nextInt(AB.length())));
+		}
 		return sb.toString();
 	}
-	
-	public static String randomASCII(int size){
-		byte[] array = new byte[size];
+
+	public static String randomASCII(final int size) {
+		final byte[] array = new byte[size];
 
 		random.nextBytes(array);
 
