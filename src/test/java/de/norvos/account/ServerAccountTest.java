@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import de.norvos.axolotl.NorvosTrustStore;
+import de.norvos.axolotl.TrustStore;
 import de.norvos.utils.RandomUtils;
 
 public class ServerAccountTest {
@@ -35,7 +35,7 @@ public class ServerAccountTest {
 		assertEquals(account.getPassword(), password);
 		assertEquals(account.getUsername(), username);
 
-		assertTrue(account.getTrustStore() instanceof NorvosTrustStore);
+		assertTrue(account.getTrustStore() instanceof TrustStore);
 	}
 
 }

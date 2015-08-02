@@ -27,7 +27,7 @@ public class NotificatorMap {
 
 	/**
 	 * Returns all Notifiables associated with the given event.
-	 * 
+	 *
 	 * @param event
 	 *            from which the Notifiables are returned
 	 * @return List of associated Notifiables
@@ -41,7 +41,7 @@ public class NotificatorMap {
 
 	/**
 	 * Notifies all objects that have registered for the given event.
-	 * 
+	 *
 	 * @param event
 	 *            the event
 	 * @param notificationData
@@ -55,7 +55,7 @@ public class NotificatorMap {
 
 	/**
 	 * Registers a Notifiable for a given event.
-	 * 
+	 *
 	 * @param event
 	 *            the event
 	 * @param value
@@ -73,14 +73,13 @@ public class NotificatorMap {
 
 	/**
 	 * Unregisters the Notifiable from all events in this map.
-	 * 
+	 *
 	 * @param value
 	 *            the value to remove.
 	 */
 	public void unregister(final Notifiable value) {
 		for (final List<Notifiable> entry : map.values()) {
 			while (entry.remove(value)) {
-				;
 			}
 		}
 	}

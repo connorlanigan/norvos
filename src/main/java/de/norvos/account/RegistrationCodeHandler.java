@@ -14,29 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos;
+package de.norvos.account;
 
-import java.io.ByteArrayInputStream;
-import java.sql.PreparedStatement;
+public interface RegistrationCodeHandler {
 
-import de.norvos.persistence.Database;
-import de.norvos.persistence.tables.IdentityKeyTable;
+	/**
+	 * Returns the received verification code that the user enters.
+	 *
+	 * @return the verification code
+	 */
+	public String getCode();
 
-public class Testing {
-
-	public static void main(final String[] args) throws Exception {
-		final String name = "connor";
-		final byte[] bytes = new byte[] { 1, 1, 1, 1 };
-
-		final String query = "MERGE INTO identity_keystore VALUES (?, ?)";
-
-		try (final PreparedStatement stmt =
-				Database.ensureTableExists(IdentityKeyTable.getInstance()).prepareStatement(query)) {
-
-			stmt.setString(1, name);
-			stmt.setBinaryStream(2, new ByteArrayInputStream(bytes));
-
-			stmt.execute();
-		}
-	}
 }

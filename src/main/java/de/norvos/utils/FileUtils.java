@@ -37,6 +37,10 @@ public class FileUtils {
 		return directory;
 	}
 
+	public static Path getLogfile() {
+		return getDataDirectory().resolve("application.log");
+	}
+
 	private FileUtils() {
 	}
 }

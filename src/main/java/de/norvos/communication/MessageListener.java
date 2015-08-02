@@ -36,21 +36,39 @@ import org.whispersystems.textsecure.api.messages.TextSecureContent;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 
-import de.norvos.account.ServerAccount;
-import de.norvos.account.Settings;
-import de.norvos.axolotl.NorvosTrustStore;
+import de.norvos.account.AccountDataStore;
+import de.norvos.axolotl.AxolotlStore;
+import de.norvos.axolotl.TrustStore;
+import de.norvos.log.Errors;
 
 public class MessageListener implements Runnable {
 
+	public interface MessageCallback {
+		public void messageListeningException(Exception e);
+
+		public void messageReceived(TextSecureDataMessage dataMessage, TextSecureEnvelope envelope);
+	}
+
+	private final MessageCallback callback;
+
 	private final boolean listeningForMessages = true;
+
+	public MessageListener(final MessageCallback callback) {
+		this.callback = callback;
+	}
 
 	@Override
 	public void run() {
-		System.out.println("##### Listening for messages!");
-		final ServerAccount account = Settings.getCurrent().getServerAccount();
+		Errors.debug("##### Listening for messages!");
+
+		final String url = AccountDataStore.getStringValue("url");
+		final String username = AccountDataStore.getStringValue("username");
+		final TrustStore trustStore = TrustStore.getInstance();
+		final String password = AccountDataStore.getStringValue("password");
+		final String signalingKey = AccountDataStore.getStringValue("signalingKey");
+
 		final TextSecureMessageReceiver messageReceiver =
-				new TextSecureMessageReceiver(account.getURL(), NorvosTrustStore.get(), account.getUsername(),
-						account.getPassword(), account.getSignalingKey());
+				new TextSecureMessageReceiver(url, trustStore, username, password, signalingKey);
 
 		TextSecureMessagePipe messagePipe = null;
 
@@ -60,7 +78,7 @@ public class MessageListener implements Runnable {
 			while (listeningForMessages) {
 				final TextSecureEnvelope envelope = messagePipe.read(1000, TimeUnit.DAYS);
 				final TextSecureCipher cipher =
-						new TextSecureCipher(envelope.getSourceAddress(), Settings.getCurrent().getAxolotlStore());
+						new TextSecureCipher(envelope.getSourceAddress(), AxolotlStore.getInstance());
 				final TextSecureContent content = cipher.decrypt(envelope);
 
 				final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
@@ -89,8 +107,9 @@ public class MessageListener implements Runnable {
 		} catch (InvalidVersionException | IOException | TimeoutException | InvalidMessageException
 				| InvalidKeyException | DuplicateMessageException | InvalidKeyIdException | UntrustedIdentityException
 				| LegacyMessageException | NoSessionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO Reorganize try into the while-loop and handles message
+			// errors in a sane way
+			callback.messageListeningException(e);
 		} finally {
 			if (messagePipe != null) {
 				messagePipe.shutdown();

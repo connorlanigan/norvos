@@ -18,9 +18,7 @@ package de.norvos.axolotl;
 
 import java.io.InputStream;
 
-import org.whispersystems.textsecure.api.push.TrustStore;
-
-public class NorvosTrustStore implements TrustStore {
+public class TrustStore implements org.whispersystems.textsecure.api.push.TrustStore {
 
 	/**
 	 * The default password of the KeyStore shipped with the TextSecure android
@@ -31,16 +29,16 @@ public class NorvosTrustStore implements TrustStore {
 	/**
 	 * Singleton instance
 	 */
-	private static NorvosTrustStore store = null;
+	private static TrustStore store = null;
 
 	/**
 	 * Returns the only instance of the NorvosTrustStore.
-	 * 
+	 *
 	 * @return the NorvosTrustStore
 	 */
-	public static NorvosTrustStore get() {
+	public static TrustStore getInstance() {
 		if (store == null) {
-			store = new NorvosTrustStore();
+			store = new TrustStore();
 		}
 		return store;
 	}
@@ -48,7 +46,7 @@ public class NorvosTrustStore implements TrustStore {
 	/**
 	 * Singleton constructor
 	 */
-	private NorvosTrustStore() {
+	private TrustStore() {
 	}
 
 	/**

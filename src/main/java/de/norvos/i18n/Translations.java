@@ -16,10 +16,11 @@
  *******************************************************************************/
 package de.norvos.i18n;
 
+import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import de.norvos.account.Settings;
+import de.norvos.account.AccountDataStore;
 import de.norvos.log.Errors;
 
 public class Translations {
@@ -45,7 +46,8 @@ public class Translations {
 		try {
 			final String resourceBundlePath =
 					"de.norvos.i18n.strings." + resourceBundle.toLowerCase() + "." + resourceBundle;
-			final ResourceBundle res = ResourceBundle.getBundle(resourceBundlePath, Settings.getCurrent().getLocale());
+			final Locale locale = Locale.forLanguageTag(AccountDataStore.getStringValue("locale"));
+			final ResourceBundle res = ResourceBundle.getBundle(resourceBundlePath, locale);
 
 			translated = res.getString(stringId);
 		} catch (final NullPointerException e) {

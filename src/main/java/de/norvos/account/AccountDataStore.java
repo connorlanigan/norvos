@@ -16,43 +16,42 @@
  *******************************************************************************/
 package de.norvos.account;
 
-import java.security.SecureRandom;
+import java.sql.SQLException;
 
-import de.norvos.axolotl.NorvosTrustStore;
+import de.norvos.persistence.tables.AccountDataTable;
 
-public class ServerAccount {
-
-	private final static SecureRandom random = new SecureRandom();
-
-	private final String PASSWORD;
-	private final String SIGNALING_KEY;
-	private final NorvosTrustStore TRUST_STORE = NorvosTrustStore.get();
-	private final String URL = "https://textsecure-service.whispersystems.org";
-	private final String USERNAME;
-
-	public ServerAccount(final String username, final String password, final String signalingKey) {
-		USERNAME = username;
-		PASSWORD = password;
-		SIGNALING_KEY = signalingKey;
+public class AccountDataStore {
+	public static byte[] getBinaryValue(final String key) {
+		try {
+			return AccountDataTable.getInstance().getBinary(key);
+		} catch (final SQLException e) {
+			return null;
+		}
 	}
 
-	public String getPassword() {
-		return PASSWORD;
+	public static String getStringValue(final String key) {
+		try {
+			return AccountDataTable.getInstance().getString(key);
+		} catch (final SQLException e) {
+			return null;
+		}
 	}
 
-	public String getSignalingKey() {
-		return SIGNALING_KEY;
+	public static boolean storeBinaryValue(final String key, final byte[] value) {
+		try {
+			AccountDataTable.getInstance().storeBinary(key, value);
+			return true;
+		} catch (final SQLException e) {
+			return false;
+		}
 	}
 
-	public NorvosTrustStore getTrustStore() {
-		return TRUST_STORE;
-	}
-
-	public String getURL() {
-		return URL;
-	}
-
-	public String getUsername() {
-		return USERNAME;
+	public static boolean storeStringValue(final String key, final String value) {
+		try {
+			AccountDataTable.getInstance().storeString(key, value);
+			return true;
+		} catch (final SQLException e) {
+			return false;
+		}
 	}
 }

@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+@SuppressWarnings("serial")
 public class MainFrame extends JFrame {
 
 	/**

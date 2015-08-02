@@ -20,29 +20,29 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.whispersystems.libaxolotl.state.PreKeyRecord;
+import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 
 import de.norvos.persistence.Database;
 
-public class PreKeyTable implements Table {
-	private static PreKeyTable instance;
+public class SignedPreKeyTable implements Table {
+	private static SignedPreKeyTable instance;
 
-	public static PreKeyTable getInstance() {
+	public static SignedPreKeyTable getInstance() {
 		if (instance == null) {
-			instance = new PreKeyTable();
+			instance = new SignedPreKeyTable();
 		}
 		return instance;
 	}
 
-	private PreKeyTable() {
+	private SignedPreKeyTable() {
 	}
 
 	public void deleteKey(final int id) throws SQLException {
-		final String query = "DELETE FROM prekeystore WHERE id = ?";
-
+		final String query = "DELETE FROM signed_prekeystore WHERE id = ?";
 		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
-
 			stmt.setInt(1, id);
 
 			stmt.execute();
@@ -51,21 +51,42 @@ public class PreKeyTable implements Table {
 
 	@Override
 	public String getCreationStatement() {
-		return "CREATE TABLE IF NOT EXISTS prekeystore ( id INTEGER PRIMARY KEY, prekey BINARY NOT NULL)";
+		return "CREATE TABLE IF NOT EXISTS signed_prekeystore ( id INTEGER PRIMARY KEY, signed_prekey BINARY NOT NULL)";
 	}
 
-	public PreKeyRecord getKey(final int id) throws SQLException {
-		final String query = "SELECT prekey FROM prekeystore WHERE id = ?";
+	public List<SignedPreKeyRecord> loadAll() throws SQLException {
+		final String query = "SELECT signed_prekey, id FROM signed_prekeystore";
+		final List<SignedPreKeyRecord> list = new LinkedList<SignedPreKeyRecord>();
 
 		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
 
-			stmt.setInt(1, id);
 			final ResultSet result = stmt.executeQuery();
+
+			while (result.next()) {
+				try {
+					list.add(new SignedPreKeyRecord(result.getBytes(1)));
+				} catch (final IOException e) {
+					throw new SQLException("SignedPreKeyTable: Value of signed_prekey for id [" + result.getInt(2)
+							+ "] is invalid.", e);
+				}
+			}
+			return list;
+		}
+	}
+
+	public SignedPreKeyRecord loadKey(final int id) throws SQLException {
+		final String query = "SELECT signed_prekey FROM signed_prekeystore WHERE id = ?";
+		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
+			stmt.setInt(1, id);
+
+			final ResultSet result = stmt.executeQuery();
+
 			if (result.first()) {
 				try {
-					return new PreKeyRecord(result.getBytes(1));
+					return new SignedPreKeyRecord(result.getBytes(1));
 				} catch (final IOException e) {
-					throw new SQLException("PreKeyTable: Value of prekey for id [" + id + "] is invalid.", e);
+					throw new SQLException("SignedPreKeyTable: Value of signed_prekey for id [" + id + "] is invalid.",
+							e);
 				}
 			} else {
 				return null;
@@ -73,34 +94,12 @@ public class PreKeyTable implements Table {
 		}
 	}
 
-	public int getLastIndex() {
-		// TODO implement circular buffer for PreKey generation
-		//
-		// From discussion with Moxie in June 2015:
-		//
-		// Connor:
-		// As the keys are only recreated when the
-		// number of them stored on the server runs low and thus there are no
-		// keys
-		// that could collide with the new ones, is it safe to assume that a
-		// client can always use zero as the starting ID?
-		//
-		// Moxie:
-		// No, someone could have requested a prekey but not delivered a message
-		// with it yet. You should pick a random starting index, then treat it
-		// as
-		// a circular buffer.
-
-		return 0;
-	}
-
-	public void storeKey(final int id, final PreKeyRecord preKey) throws SQLException {
-		final String query = "MERGE INTO prekeystore VALUES (?, ?)";
+	public void storeKey(final int id, final SignedPreKeyRecord record) throws SQLException {
+		final String query = "MERGE INTO signed_prekeystore VALUES (?, ?)";
 
 		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
-
 			stmt.setInt(1, id);
-			stmt.setBytes(1, preKey.serialize());
+			stmt.setBytes(2, record.serialize());
 
 			stmt.execute();
 		}

@@ -22,7 +22,7 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import de.norvos.account.Settings;
+import com.squareup.okhttp.internal.spdy.Settings;
 
 public class TranslationsTest {
 

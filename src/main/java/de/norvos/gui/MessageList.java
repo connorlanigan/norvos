@@ -29,6 +29,7 @@ import javax.swing.border.EmptyBorder;
 
 import de.norvos.observers.Notifiable;
 
+@SuppressWarnings("serial")
 public class MessageList extends JPanel implements Notifiable {
 	private final JPanel mainList;
 	private final JScrollPane scrollPane;

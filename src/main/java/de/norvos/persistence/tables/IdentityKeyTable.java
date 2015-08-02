@@ -54,7 +54,8 @@ public class IdentityKeyTable implements Table {
 				try {
 					return new IdentityKey(result.getBytes(1), 0);
 				} catch (final InvalidKeyException e) {
-					throw new SQLException("Value of identity_key for name [" + name + "] is invalid.", e);
+					throw new SQLException("IdentityKeyTable: Value of identity_key for name [" + name
+							+ "] is invalid.", e);
 				}
 			} else {
 				return null;

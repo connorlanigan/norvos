@@ -20,7 +20,7 @@ public interface Observable {
 
 	/**
 	 * Register a Notifiable object for a specific event.
-	 * 
+	 *
 	 * @param n
 	 *            the object to be notified
 	 * @param event
@@ -30,7 +30,7 @@ public interface Observable {
 
 	/**
 	 * Removes a Notifiable object from all events.
-	 * 
+	 *
 	 * @param n
 	 *            the notifiable object
 	 */

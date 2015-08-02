@@ -23,8 +23,9 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import com.squareup.okhttp.internal.spdy.Settings;
+
 import de.norvos.account.ServerAccount;
-import de.norvos.account.Settings;
 import de.norvos.utils.RandomUtils;
 
 public class DiskPersistenceTest {

@@ -21,45 +21,37 @@ import java.security.Security;
 import java.util.AbstractMap;
 import java.util.Scanner;
 
-import javax.swing.UIManager;
-
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
 
-import de.norvos.account.RegistrationHandler;
+import com.squareup.okhttp.internal.spdy.Settings;
+
+import de.norvos.account.AccountDataStore;
+import de.norvos.account.RegistrationCodeHandler;
 import de.norvos.account.Registrator;
 import de.norvos.account.ServerAccount;
-import de.norvos.account.Settings;
 import de.norvos.communication.MessageListener;
 import de.norvos.communication.MessageSender;
 import de.norvos.observers.Notifiable;
 import de.norvos.utils.OSCustomizations;
 import de.norvos.utils.RandomUtils;
 
-public class Main implements RegistrationHandler, Notifiable {
+public class Main implements RegistrationCodeHandler, Notifiable {
 	private static Scanner in = new Scanner(System.in);
 
 	public static void main(final String[] args) throws Exception {
 		OSCustomizations.initialize();
 		OSCustomizations.setLookAndFeel();
 
+		Security.addProvider(new BouncyCastleProvider());
+
 		AxolotlLoggerProvider.setProvider((priority, tag, message) -> System.err.println("Priority " + priority + ": ["
 				+ tag + "] " + message));
-		Security.addProvider(new BouncyCastleProvider());
-		try {
-			// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			Settings.load(DiskPersistence.load("settings"));
-		} catch (final IOException e) {
-		}
 
-		if (!Settings.getCurrent().isSetupFinished()) {
+		final boolean setupFinished = "true".equals(AccountDataStore.getStringValue("setupFinished"));
+		if (!setupFinished) {
 			System.out.println("Hello, this is the first time you're using Norvos.\n"
 					+ "You will now be registered for this service. Please enter your mobile phone number here:");
 
@@ -110,6 +102,7 @@ public class Main implements RegistrationHandler, Notifiable {
 		return code.replaceAll("\\D+", "");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void notify(final String event, final Object notificationData) {
 		if (event.equals("messageSent")) {

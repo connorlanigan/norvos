@@ -28,8 +28,15 @@ import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class MessageEntry extends JPanel {
 	final static private int border = 2;
+
+	private static String processText(final String text) {
+		// TODO replace URLs with links
+		final String processedText = "<html>" + text.replace("\n", "<br>");
+		return processedText;
+	}
 
 	private final boolean sent;
 
@@ -78,11 +85,5 @@ public class MessageEntry extends JPanel {
 				5, 5);
 
 		g.fillRect(3 + abstand, 3 + abstand, getWidth() - (7 + (2 * abstand)), getHeight() - (7 + (2 * abstand)));
-	}
-
-	private static String processText(String text) {
-		// TODO replace URLs with links
-		text = "<html>" + text.replace("\n", "<br>");
-		return text;
 	}
 }

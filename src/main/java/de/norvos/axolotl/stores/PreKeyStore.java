@@ -32,70 +32,98 @@ import de.norvos.persistence.tables.PreKeyTable;
 
 public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeyStore {
 
-	@Override
-	public PreKeyRecord loadPreKey(int preKeyId) throws InvalidKeyIdException {
-		try {
-			return PreKeyTable.getInstance().getKey(preKeyId);
-		} catch (SQLException e) {
-			Errors.critical("databaseError");
-			throw new InvalidKeyIdException(e);
+	private static PreKeyStore instance;
+
+	public static PreKeyStore getInstance() {
+		if (instance == null) {
+			instance = new PreKeyStore();
 		}
+		return instance;
+	}
+
+	private PreKeyStore() {
+	}
+
+	@Override
+	public boolean containsPreKey(final int preKeyId) {
+		try {
+			return null == PreKeyTable.getInstance().getKey(preKeyId);
+		} catch (final SQLException e) {
+			Errors.critical("databaseError");
+			return false;
+		}
+	}
+
+	public int getLastIndex() {
+		return PreKeyTable.getInstance().getLastIndex();
 	}
 
 	public PreKeyRecord getLastResortKey() {
 		try {
-			return new PreKeyRecord(AccountDataTable.getInstance().getBinary("lastResortKey"));
+			final byte[] record = AccountDataTable.getInstance().getBinary("lastResortKey");
+			if (record == null) {
+				return null;
+			}
+			return new PreKeyRecord(record);
 		} catch (IOException | SQLException e) {
 			Errors.critical("databaseError");
 			return null;
 		}
 	}
 
-	private static void storeLastResortKey(PreKeyRecord record) {
-		try {
-			AccountDataTable.getInstance().storeBinary("lastResortKey", record.serialize());
-		} catch (SQLException e) {
-			Errors.critical("databaseError");
-		}
-	}
+	public List<PreKeyRecord> initialize() {
 
-	public void initialize() {
+		final int numberOfKeys = 100;
+		final int startingId = (new Random()).nextInt(Medium.MAX_VALUE - numberOfKeys);
+
 		storeLastResortKey(KeyHelper.generateLastResortPreKey());
+		final List<PreKeyRecord> list = KeyHelper.generatePreKeys(startingId, numberOfKeys);
 
-		int numberOfKeys = 100;
-		final List<PreKeyRecord> list =
-				KeyHelper.generatePreKeys((new Random()).nextInt(Medium.MAX_VALUE - numberOfKeys), numberOfKeys);
 		for (final PreKeyRecord key : list) {
 			storePreKey(key.getId(), key);
 		}
+
+		return list;
 	}
 
 	@Override
-	public void storePreKey(int preKeyId, PreKeyRecord record) {
+	public PreKeyRecord loadPreKey(final int preKeyId) throws InvalidKeyIdException {
 		try {
-			PreKeyTable.getInstance().storeKey(preKeyId, record);
-		} catch (SQLException e) {
+			final PreKeyRecord record = PreKeyTable.getInstance().getKey(preKeyId);
+			if (record == null) {
+				throw new InvalidKeyIdException("Key id " + preKeyId + " has no associated PreKeyRecord.");
+			}
+			return PreKeyTable.getInstance().getKey(preKeyId);
+		} catch (final SQLException e) {
 			Errors.critical("databaseError");
+			throw new InvalidKeyIdException(e);
 		}
 	}
 
 	@Override
-	public boolean containsPreKey(int preKeyId) {
-		try {
-			return null == PreKeyTable.getInstance().getKey(preKeyId);
-		} catch (SQLException e) {
-			Errors.critical("databaseError");
-			return false;
-		}
-	}
-
-	@Override
-	public void removePreKey(int preKeyId) {
+	public void removePreKey(final int preKeyId) {
 		try {
 			PreKeyTable.getInstance().deleteKey(preKeyId);
-		} catch (SQLException e) {
+		} catch (final SQLException e) {
 			Errors.critical("databaseError");
 		}
 	}
 
+	@SuppressWarnings("static-method")
+	private void storeLastResortKey(final PreKeyRecord record) {
+		try {
+			AccountDataTable.getInstance().storeBinary("lastResortKey", record.serialize());
+		} catch (final SQLException e) {
+			Errors.critical("databaseError");
+		}
+	}
+
+	@Override
+	public void storePreKey(final int preKeyId, final PreKeyRecord record) {
+		try {
+			PreKeyTable.getInstance().storeKey(preKeyId, record);
+		} catch (final SQLException e) {
+			Errors.critical("databaseError");
+		}
+	}
 }

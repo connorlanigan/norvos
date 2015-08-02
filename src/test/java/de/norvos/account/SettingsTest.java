@@ -25,7 +25,8 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import de.norvos.axolotl.NorvosAxolotlStore;
+import com.squareup.okhttp.internal.spdy.Settings;
+
 import de.norvos.utils.RandomUtils;
 
 public class SettingsTest {

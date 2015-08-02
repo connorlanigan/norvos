@@ -26,120 +26,118 @@ import org.whispersystems.libaxolotl.state.PreKeyRecord;
 import org.whispersystems.libaxolotl.state.SessionRecord;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 
+import de.norvos.axolotl.stores.IdentityKeyStore;
+import de.norvos.axolotl.stores.PreKeyStore;
+import de.norvos.axolotl.stores.SessionStore;
+import de.norvos.axolotl.stores.SignedPreKeyStore;
+
 public class AxolotlStore implements org.whispersystems.libaxolotl.state.AxolotlStore {
+
+	private static AxolotlStore instance;
+
+	public static AxolotlStore getInstance() {
+		if (instance == null) {
+			instance = new AxolotlStore();
+		}
+		return instance;
+	}
+
+	private AxolotlStore() {
+	}
 
 	@Override
 	public boolean containsPreKey(final int preKeyId) {
-		// TODO Auto-generated method stub
-		return false;
+		return PreKeyStore.getInstance().containsPreKey(preKeyId);
 	}
 
 	@Override
 	public boolean containsSession(final AxolotlAddress address) {
-		// TODO Auto-generated method stub
-		return false;
+		return SessionStore.getInstance().containsSession(address);
 	}
 
 	@Override
 	public boolean containsSignedPreKey(final int signedPreKeyId) {
-		// TODO Auto-generated method stub
-		return false;
+		return SignedPreKeyStore.getInstance().containsSignedPreKey(signedPreKeyId);
 	}
 
 	@Override
 	public void deleteAllSessions(final String name) {
-		// TODO Auto-generated method stub
-
+		SessionStore.getInstance().deleteAllSessions(name);
 	}
 
 	@Override
 	public void deleteSession(final AxolotlAddress address) {
-		// TODO Auto-generated method stub
-
+		SessionStore.getInstance().deleteSession(address);
 	}
 
 	@Override
 	public IdentityKeyPair getIdentityKeyPair() {
-		// TODO Auto-generated method stub
-		return null;
+		return IdentityKeyStore.getInstance().getIdentityKeyPair();
 	}
 
 	@Override
 	public int getLocalRegistrationId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return IdentityKeyStore.getInstance().getLocalRegistrationId();
 	}
 
 	@Override
 	public List<Integer> getSubDeviceSessions(final String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return SessionStore.getInstance().getSubDeviceSessions(name);
 	}
 
 	@Override
 	public boolean isTrustedIdentity(final String name, final IdentityKey identityKey) {
-		// TODO Auto-generated method stub
-		return false;
+		return IdentityKeyStore.getInstance().isTrustedIdentity(name, identityKey);
 	}
 
 	@Override
 	public PreKeyRecord loadPreKey(final int preKeyId) throws InvalidKeyIdException {
-		// TODO Auto-generated method stub
-		return null;
+		return PreKeyStore.getInstance().loadPreKey(preKeyId);
 	}
 
 	@Override
 	public SessionRecord loadSession(final AxolotlAddress address) {
-		// TODO Auto-generated method stub
-		return null;
+		return SessionStore.getInstance().loadSession(address);
 	}
 
 	@Override
 	public SignedPreKeyRecord loadSignedPreKey(final int signedPreKeyId) throws InvalidKeyIdException {
-		// TODO Auto-generated method stub
-		return null;
+		return SignedPreKeyStore.getInstance().loadSignedPreKey(signedPreKeyId);
 	}
 
 	@Override
 	public List<SignedPreKeyRecord> loadSignedPreKeys() {
-		// TODO Auto-generated method stub
-		return null;
+		return SignedPreKeyStore.getInstance().loadSignedPreKeys();
 	}
 
 	@Override
 	public void removePreKey(final int preKeyId) {
-		// TODO Auto-generated method stub
-
+		PreKeyStore.getInstance().removePreKey(preKeyId);
 	}
 
 	@Override
 	public void removeSignedPreKey(final int signedPreKeyId) {
-		// TODO Auto-generated method stub
-
+		SignedPreKeyStore.getInstance().removeSignedPreKey(signedPreKeyId);
 	}
 
 	@Override
 	public void saveIdentity(final String name, final IdentityKey identityKey) {
-		// TODO Auto-generated method stub
-
+		IdentityKeyStore.getInstance().saveIdentity(name, identityKey);
 	}
 
 	@Override
 	public void storePreKey(final int preKeyId, final PreKeyRecord record) {
-		// TODO Auto-generated method stub
-
+		PreKeyStore.getInstance().storePreKey(preKeyId, record);
 	}
 
 	@Override
 	public void storeSession(final AxolotlAddress address, final SessionRecord record) {
-		// TODO Auto-generated method stub
-
+		SessionStore.getInstance().storeSession(address, record);
 	}
 
 	@Override
 	public void storeSignedPreKey(final int signedPreKeyId, final SignedPreKeyRecord record) {
-		// TODO Auto-generated method stub
-
+		SignedPreKeyStore.getInstance().storeSignedPreKey(signedPreKeyId, record);
 	}
 
 }

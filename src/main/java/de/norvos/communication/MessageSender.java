@@ -29,8 +29,9 @@ import org.whispersystems.textsecure.api.messages.TextSecureAttachment;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.push.TextSecureAddress;
 
-import de.norvos.account.ServerAccount;
-import de.norvos.account.Settings;
+import de.norvos.account.AccountDataStore;
+import de.norvos.axolotl.AxolotlStore;
+import de.norvos.axolotl.TrustStore;
 import de.norvos.observers.Notifiable;
 import de.norvos.observers.NotificatorMap;
 import de.norvos.observers.Observable;
@@ -46,10 +47,13 @@ public class MessageSender implements Observable {
 	}
 
 	private static TextSecureMessageSender getMessageSender() {
-		final ServerAccount serverConfiguration = Settings.getCurrent().getServerAccount();
-		return new TextSecureMessageSender(serverConfiguration.getURL(), serverConfiguration.getTrustStore(),
-				serverConfiguration.getUsername(), serverConfiguration.getPassword(), Settings.getCurrent()
-						.getAxolotlStore(), Optional.absent());
+		final String url = AccountDataStore.getStringValue("url");
+		final String username = AccountDataStore.getStringValue("username");
+		final TrustStore trustStore = TrustStore.getInstance();
+		final String password = AccountDataStore.getStringValue("password");
+
+		return new TextSecureMessageSender(url, trustStore, username, password, AxolotlStore.getInstance(),
+				Optional.absent());
 	}
 
 	private static String getMimeType(final File file) {
@@ -62,14 +66,14 @@ public class MessageSender implements Observable {
 
 		final TextSecureDataMessage messageBody =
 				TextSecureDataMessage.newBuilder().withBody(message).withAttachment(createAttachment(attachment))
-						.build();
+				.build();
 		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
 		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId,
 				messageBody));
 	}
 
 	public static void sendTextMessage(final String recipientId, final String message) throws UntrustedIdentityException,
-			IOException {
+	IOException {
 		System.err.println("About to send message: " + message);
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
 		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
