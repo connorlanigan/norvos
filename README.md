@@ -1,6 +1,6 @@
 # Secure desktop and cross-platform messaging
 
-Norvos is an application to send and receive encrypted chat messages. It is compatible with TextSecure, which enables people to communicate securely with their mobile phones all over the world.
+Norvos is an application to send and receive encrypted chat messages. It is compatible with [TextSecure](https://whispersystems.org/), which enables people to communicate securely with their mobile phones all over the world.
 
 The project website is located at [https://norvos.de](https://norvos.de).
 
