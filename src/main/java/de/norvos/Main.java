@@ -17,14 +17,12 @@
 package de.norvos;
 
 import java.util.AbstractMap;
-import java.util.Scanner;
 
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 
 import de.norvos.observers.Notifiable;
 
 public class Main implements Notifiable {
-	private static Scanner in = new Scanner(System.in);
 
 	public static void main(final String[] args) throws Exception {
 		/*
