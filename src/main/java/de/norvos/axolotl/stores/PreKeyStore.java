@@ -47,8 +47,9 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 	@Override
 	public boolean containsPreKey(final int preKeyId) {
 		try {
-			return null == PreKeyTable.getInstance().getKey(preKeyId);
+			return PreKeyTable.getInstance().getKey(preKeyId) != null;
 		} catch (final SQLException e) {
+			System.err.println(e.getMessage());
 			Errors.critical("databaseError");
 			return false;
 		}
@@ -123,6 +124,7 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 		try {
 			PreKeyTable.getInstance().storeKey(preKeyId, record);
 		} catch (final SQLException e) {
+			System.err.println(e.getMessage());
 			Errors.critical("databaseError");
 		}
 	}

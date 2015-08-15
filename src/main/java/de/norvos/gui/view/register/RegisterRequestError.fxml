@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane alignment="CENTER" hgap="10.0" maxHeight="-Infinity" minHeight="-Infinity" minWidth="279.0" prefHeight="283.0" prefWidth="515.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.norvos.gui.controller.register.RegisterRequestErrorController">
+	<columnConstraints>
+		<ColumnConstraints hgrow="NEVER" maxWidth="211.0" minWidth="10.0" prefWidth="210.0" />
+		<ColumnConstraints hgrow="NEVER" maxWidth="336.0" minWidth="10.0" prefWidth="275.0" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints maxHeight="208.0" minHeight="10.0" prefHeight="155.0" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+	</rowConstraints>
+	<children>
+      <StackPane GridPane.columnSpan="2">
+         <children>
+            <ProgressIndicator fx:id="spinningWheel" visible="false">
+               <StackPane.margin>
+                  <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+               </StackPane.margin>
+            </ProgressIndicator>
+      		<FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="180.0" prefWidth="435.0">
+      			<children>
+      				<Text fx:id="errorTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Oh, no!">
+      					<font>
+      						<Font size="39.0" />
+      					</font>
+      				</Text>
+      				<Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" text="We encountered an error while requesting your verification code. Make sure you have a working internet connection." textAlignment="CENTER" wrappingWidth="300.0" />
+      			</children>
+      		</FlowPane>
+         </children>
+      </StackPane>
+		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" text="Retry" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+	</children>
+	<padding>
+		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+	</padding>
+</GridPane>

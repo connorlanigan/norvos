@@ -92,6 +92,8 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 			return true;
 
 		} catch (final SQLException e) {
+			System.err.println(e.getMessage());
+			;
 			Errors.critical("databaseError");
 			return true;
 		}
@@ -103,6 +105,7 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 			IdentityKeyTable.getInstance().storeIdentity(name, identityKey);
 		} catch (final SQLException e) {
 			Errors.critical("databaseError");
+			throw new NullPointerException(e.getMessage());
 		}
 	}
 

@@ -49,7 +49,7 @@ public class Errors {
 
 	/**
 	 * Logs a debug message to System.out
-	 * 
+	 *
 	 * @param message
 	 *            the message to log
 	 */

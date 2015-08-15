@@ -80,8 +80,8 @@ public class SessionTable implements Table {
 			}
 			return null;
 		} catch (final IOException e) {
-			throw new SQLException("SessionTable: Value of session_record for address [" + address.toString()
-					+ "] is invalid.", e);
+			throw new SQLException(
+					"SessionTable: Value of session_record for address [" + address.toString() + "] is invalid.", e);
 		}
 	}
 

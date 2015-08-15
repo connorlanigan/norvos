@@ -46,6 +46,7 @@ public class Database {
 			try {
 				Class.forName("org.h2.Driver");
 			} catch (final ClassNotFoundException e) {
+				System.err.println("yep");
 				throw new SQLException(e);
 			}
 			connection = DriverManager.getConnection("jdbc:h2:" + FileUtils.getDatabaseDirectory());

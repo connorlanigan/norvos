@@ -67,8 +67,8 @@ public class MessageListener implements Runnable {
 		final String password = AccountDataStore.getStringValue("password");
 		final String signalingKey = AccountDataStore.getStringValue("signalingKey");
 
-		final TextSecureMessageReceiver messageReceiver =
-				new TextSecureMessageReceiver(url, trustStore, username, password, signalingKey);
+		final TextSecureMessageReceiver messageReceiver = new TextSecureMessageReceiver(url, trustStore, username,
+				password, signalingKey);
 
 		TextSecureMessagePipe messagePipe = null;
 
@@ -77,8 +77,8 @@ public class MessageListener implements Runnable {
 
 			while (listeningForMessages) {
 				final TextSecureEnvelope envelope = messagePipe.read(1000, TimeUnit.DAYS);
-				final TextSecureCipher cipher =
-						new TextSecureCipher(envelope.getSourceAddress(), AxolotlStore.getInstance());
+				final TextSecureCipher cipher = new TextSecureCipher(envelope.getSourceAddress(),
+						AxolotlStore.getInstance());
 				final TextSecureContent content = cipher.decrypt(envelope);
 
 				final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();

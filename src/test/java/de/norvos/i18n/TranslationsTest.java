@@ -22,20 +22,20 @@ import java.util.Locale;
 
 import org.junit.Test;
 
-import com.squareup.okhttp.internal.spdy.Settings;
+import de.norvos.account.AccountDataStore;
 
 public class TranslationsTest {
 
 	@Test
 	public void translationAvailable() {
-		Settings.getCurrent().setLocale(Locale.ENGLISH);
+		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
 		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
 		assertEquals("Registration failed. Reason: TestReason", translated);
 	}
 
 	@Test
 	public void translationUnavailable() {
-		Settings.getCurrent().setLocale(Locale.ENGLISH);
+		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
 		String translated = Translations.format("this resource does", "not exist", "TestReason");
 		assertEquals("<I18N:this resource does.not exist>", translated);
 

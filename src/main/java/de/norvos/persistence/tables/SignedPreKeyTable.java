@@ -66,8 +66,9 @@ public class SignedPreKeyTable implements Table {
 				try {
 					list.add(new SignedPreKeyRecord(result.getBytes(1)));
 				} catch (final IOException e) {
-					throw new SQLException("SignedPreKeyTable: Value of signed_prekey for id [" + result.getInt(2)
-							+ "] is invalid.", e);
+					throw new SQLException(
+							"SignedPreKeyTable: Value of signed_prekey for id [" + result.getInt(2) + "] is invalid.",
+							e);
 				}
 			}
 			return list;

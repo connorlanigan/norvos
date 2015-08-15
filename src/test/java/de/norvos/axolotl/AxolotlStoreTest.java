@@ -16,7 +16,7 @@
  *******************************************************************************/
 package de.norvos.axolotl;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,9 +38,8 @@ import org.whispersystems.libaxolotl.util.KeyHelper;
 public class AxolotlStoreTest {
 
 	int ANY_NUMBER;
-	NorvosAxolotlStore secondStore;
 
-	NorvosAxolotlStore store;
+	AxolotlStore store;
 
 	@Test
 	public void contains_storePreKey() {
@@ -51,20 +50,9 @@ public class AxolotlStoreTest {
 	}
 
 	@Test
-	public void getIdentityKeyPair() {
-		assertEquals(store.getIdentityKeyPair(), store.getIdentityKeyPair());
-		assertNotEquals(store.getIdentityKeyPair(), secondStore.getIdentityKeyPair());
-	}
-
-	@Test
-	public void getLocalRegistrationId() {
-		assertEquals(store.getLocalRegistrationId(), store.getLocalRegistrationId());
-		assertNotEquals(store.getLocalRegistrationId(), secondStore.getLocalRegistrationId());
-	}
-
-	@Test
-	public void isTrustedIdentity() {
+	public void isTrustedIdentity() throws InterruptedException {
 		final IdentityKey key = KeyHelper.generateIdentityKeyPair().getPublicKey();
+		Thread.sleep(1000);
 		final IdentityKey wrongKey = KeyHelper.generateIdentityKeyPair().getPublicKey();
 		assertNotEquals(key, wrongKey);
 
@@ -72,7 +60,7 @@ public class AxolotlStoreTest {
 		store.saveIdentity("TestName", key);
 		assertTrue(store.isTrustedIdentity("TestName", key));
 
-		// Case: Unknown Key (important: Trust on first use!)
+		// Case: Unknown Key (remember: TextSecure uses Trust On First Use!)
 		assertTrue(store.isTrustedIdentity("UnseenName", key));
 
 		// Case: Wrong Key
@@ -84,7 +72,7 @@ public class AxolotlStoreTest {
 		final PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
 		store.storePreKey(preKey.getId(), preKey);
 		final PreKeyRecord newKey = store.loadPreKey(preKey.getId());
-		assertEquals(preKey, newKey);
+		assertArrayEquals(preKey.serialize(), newKey.serialize());
 	}
 
 	@Test(expected = InvalidKeyIdException.class)
@@ -97,7 +85,7 @@ public class AxolotlStoreTest {
 	@Test
 	public void removePreKey() {
 		final PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
-		store.storePreKey(42, preKey);
+		store.storePreKey(preKey.getId(), preKey);
 		store.removePreKey(preKey.getId());
 		assertFalse(store.containsPreKey(preKey.getId()));
 	}
@@ -155,9 +143,7 @@ public class AxolotlStoreTest {
 
 	@Before
 	public void setUp() throws Exception {
-		store = new NorvosAxolotlStore();
-		Thread.sleep(10);
-		secondStore = new NorvosAxolotlStore();
+		store = AxolotlStore.getInstance();
 		final Random r = new Random();
 		ANY_NUMBER = r.nextInt(10) + 1;
 	}
@@ -172,7 +158,7 @@ public class AxolotlStoreTest {
 		assertTrue(store.containsSignedPreKey(key.getId()));
 		assertFalse(store.containsSignedPreKey(key.getId() + 1));
 
-		assertEquals(key, store.loadSignedPreKey(key.getId()));
+		assertArrayEquals(key.serialize(), store.loadSignedPreKey(key.getId()).serialize());
 		store.removeSignedPreKey(key.getId());
 
 		assertFalse(store.containsSignedPreKey(key.getId()));

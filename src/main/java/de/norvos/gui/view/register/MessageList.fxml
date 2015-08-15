@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<FlowPane fx:id="messageList" maxHeight="1.7976931348623157E308"
+	orientation="VERTICAL" prefHeight="1200.0" prefWidth="200.0"
+	prefWrapLength="200.0" BorderPane.alignment="CENTER" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.norvos.gui.controller.MessageListController">
+	<BorderPane.margin>
+		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+	</BorderPane.margin>
+	<children>
+		<Label id="firstMessage" text="The other: Hello you!" />
+	</children>
+</FlowPane>

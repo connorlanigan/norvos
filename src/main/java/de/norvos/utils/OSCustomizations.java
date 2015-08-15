@@ -21,9 +21,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * This class deals with customizing the application for the current operating
- * system. On first use, the method
- * {@link de.norvos.os_customizing#initialize() initialize()} has to be called
- * to determine which operating system is used.
+ * system. On first use, the method {@link de.norvos.os_customizing#initialize()
+ * initialize()} has to be called to determine which operating system is used.
  *
  * @author Connor Lanigan {@literal <dev@connorlanigan.com>}
  *

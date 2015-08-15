@@ -61,24 +61,23 @@ public class MessageSender implements Observable {
 		return "application/octet-stream";
 	}
 
-	public static void sendMediaMessage(final String recipientId, final String message, final File attachment) throws UntrustedIdentityException,
-	IOException {
+	public static void sendMediaMessage(final String recipientId, final String message, final File attachment)
+			throws UntrustedIdentityException, IOException {
 
-		final TextSecureDataMessage messageBody =
-				TextSecureDataMessage.newBuilder().withBody(message).withAttachment(createAttachment(attachment))
-				.build();
+		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message)
+				.withAttachment(createAttachment(attachment)).build();
 		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId,
-				messageBody));
+		notifiables.notify("messageSent",
+				new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
 	}
 
-	public static void sendTextMessage(final String recipientId, final String message) throws UntrustedIdentityException,
-	IOException {
+	public static void sendTextMessage(final String recipientId, final String message)
+			throws UntrustedIdentityException, IOException {
 		System.err.println("About to send message: " + message);
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
 		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId,
-				messageBody));
+		notifiables.notify("messageSent",
+				new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
 	}
 
 	@Override

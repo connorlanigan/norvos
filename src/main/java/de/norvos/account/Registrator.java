@@ -33,16 +33,17 @@ import de.norvos.axolotl.stores.SignedPreKeyStore;
 import de.norvos.utils.RandomUtils;
 
 public class Registrator {
+	private static boolean initialized = false;
 	final static private int initialSignedKeyID = 5;
+	private static List<PreKeyRecord> oneTimePreKeys;
 	final static private int passwordLength = 40;
+
+	private static boolean requested = false;
 	final static boolean SMS_UNSUPPORTED = false;
+
 	final static public String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
 
-	private boolean initialized = false;
-
-	private List<PreKeyRecord> oneTimePreKeys;
-
-	public void initialize() {
+	public static void initialize() {
 		final IdentityKeyPair identityKeyPair = IdentityKeyStore.getInstance().initialize();
 		oneTimePreKeys = PreKeyStore.getInstance().initialize();
 		SignedPreKeyStore.getInstance().initialize(identityKeyPair, initialSignedKeyID);
@@ -55,20 +56,14 @@ public class Registrator {
 	}
 
 	/**
-	 * Registers this client with its server. The input of the verification code
-	 * is handled in the RegistrationHandler.
+	 * Requests a verification code for this client from the server.
 	 *
-	 * @param account
-	 *            the account that should get registered
-	 * @param handler
-	 *            the verification code input handler
-	 * @return <code>true</code> if and only if the registration was successful
 	 * @throws IOException
 	 *             if an error occurs during registering
 	 * @throws IllegalStateException
 	 *             if this Registrator has not been initialized
 	 */
-	public void register(final RegistrationCodeHandler handler) throws IOException {
+	public static void requestCode() throws IOException {
 		if (!initialized) {
 			throw new IllegalStateException("Registrator must be initialized by calling initialize() first.");
 		}
@@ -77,15 +72,40 @@ public class Registrator {
 		final TrustStore trustStore = TrustStore.getInstance();
 		final String password = AccountDataStore.getStringValue("password");
 
-		final String signalingKey = AccountDataStore.getStringValue("signalingKey");
-		final Integer installID = Integer.valueOf(AccountDataStore.getStringValue("installID"));
-
-		final TextSecureAccountManager accountManager =
-				new TextSecureAccountManager(url, trustStore, username, password);
+		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
+				password);
 
 		accountManager.requestSmsVerificationCode();
 
-		accountManager.verifyAccount(handler.getCode(), signalingKey, SMS_UNSUPPORTED, installID);
+		requested = true;
+	}
+
+	/**
+	 * Verifys
+	 *
+	 * @param verificationCode
+	 * @throws IOException
+	 */
+	public static void verify(final String verificationCode) throws IOException {
+		if (!initialized) {
+			throw new IllegalStateException("Registrator must be initialized by calling initialize() first.");
+		}
+		if (!requested) {
+			throw new IllegalStateException("Registrator must request a code before verifying.");
+		}
+
+		final String url = AccountDataStore.getStringValue("url");
+		final String username = AccountDataStore.getStringValue("username");
+		final TrustStore trustStore = TrustStore.getInstance();
+		final String password = AccountDataStore.getStringValue("password");
+
+		final String signalingKey = AccountDataStore.getStringValue("signalingKey");
+		final Integer installID = Integer.valueOf(AccountDataStore.getStringValue("installID"));
+
+		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
+				password);
+
+		accountManager.verifyAccount(verificationCode, signalingKey, SMS_UNSUPPORTED, installID);
 
 		accountManager.setGcmId(Optional.of("Not using GCM."));
 

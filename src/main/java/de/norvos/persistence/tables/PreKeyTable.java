@@ -100,7 +100,7 @@ public class PreKeyTable implements Table {
 		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
 
 			stmt.setInt(1, id);
-			stmt.setBytes(1, preKey.serialize());
+			stmt.setBytes(2, preKey.serialize());
 
 			stmt.execute();
 		}

@@ -44,7 +44,7 @@ public class IdentityKeyTable implements Table {
 	}
 
 	public IdentityKey getIdentity(final String name) throws SQLException {
-		final String query = "SELECT identity_key FROM identity_keystore WHERE name = ?";
+		final String query = "SELECT identity_key FROM identity_keystore WHERE user_id = ?";
 
 		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
 
@@ -54,8 +54,8 @@ public class IdentityKeyTable implements Table {
 				try {
 					return new IdentityKey(result.getBytes(1), 0);
 				} catch (final InvalidKeyException e) {
-					throw new SQLException("IdentityKeyTable: Value of identity_key for name [" + name
-							+ "] is invalid.", e);
+					throw new SQLException(
+							"IdentityKeyTable: Value of identity_key for user_id [" + name + "] is invalid.", e);
 				}
 			} else {
 				return null;

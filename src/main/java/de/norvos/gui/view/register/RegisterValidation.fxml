@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane alignment="CENTER" hgap="10.0" maxHeight="-Infinity" minHeight="-Infinity" minWidth="279.0" prefHeight="283.0" prefWidth="515.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.norvos.gui.controller.register.RegisterValidationController">
+	<columnConstraints>
+		<ColumnConstraints hgrow="NEVER" maxWidth="220.0" minWidth="10.0" prefWidth="220.0" />
+		<ColumnConstraints hgrow="NEVER" maxWidth="336.0" minWidth="10.0" prefWidth="265.0" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints maxHeight="208.0" minHeight="10.0" prefHeight="155.0" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="107.0" minHeight="0.0" prefHeight="20.0" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="119.0" minHeight="0.0" prefHeight="18.0" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="42.0" vgrow="SOMETIMES" />
+	</rowConstraints>
+	<children>
+		<FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="180.0" prefWidth="435.0" GridPane.columnSpan="2">
+			<children>
+				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Almost finished!">
+					<font>
+						<Font size="39.0" />
+					</font>
+				</Text>
+				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="You will now receive a SMS containing your personal verification code. Enter it below to complete your registration." textAlignment="CENTER" wrappingWidth="300.0" />
+			</children>
+		</FlowPane>
+		<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Verification Code:" wrappingWidth="122.3779296875" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+		<TextField fx:id="verificationCodeInput" maxWidth="170.0" minWidth="10.0" prefHeight="26.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+			<GridPane.margin>
+				<Insets right="50.0" />
+			</GridPane.margin>
+		</TextField>
+      <StackPane GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
+         <children>
+            <Text fx:id="errorAuthorization" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="That code is wrong." visible="false" StackPane.alignment="CENTER" />
+            <Text fx:id="errorRateLimit" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Slow down a bit!" visible="false" StackPane.alignment="CENTER" />
+            <Text fx:id="errorEmptyCode" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="...nope." visible="false" StackPane.alignment="CENTER" />
+         </children>
+      </StackPane>
+      <StackPane GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+         <children>
+      		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" text="Next">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Button>
+            <ProgressIndicator fx:id="spinningWheel" visible="false" />
+         </children>
+      </StackPane>
+	</children>
+	<padding>
+		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+	</padding>
+</GridPane>

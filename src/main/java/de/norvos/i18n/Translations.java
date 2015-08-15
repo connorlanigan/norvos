@@ -44,8 +44,8 @@ public class Translations {
 		String translated = "<I18N:" + resourceBundle + "." + stringId + ">";
 
 		try {
-			final String resourceBundlePath =
-					"de.norvos.i18n.strings." + resourceBundle.toLowerCase() + "." + resourceBundle;
+			final String resourceBundlePath = "de.norvos.i18n.strings." + resourceBundle.toLowerCase() + "."
+					+ resourceBundle;
 			final Locale locale = Locale.forLanguageTag(AccountDataStore.getStringValue("locale"));
 			final ResourceBundle res = ResourceBundle.getBundle(resourceBundlePath, locale);
 

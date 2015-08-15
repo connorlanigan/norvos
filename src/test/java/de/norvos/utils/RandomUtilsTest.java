@@ -16,13 +16,16 @@
  *******************************************************************************/
 package de.norvos.utils;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 public class RandomUtilsTest {
 
 	@Test
 	public void test() {
-		// TODO Implement Test
+		final int id = RandomUtils.generateInstallId();
+		assertTrue(id < Math.pow(2, 15) && id > 0);
 	}
 
 }
