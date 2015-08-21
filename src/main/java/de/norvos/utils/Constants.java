@@ -20,6 +20,7 @@ public class Constants {
 
 	public final static String FXML_LOCATION = "/de/norvos/gui/view/";
 	public final static String WINDOW_TITLE = "Norvos";
+	public final static String APPLICATON_NAME = "Norvos";
 
 	private Constants() {
 	}

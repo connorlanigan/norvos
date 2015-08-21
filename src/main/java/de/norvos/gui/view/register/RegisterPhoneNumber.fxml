@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 Copyright (C) 2015 Connor Lanigan (email: dev@connorlanigan.com)
 
@@ -15,6 +16,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
+
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.layout.*?>
@@ -54,7 +56,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		<Text fx:id="errorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Your number seems to be invalid." visible="false" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP" />
       <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="3">
          <children>
-      		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" text="Next">
+      		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" styleClass="button-dark" text="Next">
                <font>
                   <Font size="20.0" />
                </font>

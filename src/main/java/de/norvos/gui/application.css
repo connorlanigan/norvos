@@ -1,9 +1,48 @@
-/* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
-#registerPane{
-	-fx-background:white;
+#registerPane, #rootPane{
+	-fx-background-color:white;
 }
 
-.button {
+#menuBar{
+	-fx-background-color: linear-gradient(to bottom, #ffffff 0%,#f3f3f3 50%,#ededed 51%,#ffffff 100%);
+	-fx-effect: dropshadow( gaussian , rgba(0,0,0,0.4) , 10,0,0,0, 20);
+}
+
+#leftPane{
+	-fx-border-color: rgb(200, 200, 200);
+	-fx-border-insets: 0;
+	-fx-border-width: 0 1 0 0;
+	-fx-border-style: solid;
+}
+
+#searchClearButton{
+	-fx-background-radius:35px;
+	-fx-background-color:rgb(220, 220, 220);
+}
+#searchClearButton:hover{
+	-fx-background-color:rgb(200, 200, 200);
+}
+#searchClearButton:pressed{
+	-fx-background-color:rgb(160, 160, 160);
+}
+#searchClearButton:disabled{
+	visibility:hidden;
+}
+
+
+.contactListEntry{
+	-fx-cursor: hand;
+	-fx-background-color:white;
+}
+.contactListEntry:hover{
+	-fx-background-color:rgb(240, 240, 240);
+}
+.contactListEntry:pressed{
+	-fx-background-color:rgb(230, 230, 230);
+}
+
+
+
+.button-dark {
     -fx-background-color:
         #090a0c,
         linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),
@@ -17,12 +56,7 @@
     -fx-text-fill: linear-gradient(white, #d0d0d0);
     -fx-padding: 10 20 10 20;
 }
-
-#button{
-    -fx-font-size: 20px;
-}
-
-.button:pressed {
+.button-dark:pressed {
 	-fx-background-color:
         #090a0c,
         linear-gradient(#38424b 0%, #1f2429 20%, #191d22 100%),

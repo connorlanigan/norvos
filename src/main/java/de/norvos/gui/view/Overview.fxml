@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.FlowPane?>
+<?import de.norvos.gui.components.ContactListEntry?>
+
+<BorderPane fx:id="rootPane" prefHeight="600.0" prefWidth="1066.0"
+	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="de.norvos.gui.controller.OverviewController">
+	<center>
+		<BorderPane fx:id="contentPane" prefHeight="200.0"
+			prefWidth="200.0" BorderPane.alignment="CENTER">
+			<center>
+				<BorderPane fx:id="centralPane" prefHeight="200.0"
+					prefWidth="200.0" BorderPane.alignment="CENTER">
+					<bottom>
+						<TextArea fx:id="messageInput" minHeight="80.0"
+							prefHeight="80.0" prefWidth="200.0" promptText="Type a message..."
+							wrapText="true" BorderPane.alignment="CENTER">
+							<BorderPane.margin>
+								<Insets />
+							</BorderPane.margin>
+						</TextArea>
+					</bottom>
+					<center>
+						<VBox fx:id="messageList" prefHeight="200.0" prefWidth="100.0"
+							BorderPane.alignment="CENTER">
+							<children>
+								<Label
+									text="Hallo abcdeas asdfadsf asdfasdfsfd sdgsfdgs gsfdg sfg sdfgsdfg sdfg sfdg fsdfgsdfg "
+									wrapText="true" />
+							</children>
+							<BorderPane.margin>
+								<Insets />
+							</BorderPane.margin>
+							<padding>
+								<Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+							</padding>
+						</VBox>
+					</center>
+					<top>
+						<HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0"
+							BorderPane.alignment="CENTER">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Connor Lanigan">
+									<font>
+										<Font size="20.0" />
+									</font>
+									<HBox.margin>
+										<Insets right="10.0" />
+									</HBox.margin>
+								</Text>
+								<CheckBox contentDisplay="CENTER" disable="true"
+									mnemonicParsing="false" selected="true" text="Verified"
+									textFill="#06f50a">
+									<tooltip>
+										<Tooltip
+											text="You can be sure that your messages to this contact are secured." />
+									</tooltip>
+								</CheckBox>
+							</children>
+						</HBox>
+					</top>
+					<BorderPane.margin>
+						<Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+					</BorderPane.margin>
+				</BorderPane>
+			</center>
+			<BorderPane.margin>
+				<Insets />
+			</BorderPane.margin>
+			<left>
+				<BorderPane prefHeight="200.0" prefWidth="250.0"
+					BorderPane.alignment="CENTER">
+					<top>
+						<HBox fx:id="searchBar" alignment="CENTER" prefWidth="200.0"
+							BorderPane.alignment="CENTER">
+							<children>
+								<TextField fx:id="searchInput" promptText="Search..."
+									HBox.hgrow="ALWAYS" onKeyReleased="#searchInputKeyReleased">
+									<opaqueInsets>
+										<Insets right="80.0" />
+									</opaqueInsets>
+								</TextField>
+								<Button id="searchClearButton" fx:id="searchClearButton"
+									alignment="CENTER_RIGHT" mnemonicParsing="false" text="X"
+									onAction="#clearSearchBar" disable="true">
+									<HBox.margin>
+										<Insets left="5.0" />
+									</HBox.margin>
+									<font>
+										<Font size="10.0" />
+									</font>
+								</Button>
+							</children>
+
+							<BorderPane.margin>
+								<Insets bottom="10.0" />
+							</BorderPane.margin>
+						</HBox>
+					</top>
+					<center>
+						<VBox fx:id="contactList" prefHeight="200.0" prefWidth="400.0"
+							BorderPane.alignment="CENTER" spacing="5.0">
+							<children>
+
+								<ContactListEntry newMessage="false" name="Connor Lanigan"
+									lastMessage="That's a wonderful picture you sent me!" />
+								<ContactListEntry newMessage="true" name="Connor Lanigan"
+									lastMessage="That's a wonderful picture you sent me!" />
+								<ContactListEntry newMessage="true" name="Connor Lanigan"
+									lastMessage="That's a wonderful picture you sent me!" />
+
+							</children>
+						</VBox>
+					</center>
+					<BorderPane.margin>
+						<Insets />
+					</BorderPane.margin>
+
+					<padding>
+						<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+					</padding>
+				</BorderPane>
+			</left>
+		</BorderPane>
+	</center>
+	<BorderPane.margin>
+		<Insets />
+	</BorderPane.margin>
+	<top>
+		<BorderPane id="menuBar" fx:id="menuBar"
+			BorderPane.alignment="CENTER">
+			<left>
+				<HBox fx:id="menuBarLeft" BorderPane.alignment="CENTER">
+					<children>
+						<Button fx:id="quitButton" mnemonicParsing="false" text="Quit"
+							onAction="#handleQuitButton">
+							<HBox.margin>
+								<Insets right="10.0" />
+							</HBox.margin>
+						</Button>
+						<Button fx:id="addContactButton" mnemonicParsing="false"
+							text="Add a Contact">
+							<HBox.margin>
+								<Insets />
+							</HBox.margin>
+						</Button>
+					</children>
+					<BorderPane.margin>
+						<Insets />
+					</BorderPane.margin>
+				</HBox>
+			</left>
+			<right>
+				<HBox fx:id="menuBarRight" BorderPane.alignment="CENTER">
+					<children>
+						<Button fx:id="helpButton" mnemonicParsing="false" text="Help">
+							<HBox.margin>
+								<Insets />
+							</HBox.margin>
+						</Button>
+					</children>
+				</HBox>
+			</right>
+			<padding>
+				<Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+			</padding>
+			<BorderPane.margin>
+				<Insets />
+			</BorderPane.margin>
+		</BorderPane>
+	</top>
+</BorderPane>

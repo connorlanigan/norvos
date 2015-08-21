@@ -32,7 +32,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class MainWindow extends Application {
+public class TestWindow extends Application {
 
 	public static void main(final String[] args) {
 		Security.addProvider(new BouncyCastleProvider());
@@ -64,14 +64,15 @@ public class MainWindow extends Application {
 		try {
 			parent = loader.load();
 			final T controller = loader.<T> getController();
-			final Scene scene = new Scene(parent, 600, 400);
+			final Scene scene = new Scene(parent, 1060, 600);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			return controller;
 		} catch (final IOException e) {
 			// TODO logging
-			System.err.println("FXML could not be loaded: [" + fxml + "]");
+			//System.err.println("FXML could not be loaded: [" + fxml + "]");
+			e.printStackTrace();
 			System.exit(1);
 			return null;
 		}
@@ -83,18 +84,9 @@ public class MainWindow extends Application {
 		primaryStage.setTitle(Constants.WINDOW_TITLE);
 		primaryStage.centerOnScreen();
 
-		final boolean hasToRegister = !"true".equals(AccountDataStore.getStringValue("setupFinished"));
-		if (hasToRegister) {
-			initializeDB();
-			Registrator.initialize();
-			loadFXML("register/Register.fxml");
-		} else {
-			loadFXML("Overview.fxml");
-		}
-	}
+		initializeDB();
 
-	public void focusWindow(){
-		primaryStage.requestFocus();
+		loadFXML("Overview.fxml");
 	}
 
 }
