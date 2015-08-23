@@ -14,15 +14,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.utils;
+package de.norvos.eventbus.events;
 
-public class Constants {
+import de.norvos.eventbus.Event;
 
-	public final static String APPLICATON_NAME = "Norvos";
-	public final static String FXML_LOCATION = "/de/norvos/gui/view/";
-	public final static String WINDOW_TITLE = "Norvos";
+public class MessageSentEvent implements Event {
 
-	private Constants() {
+	private final String message;
+	private final String receiver;
+	private final int timestamp;
+
+	public MessageSentEvent(final String receiver, final String message, final int timestamp) {
+		this.receiver = receiver;
+		this.message = message;
+		this.timestamp = timestamp;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getReceiver() {
+		return receiver;
+	}
+
+	public int getTimestamp() {
+		return timestamp;
 	}
 
 }

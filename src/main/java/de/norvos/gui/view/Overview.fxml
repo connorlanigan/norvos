@@ -8,33 +8,28 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.FlowPane?>
-<?import de.norvos.gui.components.ContactListEntry?>
 
-<BorderPane fx:id="rootPane" prefHeight="600.0" prefWidth="1066.0"
-	xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="de.norvos.gui.controller.OverviewController">
+<?import de.norvos.gui.components.ContactListEntry?>
+<?import de.norvos.gui.components.SingleMessage?>
+
+<BorderPane fx:id="rootPane" prefHeight="600.0" prefWidth="1066.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.norvos.gui.controller.OverviewController">
 	<center>
-		<BorderPane fx:id="contentPane" prefHeight="200.0"
-			prefWidth="200.0" BorderPane.alignment="CENTER">
+		<BorderPane fx:id="contentPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<center>
-				<BorderPane fx:id="centralPane" prefHeight="200.0"
-					prefWidth="200.0" BorderPane.alignment="CENTER">
+				<BorderPane fx:id="centralPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 					<bottom>
-						<TextArea fx:id="messageInput" minHeight="80.0"
-							prefHeight="80.0" prefWidth="200.0" promptText="Type a message..."
-							wrapText="true" BorderPane.alignment="CENTER">
+						<TextArea fx:id="messageInput" minHeight="80.0" prefHeight="80.0" prefWidth="200.0" promptText="Type a message..." wrapText="true" BorderPane.alignment="CENTER">
 							<BorderPane.margin>
 								<Insets />
 							</BorderPane.margin>
 						</TextArea>
 					</bottom>
 					<center>
-						<VBox fx:id="messageList" prefHeight="200.0" prefWidth="100.0"
-							BorderPane.alignment="CENTER">
+						<VBox fx:id="messageList" prefHeight="200.0" prefWidth="100.0" spacing="5" BorderPane.alignment="CENTER">
 							<children>
-								<Label
-									text="Hallo abcdeas asdfadsf asdfasdfsfd sdgsfdgs gsfdg sfg sdfgsdfg sdfg sfdg fsdfgsdfg "
-									wrapText="true" />
+								<SingleMessage message="Hi! This is a message from old times!" time="946684800000" />
+								<SingleMessage message="This message is from right this year!" sent="true" time="1438473600000" />
+								<SingleMessage message="Hi! How are you doing today?" time="1440354406000" />
 							</children>
 							<BorderPane.margin>
 								<Insets />
@@ -45,8 +40,7 @@
 						</VBox>
 					</center>
 					<top>
-						<HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0"
-							BorderPane.alignment="CENTER">
+						<HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 							<children>
 								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Connor Lanigan">
 									<font>
@@ -56,12 +50,9 @@
 										<Insets right="10.0" />
 									</HBox.margin>
 								</Text>
-								<CheckBox contentDisplay="CENTER" disable="true"
-									mnemonicParsing="false" selected="true" text="Verified"
-									textFill="#06f50a">
+								<CheckBox contentDisplay="CENTER" disable="true" mnemonicParsing="false" selected="true" text="Verified" textFill="#06f50a">
 									<tooltip>
-										<Tooltip
-											text="You can be sure that your messages to this contact are secured." />
+										<Tooltip text="You can be sure that your messages to this contact are secured." />
 									</tooltip>
 								</CheckBox>
 							</children>
@@ -76,21 +67,16 @@
 				<Insets />
 			</BorderPane.margin>
 			<left>
-				<BorderPane prefHeight="200.0" prefWidth="250.0"
-					BorderPane.alignment="CENTER">
+				<BorderPane prefHeight="200.0" prefWidth="250.0" BorderPane.alignment="CENTER">
 					<top>
-						<HBox fx:id="searchBar" alignment="CENTER" prefWidth="200.0"
-							BorderPane.alignment="CENTER">
+						<HBox fx:id="searchBar" alignment="CENTER" prefWidth="200.0" BorderPane.alignment="CENTER">
 							<children>
-								<TextField fx:id="searchInput" promptText="Search..."
-									HBox.hgrow="ALWAYS" onKeyReleased="#searchInputKeyReleased">
+								<TextField fx:id="searchInput" onKeyReleased="#searchInputKeyReleased" promptText="Search..." HBox.hgrow="ALWAYS">
 									<opaqueInsets>
 										<Insets right="80.0" />
 									</opaqueInsets>
 								</TextField>
-								<Button id="searchClearButton" fx:id="searchClearButton"
-									alignment="CENTER_RIGHT" mnemonicParsing="false" text="X"
-									onAction="#clearSearchBar" disable="true">
+								<Button id="searchClearButton" fx:id="searchClearButton" alignment="CENTER_RIGHT" disable="true" mnemonicParsing="false" onAction="#clearSearchBar" text="X">
 									<HBox.margin>
 										<Insets left="5.0" />
 									</HBox.margin>
@@ -106,20 +92,26 @@
 						</HBox>
 					</top>
 					<center>
-						<VBox fx:id="contactList" prefHeight="200.0" prefWidth="400.0"
-							BorderPane.alignment="CENTER" spacing="5.0">
+						<VBox fx:id="contactList" prefHeight="200.0" prefWidth="400.0" spacing="5.0" BorderPane.alignment="CENTER">
 							<children>
 
-								<ContactListEntry newMessage="false" name="Connor Lanigan"
-									lastMessage="That's a wonderful picture you sent me!" />
-								<ContactListEntry newMessage="true" name="Connor Lanigan"
-									lastMessage="That's a wonderful picture you sent me!" />
-								<ContactListEntry newMessage="true" name="Connor Lanigan"
-									lastMessage="That's a wonderful picture you sent me!" />
+								<ContactListEntry lastMessage="Hi! How are you doing today?" name="Connor Lanigan" newMessage="false" />
+								<ContactListEntry lastMessage="I want to eat a cake!" name="Léanne" newMessage="true" />
+								<ContactListEntry lastMessage="I got a great idea for this weekend:" name="Björn" newMessage="false" />
 
 							</children>
 						</VBox>
 					</center>
+					<bottom>
+						<Button fx:id="addContactButton" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="Add a Contact">
+							<HBox.margin>
+								<Insets />
+							</HBox.margin>
+                     <BorderPane.margin>
+                        <Insets top="10.0" />
+                     </BorderPane.margin>
+						</Button>
+					</bottom>
 					<BorderPane.margin>
 						<Insets />
 					</BorderPane.margin>
@@ -135,23 +127,16 @@
 		<Insets />
 	</BorderPane.margin>
 	<top>
-		<BorderPane id="menuBar" fx:id="menuBar"
-			BorderPane.alignment="CENTER">
+		<BorderPane id="menuBar" fx:id="menuBar" BorderPane.alignment="CENTER">
 			<left>
 				<HBox fx:id="menuBarLeft" BorderPane.alignment="CENTER">
 					<children>
-						<Button fx:id="quitButton" mnemonicParsing="false" text="Quit"
-							onAction="#handleQuitButton">
+						<Button fx:id="quitButton" mnemonicParsing="false" onAction="#handleQuitButton" text="Quit">
 							<HBox.margin>
 								<Insets right="10.0" />
 							</HBox.margin>
 						</Button>
-						<Button fx:id="addContactButton" mnemonicParsing="false"
-							text="Add a Contact">
-							<HBox.margin>
-								<Insets />
-							</HBox.margin>
-						</Button>
+
 					</children>
 					<BorderPane.margin>
 						<Insets />

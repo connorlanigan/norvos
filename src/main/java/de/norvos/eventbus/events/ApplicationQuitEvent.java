@@ -14,15 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.utils;
+package de.norvos.eventbus.events;
 
-public class Constants {
+import de.norvos.eventbus.Event;
 
-	public final static String APPLICATON_NAME = "Norvos";
-	public final static String FXML_LOCATION = "/de/norvos/gui/view/";
-	public final static String WINDOW_TITLE = "Norvos";
-
-	private Constants() {
-	}
+public class ApplicationQuitEvent implements Event {
 
 }

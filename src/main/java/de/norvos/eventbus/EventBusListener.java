@@ -14,15 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.utils;
+package de.norvos.eventbus;
 
-public class Constants {
+/**
+ * An interface of all listeners that can be registered with the
+ * {@link de.norvos.eventbus.EventBus EventBus}.
+ *
+ */
+public interface EventBusListener {
 
-	public final static String APPLICATON_NAME = "Norvos";
-	public final static String FXML_LOCATION = "/de/norvos/gui/view/";
-	public final static String WINDOW_TITLE = "Norvos";
-
-	private Constants() {
-	}
+	/**
+	 * Handles the notification of a new event.<br>
+	 * <br>
+	 * This method blocks the EventBus. Thus, if an implementation of this
+	 * method needs some time to execute, consider running it in a separate
+	 * thread.
+	 *
+	 * @param event
+	 *            the event that has occured
+	 */
+	public void update(Event event);
 
 }

@@ -29,6 +29,30 @@
 }
 
 
+.message{
+	-fx-border-radius:5px;
+}
+
+.sentMessage{
+	-fx-background-color:#FFE20D;
+	-fx-border-color: rgb(130, 130, 130);
+}
+.receivedMessage{
+	-fx-border-color: rgb(200, 200, 200);
+}
+
+.messageTimestamp{
+	-fx-text-fill:rgb(170, 170, 170);
+}
+
+.message:hover .messageTimestamp{
+	-fx-text-fill:rgb(80, 80, 80);
+}
+
+#contactList{
+	-fx-border-color: transparent transparent rgb(200, 200, 200) transparent;
+}
+
 .contactListEntry{
 	-fx-cursor: hand;
 	-fx-background-color:white;

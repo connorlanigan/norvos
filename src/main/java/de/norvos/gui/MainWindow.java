@@ -44,6 +44,10 @@ public class MainWindow extends Application {
 
 	private Stage primaryStage;
 
+	public void focusWindow() {
+		primaryStage.requestFocus();
+	}
+
 	private void initializeDB() {
 		AccountDataStore.storeStringValue("url", "https://textsecure-service.whispersystems.org");
 	}
@@ -91,10 +95,6 @@ public class MainWindow extends Application {
 		} else {
 			loadFXML("Overview.fxml");
 		}
-	}
-
-	public void focusWindow(){
-		primaryStage.requestFocus();
 	}
 
 }

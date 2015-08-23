@@ -24,7 +24,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 
 import de.norvos.account.AccountDataStore;
-import de.norvos.account.Registrator;
 import de.norvos.utils.Constants;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -71,7 +70,7 @@ public class TestWindow extends Application {
 			return controller;
 		} catch (final IOException e) {
 			// TODO logging
-			//System.err.println("FXML could not be loaded: [" + fxml + "]");
+			// System.err.println("FXML could not be loaded: [" + fxml + "]");
 			e.printStackTrace();
 			System.exit(1);
 			return null;
