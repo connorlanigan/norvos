@@ -40,21 +40,57 @@ import de.norvos.account.AccountDataStore;
 import de.norvos.axolotl.AxolotlStore;
 import de.norvos.axolotl.TrustStore;
 import de.norvos.log.Errors;
+import javafx.concurrent.Task;
 
-public class MessageListener implements Runnable {
+public class MessageListener extends Task<Void> {
+	final private String url;
+	final private String username;
+	final private TrustStore trustStore;
+	final private String password;
+	final private String signalingKey;
 
-	public interface MessageCallback {
-		public void messageListeningException(Exception e);
-
-		public void messageReceived(TextSecureDataMessage dataMessage, TextSecureEnvelope envelope);
+	public MessageListener() {
+		url = AccountDataStore.getStringValue("url");
+		username = AccountDataStore.getStringValue("username");
+		trustStore = TrustStore.getInstance();
+		password = AccountDataStore.getStringValue("password");
+		signalingKey = AccountDataStore.getStringValue("signalingKey");
 	}
 
-	private final MessageCallback callback;
+	protected Void call() {
+		final TextSecureMessageReceiver messageReceiver = new TextSecureMessageReceiver(url, trustStore, username,
+				password, signalingKey);
+		TextSecureMessagePipe messagePipe = messageReceiver.createMessagePipe();
 
-	private final boolean listeningForMessages = true;
+		while (!isCancelled()) {
+			final TextSecureEnvelope envelope;
+			try {
+				envelope = messagePipe.read(30, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				continue;
+			}
+			final TextSecureCipher cipher = new TextSecureCipher(envelope.getSourceAddress(),
+					AxolotlStore.getInstance());
+			TextSecureContent content;
+			try {
+				content = cipher.decrypt(envelope);
+				final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
 
-	public MessageListener(final MessageCallback callback) {
-		this.callback = callback;
+			} catch (InvalidVersionException | InvalidMessageException | InvalidKeyException | DuplicateMessageException
+					| InvalidKeyIdException | LegacyMessageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UntrustedIdentityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSessionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		return null;
 	}
 
 	@Override
@@ -109,7 +145,7 @@ public class MessageListener implements Runnable {
 				| LegacyMessageException | NoSessionException e) {
 			// TODO Reorganize try into the while-loop and handles message
 			// errors in a sane way
-			callback.messageListeningException(e);
+			// callback.messageListeningException(e);
 		} finally {
 			if (messagePipe != null) {
 				messagePipe.shutdown();
