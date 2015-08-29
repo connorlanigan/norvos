@@ -2,7 +2,9 @@
 
 Norvos is an application to send and receive encrypted chat messages. It is compatible with [TextSecure](https://whispersystems.org/), which enables people to communicate securely with their mobile phones all over the world.
 
-The project website is located at [https://norvos.de](https://norvos.de).
+The project website is located at https://norvos.de.
+
+The development blog, where updates and other announcements are placed, is located at https://blog.norvos.de
 
 
 
