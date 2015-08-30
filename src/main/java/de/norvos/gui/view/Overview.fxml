@@ -95,9 +95,9 @@
 						<VBox fx:id="contactList" prefHeight="200.0" prefWidth="400.0" spacing="5.0" BorderPane.alignment="CENTER">
 							<children>
 
-								<ContactListEntry lastMessage="Hi! How are you doing today?" name="Connor Lanigan" newMessage="false" />
+								<ContactListEntry lastMessage="Hi! How are you doing today?" name="Connor" newMessage="false" />
 								<ContactListEntry lastMessage="I want to eat a cake!" name="Léanne" newMessage="true" />
-								<ContactListEntry lastMessage="I got a great idea for this weekend:" name="Björn" newMessage="false" />
+								<ContactListEntry lastMessage="I got a great idea for this weekend: let's go swimming!" name="Björn" newMessage="false" />
 
 							</children>
 						</VBox>

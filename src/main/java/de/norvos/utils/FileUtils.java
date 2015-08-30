@@ -28,7 +28,7 @@ public class FileUtils {
 	}
 
 	public static Path getDataDirectory() {
-		final Path directory = FileSystems.getDefault().getPath(System.getProperty("user.home"), "Norvos");
+		final Path directory = FileSystems.getDefault().getPath(System.getProperty("user.home"), ".norvos");
 		directory.toFile().mkdirs();
 		try {
 			Files.setAttribute(directory, "dos:hidden", true);

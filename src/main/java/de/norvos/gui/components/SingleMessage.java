@@ -8,40 +8,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 
 public class SingleMessage extends BorderPane {
 
-	private final static String baseClass="message";
+	private final static String baseClass = "message";
 
 	@FXML
 	private Label message;
 
 	@FXML
-	private Label time;
-
-	@FXML
 	private BorderPane messageBox;
 
-	private Long timestamp;
 	private boolean sent;
 
-	public String getSent() {
-		return String.valueOf(sent);
-	}
-
-	public void setSent(String sent) {
-		boolean pSent = Boolean.valueOf(sent);
-		this.sent = pSent;
-
-		String cssClass;
-		if(pSent){
-			cssClass = "sentMessage";
-		}else{
-			cssClass = "receivedMessage";
-		}
-		messageBox.getStyleClass().setAll(cssClass, baseClass);
-	}
+	@FXML
+	private Label time;
+	private Long timestamp;
 
 	public SingleMessage() {
 		final FXMLLoader fxmlLoader = new FXMLLoader(
@@ -58,22 +40,39 @@ public class SingleMessage extends BorderPane {
 		}
 	}
 
-	public String getTime() {
-		return String.valueOf(timestamp);
-	}
-
-	public void setTime(String timestamp) {
-		this.timestamp = Long.valueOf(timestamp);
-		String string = TimeUtils.formatDate(this.timestamp);
-		time.setText(string);
-	}
-
 	public String getMessage() {
 		return message.getText();
 	}
 
-	public void setMessage(String message) {
+	public String getSent() {
+		return String.valueOf(sent);
+	}
+
+	public String getTime() {
+		return String.valueOf(timestamp);
+	}
+
+	public void setMessage(final String message) {
 		this.message.setText(message);
+	}
+
+	public void setSent(final String sent) {
+		final boolean pSent = Boolean.valueOf(sent);
+		this.sent = pSent;
+
+		String cssClass;
+		if (pSent) {
+			cssClass = "sentMessage";
+		} else {
+			cssClass = "receivedMessage";
+		}
+		messageBox.getStyleClass().setAll(cssClass, baseClass);
+	}
+
+	public void setTime(final String timestamp) {
+		this.timestamp = Long.valueOf(timestamp);
+		final String string = TimeUtils.formatDate(this.timestamp);
+		time.setText(string);
 	}
 
 }

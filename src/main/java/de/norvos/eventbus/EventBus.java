@@ -39,7 +39,7 @@ public class EventBus {
 
 	/**
 	 * Registers a new listener to be notified (usually <b>this</b>).
-	 * 
+	 *
 	 * @param event
 	 *            the type of event to listen for
 	 * @param listener
@@ -52,7 +52,7 @@ public class EventBus {
 	/**
 	 * Sends an event and distributes it to all registered listeners. The
 	 * listeners are notified in the order in which they were registered.
-	 * 
+	 *
 	 * @param event
 	 *            the event to distribute
 	 */
@@ -64,7 +64,7 @@ public class EventBus {
 
 	/**
 	 * Removes a listener from all events.
-	 * 
+	 *
 	 * @param listener
 	 *            the listener to remove
 	 */

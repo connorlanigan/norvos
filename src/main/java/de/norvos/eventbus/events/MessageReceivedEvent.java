@@ -23,20 +23,20 @@ import de.norvos.eventbus.Event;
 
 public class MessageReceivedEvent implements Event {
 
-	private final TextSecureDataMessage message;
 	private final TextSecureEnvelope envelope;
+	private final TextSecureDataMessage message;
 
 	public MessageReceivedEvent(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
 		this.envelope = envelope;
 		this.message = message;
 	}
 
-	public TextSecureDataMessage getMessage() {
-		return message;
-	}
-
 	public TextSecureEnvelope getEnvelope() {
 		return envelope;
+	}
+
+	public TextSecureDataMessage getMessage() {
+		return message;
 	}
 
 }

@@ -26,44 +26,45 @@ public class MessageDecrypter {
 	private static BlockingQueue<TextSecureEnvelope> queue;
 	private static boolean running;
 
-	public static void addEncryptedMessage(TextSecureEnvelope envelope) {
+	public static void addEncryptedMessage(final TextSecureEnvelope envelope) {
 		while (true) {
 			try {
 				queue.put(envelope);
 				return;
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 			}
 		}
 	}
 
-	synchronized public static void start(){
-		if (running)
+	synchronized public static void start() {
+		if (running) {
 			throw new IllegalStateException("MessageDecrypter is already running!");
+		}
 
-		Task<Void> task = new Task<Void>() {
+		final Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() {
 				while (!isCancelled()) {
 					try {
-						TextSecureEnvelope envelope = queue.take();
+						final TextSecureEnvelope envelope = queue.take();
 						final TextSecureCipher cipher = new TextSecureCipher(envelope.getSourceAddress(),
 								AxolotlStore.getInstance());
-						TextSecureContent content = cipher.decrypt(envelope);
+						final TextSecureContent content = cipher.decrypt(envelope);
 						final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
 						if (dataMessage.isPresent()) {
 							EventBus.sendEvent(new MessageReceivedEvent(envelope, dataMessage.get()));
-						}else{
-							//TODO log synchronize-message
+						} else {
+							// TODO log synchronize-message
 						}
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						continue;
 					} catch (InvalidVersionException | InvalidMessageException | InvalidKeyException
 							| DuplicateMessageException | InvalidKeyIdException | LegacyMessageException e) {
 						// TODO log this incident
-					} catch (UntrustedIdentityException e) {
+					} catch (final UntrustedIdentityException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} catch (NoSessionException e) {
+					} catch (final NoSessionException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}

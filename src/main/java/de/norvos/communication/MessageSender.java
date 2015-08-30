@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.AbstractMap;
 
 import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureMessageSender;
@@ -32,13 +31,10 @@ import org.whispersystems.textsecure.api.push.TextSecureAddress;
 import de.norvos.account.AccountDataStore;
 import de.norvos.axolotl.AxolotlStore;
 import de.norvos.axolotl.TrustStore;
-import de.norvos.observers.Notifiable;
-import de.norvos.observers.NotificatorMap;
-import de.norvos.observers.Observable;
+import de.norvos.eventbus.EventBus;
+import de.norvos.eventbus.events.MessageSentEvent;
 
-public class MessageSender implements Observable {
-
-	protected static NotificatorMap notifiables = new NotificatorMap();
+public class MessageSender {
 
 	private static TextSecureAttachment createAttachment(final File attachmentFile) throws FileNotFoundException {
 		final FileInputStream attachmentStream = new FileInputStream(attachmentFile);
@@ -57,7 +53,7 @@ public class MessageSender implements Observable {
 	}
 
 	private static String getMimeType(final File file) {
-		// TODO Communicator: use mime-type library
+		// TODO use mime-type library
 		return "application/octet-stream";
 	}
 
@@ -67,8 +63,7 @@ public class MessageSender implements Observable {
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message)
 				.withAttachment(createAttachment(attachment)).build();
 		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		notifiables.notify("messageSent",
-				new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
+		EventBus.sendEvent(new MessageSentEvent(recipientId, message, System.currentTimeMillis(), attachment));
 	}
 
 	public static void sendTextMessage(final String recipientId, final String message)
@@ -76,18 +71,7 @@ public class MessageSender implements Observable {
 		System.err.println("About to send message: " + message);
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
 		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		notifiables.notify("messageSent",
-				new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
-	}
-
-	@Override
-	public void register(final Notifiable n, final String event) {
-		notifiables.register(event, n);
-	}
-
-	@Override
-	public void unregister(final Notifiable n) {
-		notifiables.unregister(n);
+		EventBus.sendEvent(new MessageSentEvent(recipientId, message, System.currentTimeMillis(), null));
 	}
 
 }

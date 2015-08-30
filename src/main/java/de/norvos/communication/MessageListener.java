@@ -43,11 +43,11 @@ import de.norvos.log.Errors;
 import javafx.concurrent.Task;
 
 public class MessageListener extends Task<Void> {
-	final private String url;
-	final private String username;
-	final private TrustStore trustStore;
 	final private String password;
 	final private String signalingKey;
+	final private TrustStore trustStore;
+	final private String url;
+	final private String username;
 
 	public MessageListener() {
 		url = AccountDataStore.getStringValue("url");
@@ -57,16 +57,17 @@ public class MessageListener extends Task<Void> {
 		signalingKey = AccountDataStore.getStringValue("signalingKey");
 	}
 
+	@Override
 	protected Void call() {
 		final TextSecureMessageReceiver messageReceiver = new TextSecureMessageReceiver(url, trustStore, username,
 				password, signalingKey);
-		TextSecureMessagePipe messagePipe = messageReceiver.createMessagePipe();
+		final TextSecureMessagePipe messagePipe = messageReceiver.createMessagePipe();
 
 		while (!isCancelled()) {
 			final TextSecureEnvelope envelope;
 			try {
 				envelope = messagePipe.read(30, TimeUnit.SECONDS);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				continue;
 			}
 			final TextSecureCipher cipher = new TextSecureCipher(envelope.getSourceAddress(),
@@ -74,16 +75,16 @@ public class MessageListener extends Task<Void> {
 			TextSecureContent content;
 			try {
 				content = cipher.decrypt(envelope);
-				final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
+				content.getDataMessage();
 
 			} catch (InvalidVersionException | InvalidMessageException | InvalidKeyException | DuplicateMessageException
 					| InvalidKeyIdException | LegacyMessageException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (UntrustedIdentityException e) {
+			} catch (final UntrustedIdentityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (NoSessionException e) {
+			} catch (final NoSessionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -95,6 +96,8 @@ public class MessageListener extends Task<Void> {
 
 	@Override
 	public void run() {
+		// This part needs restructuring.
+		/*
 		Errors.debug("##### Listening for messages!");
 
 		final String url = AccountDataStore.getStringValue("url");
@@ -150,7 +153,7 @@ public class MessageListener extends Task<Void> {
 			if (messagePipe != null) {
 				messagePipe.shutdown();
 			}
-		}
+		} */
 
 	}
 

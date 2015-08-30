@@ -16,18 +16,22 @@
  *******************************************************************************/
 package de.norvos.eventbus.events;
 
+import java.io.File;
+
 import de.norvos.eventbus.Event;
 
 public class MessageSentEvent implements Event {
 
 	private final String message;
 	private final String receiver;
-	private final int timestamp;
+	private final long timestamp;
+	private final File attachment;
 
-	public MessageSentEvent(final String receiver, final String message, final int timestamp) {
+	public MessageSentEvent(final String receiver, final String message, final long timestamp, final File attachment) {
 		this.receiver = receiver;
 		this.message = message;
 		this.timestamp = timestamp;
+		this.attachment = attachment;
 	}
 
 	public String getMessage() {
@@ -38,8 +42,12 @@ public class MessageSentEvent implements Event {
 		return receiver;
 	}
 
-	public int getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
+	}
+
+	public File getAttachment(){
+		return attachment;
 	}
 
 }

@@ -41,5 +41,6 @@ public class AccountDataStoreTest {
 
 		assertEquals("overwrittenTestString", AccountDataStore.getStringValue("testKey"));
 		assertEquals("secondTestString", AccountDataStore.getStringValue("secondTestKey"));
+
 	}
 }

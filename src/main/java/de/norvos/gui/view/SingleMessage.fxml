@@ -9,15 +9,14 @@
 
 <fx:root fx:id="messageBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="30.0" minWidth="200.0" type="BorderPane" HBox.hgrow="ALWAYS" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<center>
-		<Label fx:id="message" styleClass="messageContent" text="Hallo! Ich bin eine Nachricht! Ich kann sehr lang sein." wrapText="true" BorderPane.alignment="CENTER_LEFT">
+		<Label fx:id="message" styleClass="messageContent" wrapText="true" BorderPane.alignment="CENTER_LEFT">
 			<HBox.margin>
 				<Insets right="10.0" />
 			</HBox.margin>
 		</Label>
 	</center>
 	<right>
-		<Label fx:id="time" alignment="CENTER" contentDisplay="CENTER" maxWidth="85.0" minWidth="85.0" prefWidth="85.0" styleClass="messageTimestamp" text="1970-01-01&#10;10:10" textAlignment="CENTER" />
-
+		<Label fx:id="time" alignment="CENTER" contentDisplay="CENTER" maxWidth="85.0" minWidth="85.0" prefWidth="85.0" styleClass="messageTimestamp" textAlignment="CENTER" />
 	</right>
 	<padding>
 		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

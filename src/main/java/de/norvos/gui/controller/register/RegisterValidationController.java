@@ -68,7 +68,7 @@ public class RegisterValidationController {
 					}
 
 					final String verificationCode = verificationCodeInput.getText();
-					if (verificationCode.matches(".*\\w.*")) {
+					if (verificationCode.matches(".*\\w.*")) { // do not accept whitespace
 
 						Registrator.verify(verificationCode);
 
