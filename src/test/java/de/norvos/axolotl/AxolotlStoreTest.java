@@ -16,7 +16,10 @@
  *******************************************************************************/
 package de.norvos.axolotl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
@@ -32,51 +35,66 @@ import org.whispersystems.libaxolotl.state.SessionRecord;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
-import de.norvos.axolotl.NorvosAxolotlStore;
-
 public class AxolotlStoreTest {
-
-	NorvosAxolotlStore store;
-	NorvosAxolotlStore secondStore;
 
 	int ANY_NUMBER;
 
-	@Before
-	public void setUp() throws Exception {
-		store = new NorvosAxolotlStore();
-		Thread.sleep(10);
-		secondStore = new NorvosAxolotlStore();
-		Random r = new Random();
-		ANY_NUMBER = r.nextInt(10) + 1;
+	AxolotlStore store;
+
+	@Test
+	public void contains_storePreKey() {
+		final PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
+		store.storePreKey(preKey.getId(), preKey);
+		assertTrue(store.containsPreKey(preKey.getId()));
+		assertFalse(store.containsPreKey(preKey.getId() + 1));
 	}
 
 	@Test
-	public void getIdentityKeyPair() {
-		assertEquals(store.getIdentityKeyPair(), store.getIdentityKeyPair());
-		assertNotEquals(store.getIdentityKeyPair(), secondStore.getIdentityKeyPair());
-	}
-
-	@Test
-	public void getLocalRegistrationId() {
-		assertEquals(store.getLocalRegistrationId(), store.getLocalRegistrationId());
-		assertNotEquals(store.getLocalRegistrationId(), secondStore.getLocalRegistrationId());
-	}
-
-	@Test
-	public void isTrustedIdentity() {
-		IdentityKey key = KeyHelper.generateIdentityKeyPair().getPublicKey();
-		IdentityKey wrongKey = KeyHelper.generateIdentityKeyPair().getPublicKey();
+	public void isTrustedIdentity() throws InterruptedException {
+		final IdentityKey key = KeyHelper.generateIdentityKeyPair().getPublicKey();
+		Thread.sleep(1000);
+		final IdentityKey wrongKey = KeyHelper.generateIdentityKeyPair().getPublicKey();
 		assertNotEquals(key, wrongKey);
 
 		// Case: Correct Name and Key
 		store.saveIdentity("TestName", key);
 		assertTrue(store.isTrustedIdentity("TestName", key));
 
-		// Case: Unknown Key (important: Trust on first use!)
+		// Case: Unknown Key (remember: TextSecure uses Trust On First Use!)
 		assertTrue(store.isTrustedIdentity("UnseenName", key));
 
 		// Case: Wrong Key
 		assertFalse(store.isTrustedIdentity("TestName", wrongKey));
+	}
+
+	@Test
+	public void loadPreKey() throws InvalidKeyIdException {
+		final PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
+		store.storePreKey(preKey.getId(), preKey);
+		final PreKeyRecord newKey = store.loadPreKey(preKey.getId());
+		assertArrayEquals(preKey.serialize(), newKey.serialize());
+	}
+
+	@Test(expected = InvalidKeyIdException.class)
+	public void loadPreKeyInvalid() throws InvalidKeyIdException {
+		final PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
+		store.storePreKey(42, preKey);
+		store.loadPreKey(preKey.getId() + 1);
+	}
+
+	@Test
+	public void removePreKey() {
+		final PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
+		store.storePreKey(preKey.getId(), preKey);
+		store.removePreKey(preKey.getId());
+		assertFalse(store.containsPreKey(preKey.getId()));
+	}
+
+	@Test
+	public void saveIdentity() {
+		final IdentityKey key = KeyHelper.generateIdentityKeyPair().getPublicKey();
+		store.saveIdentity("TestName", key);
+		assertTrue(store.isTrustedIdentity("TestName", key));
 	}
 
 	@Test(expected = NullPointerException.class)
@@ -85,59 +103,21 @@ public class AxolotlStoreTest {
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void saveIdentityNameNull() {
-		store.saveIdentity(null, KeyHelper.generateIdentityKeyPair().getPublicKey());
-	}
-
-	@Test(expected = NullPointerException.class)
 	public void saveIdentityIdentityNull() {
 		store.saveIdentity("TestName", null);
 	}
 
-	@Test
-	public void saveIdentity() {
-		IdentityKey key = KeyHelper.generateIdentityKeyPair().getPublicKey();
-		store.saveIdentity("TestName", key);
-		assertTrue(store.isTrustedIdentity("TestName", key));
-	}
-
-	@Test
-	public void contains_storePreKey() {
-		PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
-		store.storePreKey(preKey.getId(), preKey);
-		assertTrue(store.containsPreKey(preKey.getId()));
-		assertFalse(store.containsPreKey(preKey.getId() + 1));
-	}
-
-	@Test
-	public void removePreKey() {
-		PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
-		store.storePreKey(42, preKey);
-		store.removePreKey(preKey.getId());
-		assertFalse(store.containsPreKey(preKey.getId()));
-	}
-
-	@Test
-	public void loadPreKey() throws InvalidKeyIdException {
-		PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
-		store.storePreKey(preKey.getId(), preKey);
-		PreKeyRecord newKey = store.loadPreKey(preKey.getId());
-		assertEquals(preKey, newKey);
-	}
-
-	@Test(expected = InvalidKeyIdException.class)
-	public void loadPreKeyInvalid() throws InvalidKeyIdException {
-		PreKeyRecord preKey = KeyHelper.generatePreKeys(0, ANY_NUMBER).get(0);
-		store.storePreKey(42, preKey);
-		store.loadPreKey(preKey.getId() + 1);
+	@Test(expected = NullPointerException.class)
+	public void saveIdentityNameNull() {
+		store.saveIdentity(null, KeyHelper.generateIdentityKeyPair().getPublicKey());
 	}
 
 	@Test
 	public void sessions() {
-		AxolotlAddress address = new AxolotlAddress("TestName", ANY_NUMBER);
-		AxolotlAddress wrongAddress = new AxolotlAddress("WrongName", ANY_NUMBER);
-		SessionRecord session = new SessionRecord();
-		SessionRecord wrongSession = new SessionRecord();
+		final AxolotlAddress address = new AxolotlAddress("TestName", ANY_NUMBER);
+		final AxolotlAddress wrongAddress = new AxolotlAddress("WrongName", ANY_NUMBER);
+		final SessionRecord session = new SessionRecord();
+		final SessionRecord wrongSession = new SessionRecord();
 		store.storeSession(address, session);
 
 		assertTrue(store.containsSession(address));
@@ -156,24 +136,31 @@ public class AxolotlStoreTest {
 
 	@Test
 	public void sessionsLoadInvalid() {
-		AxolotlAddress address = new AxolotlAddress("TestName", ANY_NUMBER);
+		final AxolotlAddress address = new AxolotlAddress("TestName", ANY_NUMBER);
 		assertFalse(store.containsSession(address));
 		store.loadSession(address);
 	}
 
+	@Before
+	public void setUp() throws Exception {
+		store = AxolotlStore.getInstance();
+		final Random r = new Random();
+		ANY_NUMBER = r.nextInt(10) + 1;
+	}
+
 	@Test
-	public void signedPreKey() throws InvalidKeyException, InvalidKeyIdException{
-		Random r = new Random();
-		IdentityKeyPair identityKey = KeyHelper.generateIdentityKeyPair();
-		SignedPreKeyRecord key = KeyHelper.generateSignedPreKey(identityKey, r.nextInt(Integer.MAX_VALUE));
-		
+	public void signedPreKey() throws InvalidKeyException, InvalidKeyIdException {
+		final Random r = new Random();
+		final IdentityKeyPair identityKey = KeyHelper.generateIdentityKeyPair();
+		final SignedPreKeyRecord key = KeyHelper.generateSignedPreKey(identityKey, r.nextInt(Integer.MAX_VALUE));
+
 		store.storeSignedPreKey(key.getId(), key);
 		assertTrue(store.containsSignedPreKey(key.getId()));
-		assertFalse(store.containsSignedPreKey(key.getId()+1));
-		
-		assertEquals(key, store.loadSignedPreKey(key.getId()));
+		assertFalse(store.containsSignedPreKey(key.getId() + 1));
+
+		assertArrayEquals(key.serialize(), store.loadSignedPreKey(key.getId()).serialize());
 		store.removeSignedPreKey(key.getId());
-		
+
 		assertFalse(store.containsSignedPreKey(key.getId()));
 	}
 }

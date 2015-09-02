@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Copyright (C) 2015 Connor Lanigan (email: dev@connorlanigan.com)
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<GridPane alignment="CENTER" hgap="10.0" maxHeight="-Infinity" minHeight="-Infinity" minWidth="279.0" prefHeight="283.0" prefWidth="515.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.norvos.gui.controller.register.RegisterCompleteController">
+	<columnConstraints>
+		<ColumnConstraints hgrow="NEVER" maxWidth="211.0" minWidth="10.0" prefWidth="210.0" />
+		<ColumnConstraints hgrow="NEVER" maxWidth="336.0" minWidth="10.0" prefWidth="275.0" />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints maxHeight="208.0" minHeight="10.0" prefHeight="185.0" vgrow="SOMETIMES" />
+		<RowConstraints maxHeight="119.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+	</rowConstraints>
+	<children>
+		<FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="180.0" prefWidth="435.0" GridPane.columnSpan="2">
+			<children>
+				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="That's it!">
+					<font>
+						<Font size="39.0" />
+					</font>
+				</Text>
+				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="You're ready to go!" textAlignment="CENTER" wrappingWidth="300.0" />
+			</children>
+		</FlowPane>
+		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" styleClass="button-dark" text="Next" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+         <font>
+            <Font size="20.0" />
+         </font></Button>
+	</children>
+	<padding>
+		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+	</padding>
+</GridPane>

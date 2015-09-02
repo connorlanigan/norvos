@@ -14,33 +14,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.i18n;
+package de.norvos.eventbus.events;
 
-import static org.junit.Assert.assertEquals;
+import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
+import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 
-import java.util.Locale;
+import de.norvos.eventbus.Event;
 
-import org.junit.Test;
+public class MessageReceivedEvent implements Event {
 
-import de.norvos.account.AccountDataStore;
+	private final TextSecureEnvelope envelope;
+	private final TextSecureDataMessage message;
 
-public class TranslationsTest {
-
-	@Test
-	public void translationAvailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
-		assertEquals("Registration failed. Reason: TestReason", translated);
+	public MessageReceivedEvent(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
+		this.envelope = envelope;
+		this.message = message;
 	}
 
-	@Test
-	public void translationUnavailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
+	public TextSecureEnvelope getEnvelope() {
+		return envelope;
+	}
 
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
+	public TextSecureDataMessage getMessage() {
+		return message;
 	}
 
 }

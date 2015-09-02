@@ -14,33 +14,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.i18n;
+package de.norvos.utils;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Locale;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import de.norvos.account.AccountDataStore;
-
-public class TranslationsTest {
+public class RandomUtilsTest {
 
 	@Test
-	public void translationAvailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
-		assertEquals("Registration failed. Reason: TestReason", translated);
-	}
-
-	@Test
-	public void translationUnavailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
-
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
+	public void test() {
+		final int id = RandomUtils.generateInstallId();
+		assertTrue(id < Math.pow(2, 15) && id > 0);
 	}
 
 }

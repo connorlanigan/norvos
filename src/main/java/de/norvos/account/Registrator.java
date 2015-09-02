@@ -17,110 +17,104 @@
 package de.norvos.account;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Enumeration;
+import java.util.List;
 
+import org.whispersystems.libaxolotl.IdentityKey;
+import org.whispersystems.libaxolotl.IdentityKeyPair;
+import org.whispersystems.libaxolotl.state.PreKeyRecord;
+import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
+import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureAccountManager;
-import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
 
-import de.norvos.axolotl.NorvosAxolotlStore;
-import de.norvos.axolotl.NorvosTrustStore;
+import de.norvos.axolotl.TrustStore;
+import de.norvos.axolotl.stores.IdentityKeyStore;
+import de.norvos.axolotl.stores.PreKeyStore;
+import de.norvos.axolotl.stores.SignedPreKeyStore;
+import de.norvos.utils.RandomUtils;
 
 public class Registrator {
+	private static boolean initialized = false;
+	final static private int initialSignedKeyID = 5;
+	private static List<PreKeyRecord> oneTimePreKeys;
+	final static private int passwordLength = 40;
 
-	final static SecureRandom random = new SecureRandom();
+	private static boolean requested = false;
 	final static boolean SMS_UNSUPPORTED = false;
 
+	final static public String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
+
+	public static void initialize() {
+		final IdentityKeyPair identityKeyPair = IdentityKeyStore.getInstance().initialize();
+		oneTimePreKeys = PreKeyStore.getInstance().initialize();
+		SignedPreKeyStore.getInstance().initialize(identityKeyPair, initialSignedKeyID);
+
+		AccountDataStore.storeStringValue("password", RandomUtils.randomAlphanumerical(passwordLength));
+		AccountDataStore.storeStringValue("signalingKey", RandomUtils.randomAlphanumerical(52));
+		AccountDataStore.storeStringValue("installID", String.valueOf(RandomUtils.generateInstallId()));
+
+		initialized = true;
+	}
+
 	/**
-	 * Registers a ServerAccount with its server. The input of the verification
-	 * code is handled in the RegistrationHandler.
-	 * 
-	 * @param account
-	 *            the account that should get registered
-	 * @param handler
-	 *            the verification code input handler
-	 * @return <code>true</code> if and only if the registration was successful
+	 * Requests a verification code for this client from the server.
+	 *
 	 * @throws IOException
+	 *             if an error occurs during registering
+	 * @throws IllegalStateException
+	 *             if this Registrator has not been initialized
 	 */
-	public static void register(ServerAccount account, RegistrationHandler handler) throws IOException,
-			AuthorizationFailedException,
-			Exception {
-		TextSecureAccountManager accountManager =
-				new TextSecureAccountManager(account.getURL(), NorvosTrustStore.get(), account.getUsername(),
-						account.getPassword());
+	public static void requestCode() throws IOException {
+		if (!initialized) {
+			throw new IllegalStateException("Registrator must be initialized by calling initialize() first.");
+		}
+		final String url = AccountDataStore.getStringValue("url");
+		final String username = AccountDataStore.getStringValue("username");
+		final TrustStore trustStore = TrustStore.getInstance();
+		final String password = AccountDataStore.getStringValue("password");
+
+		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
+				password);
 
 		accountManager.requestSmsVerificationCode();
-		String receivedVerificationCode = handler.getCode();
 
-		accountManager.verifyAccount(receivedVerificationCode, Settings.getCurrent().getServerAccount().getSignalingKey(), SMS_UNSUPPORTED,
-				generateRandomInstallId());
-
-		NorvosAxolotlStore axolotlStore = Settings.getCurrent().getAxolotlStore();
-		accountManager.setPreKeys(axolotlStore.getIdentityKeyPair().getPublicKey(), axolotlStore.getLastResortKey(),
-				axolotlStore.getSignedPreKey(), axolotlStore.getOneTimePreKeys());
-
+		requested = true;
 	}
 
 	/**
-	 * Generates an install ID with a maximum of 14bit. The number is based on
-	 * the SHA-1 hash of the first MAC adress in the system. If no such adress
-	 * is found, a random number is chosen.<br><br>
-	 * Taken from
-	 * {@link org.whispersystems.textsecure.api.TextSecureAccountManager#verifyAccount
-	 * TextSecureAccountManager.verifyAccount()}, which uses this value:<br>
-	 * "A random 14-bit number that identifies this TextSecure install. This
-	 * value should remain consistent across registrations for the same install,
-	 * but probabilistically differ across registrations for separate installs."
-	 * 
-	 * @return a random number with a maximum of 14 bit;
-	 * @throws UnknownHostException
-	 * @throws SocketException
-	 * @throws NoSuchAlgorithmException
+	 * Verifys
+	 *
+	 * @param verificationCode
+	 * @throws IOException
 	 */
-	public static int generateRandomInstallId() {
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-1");
-			byte[] hashedMac = digest.digest(getFirstMACAdress());
-			return limitInt(new BigInteger(hashedMac).intValue(), 14);
-
-		} catch (Exception e) {
-			int size = (int) Math.pow(2, 14 + 1);
-			return random.nextInt(size);
+	public static void verify(final String verificationCode) throws IOException {
+		if (!initialized) {
+			throw new IllegalStateException("Registrator must be initialized by calling initialize() first.");
 		}
-	}
-
-	/**
-	 * Returns the first <code>bitlength</code> bits of the given int.
-	 * @param value the int to shorten
-	 * @param bitlength the amount of bits to return
-	 * @return the <code>bitlength</code> most significant bits of the value
-	 */
-	private static int limitInt(int value, int bitlength) {
-		return Integer.parseInt(Integer.toBinaryString(value).substring(0, bitlength), 2);
-	}
-
-	/**
-	 * Returns the first MAC adress that is found in the system.
-	 * @return MAC adress
-	 * @throws SocketException if an I/O error occurs.
-	 */
-	private static byte[] getFirstMACAdress() throws SocketException {
-		Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
-
-		while (networkInterfaces.hasMoreElements()) {
-			NetworkInterface network = networkInterfaces.nextElement();
-
-			byte[] bmac = network.getHardwareAddress();
-			if (bmac != null) {
-				return bmac;
-			}
+		if (!requested) {
+			throw new IllegalStateException("Registrator must request a code before verifying.");
 		}
-		throw new SocketException("No network interfaces with a MAC adress found.");
+
+		final String url = AccountDataStore.getStringValue("url");
+		final String username = AccountDataStore.getStringValue("username");
+		final TrustStore trustStore = TrustStore.getInstance();
+		final String password = AccountDataStore.getStringValue("password");
+
+		final String signalingKey = AccountDataStore.getStringValue("signalingKey");
+		final Integer installID = Integer.valueOf(AccountDataStore.getStringValue("installID"));
+
+		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
+				password);
+
+		accountManager.verifyAccount(verificationCode, signalingKey, SMS_UNSUPPORTED, installID);
+
+		accountManager.setGcmId(Optional.of("Not using GCM."));
+
+		final IdentityKey identityKey = IdentityKeyStore.getInstance().getIdentityKeyPair().getPublicKey();
+		final PreKeyRecord lastResortKey = PreKeyStore.getInstance().getLastResortKey();
+		final SignedPreKeyRecord signedPreKey = SignedPreKeyStore.getInstance().loadSignedPreKeys().get(0);
+
+		accountManager.setPreKeys(identityKey, lastResortKey, signedPreKey, oneTimePreKeys);
+
+		AccountDataStore.storeStringValue("setupFinished", "true");
 	}
 }

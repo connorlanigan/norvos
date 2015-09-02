@@ -14,33 +14,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.i18n;
+package de.norvos.gui.controller.register;
 
-import static org.junit.Assert.assertEquals;
+import de.norvos.gui.controller.Controller;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
-import java.util.Locale;
+public class RegisterCompleteController {
 
-import org.junit.Test;
+	@FXML
+	private Button button;
 
-import de.norvos.account.AccountDataStore;
-
-public class TranslationsTest {
-
-	@Test
-	public void translationAvailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
-		assertEquals("Registration failed. Reason: TestReason", translated);
+	public void handleButtonClicked(final ActionEvent event) {
+		final RegisterController controller = (RegisterController) Controller.getInstance();
+		Platform.runLater(() -> controller.loadFXML("register/Overview.fxml"));
 	}
-
-	@Test
-	public void translationUnavailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
-
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
-	}
-
 }

@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.AbstractMap;
 
 import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureMessageSender;
@@ -29,58 +28,50 @@ import org.whispersystems.textsecure.api.messages.TextSecureAttachment;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.push.TextSecureAddress;
 
-import de.norvos.account.ServerAccount;
-import de.norvos.account.Settings;
-import de.norvos.observers.Notifiable;
-import de.norvos.observers.NotificatorMap;
-import de.norvos.observers.Observable;
+import de.norvos.account.AccountDataStore;
+import de.norvos.axolotl.AxolotlStore;
+import de.norvos.axolotl.TrustStore;
+import de.norvos.eventbus.EventBus;
+import de.norvos.eventbus.events.MessageSentEvent;
 
-public class MessageSender implements Observable{
-	
+public class MessageSender {
 
-	protected static NotificatorMap notifiables = new NotificatorMap();
-
-	public static void sendTextMessage(String recipientId, String message) throws UntrustedIdentityException, IOException {
-		TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
-		getMessageSender().sendMessage(new TextSecureAddress(recipientId),
-				messageBody);
-		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
-	}
-
-	public static void sendMediaMessage(String recipientId, String message, File attachment) throws UntrustedIdentityException,
-			IOException {
-
-		TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).withAttachment(createAttachment(attachment)).build();
-		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		notifiables.notify("messageSent", new AbstractMap.SimpleEntry<String, TextSecureDataMessage>(recipientId, messageBody));
+	private static TextSecureAttachment createAttachment(final File attachmentFile) throws FileNotFoundException {
+		final FileInputStream attachmentStream = new FileInputStream(attachmentFile);
+		return TextSecureAttachment.newStreamBuilder().withStream(attachmentStream)
+				.withContentType(getMimeType(attachmentFile)).withLength(attachmentFile.length()).build();
 	}
 
 	private static TextSecureMessageSender getMessageSender() {
-		ServerAccount serverConfiguration = Settings.getCurrent().getServerAccount();
-		return new TextSecureMessageSender(serverConfiguration.getURL(), serverConfiguration.getTrustStore(),
-				serverConfiguration.getUsername(), serverConfiguration.getPassword(), Settings.getCurrent().getAxolotlStore(),
+		final String url = AccountDataStore.getStringValue("url");
+		final String username = AccountDataStore.getStringValue("username");
+		final TrustStore trustStore = TrustStore.getInstance();
+		final String password = AccountDataStore.getStringValue("password");
+
+		return new TextSecureMessageSender(url, trustStore, username, password, AxolotlStore.getInstance(),
 				Optional.absent());
 	}
-	
-	private static TextSecureAttachment createAttachment(File attachmentFile) throws FileNotFoundException{
-		FileInputStream attachmentStream = new FileInputStream(attachmentFile);
-		return TextSecureAttachment.newStreamBuilder().withStream(attachmentStream).withContentType(getMimeType(attachmentFile))
-				.withLength(attachmentFile.length()).build();
-	}
-	
-	private static String getMimeType(File file){
-		// TODO Communicator: use mime-type library
+
+	private static String getMimeType(final File file) {
+		// TODO use mime-type library
 		return "application/octet-stream";
 	}
-	
-	@Override
-	public void register(Notifiable n, String event){
-		notifiables.register(event, n);
+
+	public static void sendMediaMessage(final String recipientId, final String message, final File attachment)
+			throws UntrustedIdentityException, IOException {
+
+		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message)
+				.withAttachment(createAttachment(attachment)).build();
+		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
+		EventBus.sendEvent(new MessageSentEvent(recipientId, message, System.currentTimeMillis(), attachment));
 	}
-	
-	@Override
-	public void unregister(Notifiable n){
-		notifiables.unregister(n);
+
+	public static void sendTextMessage(final String recipientId, final String message)
+			throws UntrustedIdentityException, IOException {
+		System.err.println("About to send message: " + message);
+		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
+		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
+		EventBus.sendEvent(new MessageSentEvent(recipientId, message, System.currentTimeMillis(), null));
 	}
 
 }

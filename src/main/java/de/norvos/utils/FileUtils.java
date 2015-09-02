@@ -14,33 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.i18n;
+package de.norvos.utils;
 
-import static org.junit.Assert.assertEquals;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-import java.util.Locale;
+public class FileUtils {
 
-import org.junit.Test;
-
-import de.norvos.account.AccountDataStore;
-
-public class TranslationsTest {
-
-	@Test
-	public void translationAvailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
-		assertEquals("Registration failed. Reason: TestReason", translated);
+	public static Path getDatabaseDirectory() {
+		return getDataDirectory().resolve("configuration");
 	}
 
-	@Test
-	public void translationUnavailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
-
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
+	public static Path getDataDirectory() {
+		final Path directory = FileSystems.getDefault().getPath(System.getProperty("user.home"), ".norvos");
+		directory.toFile().mkdirs();
+		try {
+			Files.setAttribute(directory, "dos:hidden", true);
+		} catch (final IOException e) {
+		}
+		return directory;
 	}
 
+	public static Path getLogfile() {
+		return getDataDirectory().resolve("application.log");
+	}
+
+	private FileUtils() {
+	}
 }

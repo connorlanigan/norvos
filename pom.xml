@@ -1,3 +1,12 @@
+<!-- Copyright (C) 2015 Connor Lanigan (email: dev@connorlanigan.com) This
+	program is free software: you can redistribute it and/or modify it under
+	the terms of the GNU Affero General Public License as published by the Free
+	Software Foundation, either version 3 of the License, or (at your option)
+	any later version. This program is distributed in the hope that it will be
+	useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+	or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License
+	for more details. You should have received a copy of the GNU Affero General
+	Public License along with this program. If not, see <http://www.gnu.org/licenses/>. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -28,10 +37,16 @@
 			<version>1.52</version>
 		</dependency>
 		<dependency>
-			<groupId>com.seaglasslookandfeel</groupId>
-			<artifactId>seaglasslookandfeel</artifactId>
-			<version>0.2</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.187</version>
 		</dependency>
+		<dependency>
+			<groupId>com.googlecode.libphonenumber</groupId>
+			<artifactId>libphonenumber</artifactId>
+			<version>7.0.9</version>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
@@ -78,7 +93,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+			<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>

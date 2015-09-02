@@ -16,14 +16,74 @@
  *******************************************************************************/
 package de.norvos.log;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 import javax.swing.JOptionPane;
 
-public class Errors {	
-	public static void warning(String message){
-		JOptionPane.showMessageDialog(null, message, "Norvos – Warning", JOptionPane.WARNING_MESSAGE);
+import de.norvos.i18n.Translations;
+import de.norvos.utils.FileUtils;
+
+//TODO replace self-built logging with Java file rotation logger
+public class Errors {
+	private static void critical(final String message) {
+		final String logMessage = "[CRITICAL] " + message;
+		System.err.println(logMessage);
+		writeToFile(logMessage);
 	}
-	
-	public static void critical(String message){
-		JOptionPane.showMessageDialog(null, message, "Norvos – Error", JOptionPane.ERROR_MESSAGE);
+
+	/**
+	 * Displays a localized error message to the user and logs the message to
+	 * disk.
+	 *
+	 * @param stringId
+	 *            the ID of the error message
+	 * @param args
+	 *            optional arguments for the error message
+	 */
+	public static void critical(final String stringId, final Object... args) {
+		final String messageText = Translations.format("errors", stringId, args);
+		critical(messageText);
+		JOptionPane.showMessageDialog(null, messageText, "Norvos – Error", JOptionPane.ERROR_MESSAGE);
 	}
+
+	/**
+	 * Logs a debug message to System.out
+	 *
+	 * @param message
+	 *            the message to log
+	 */
+	public static void debug(final String message) {
+		final String logMessage = "[DEBUG] " + message;
+		System.err.println(logMessage);
+	}
+
+	private static void warning(final String message) {
+		final String logMessage = "[WARNING] " + message;
+		System.err.println(logMessage);
+		writeToFile(logMessage);
+	}
+
+	/**
+	 * Displays a localized warning message to the user and logs the message to
+	 * disk.
+	 *
+	 * @param stringId
+	 *            the ID of the warning message
+	 * @param args
+	 *            optional arguments for the warning message
+	 */
+	public static void warning(final String stringId, final Object... args) {
+		final String messageText = Translations.format("errors", stringId, args);
+		warning(messageText);
+		JOptionPane.showMessageDialog(null, messageText, "Norvos – Warning", JOptionPane.WARNING_MESSAGE);
+	}
+
+	private static void writeToFile(final String fullMessage) {
+		try (PrintWriter writer = new PrintWriter(FileUtils.getLogfile().toFile())) {
+			writer.println(fullMessage);
+		} catch (final FileNotFoundException e) {
+		}
+	}
+
 }

@@ -14,33 +14,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.i18n;
+package de.norvos.eventbus.events;
 
-import static org.junit.Assert.assertEquals;
+import java.io.File;
 
-import java.util.Locale;
+import de.norvos.eventbus.Event;
 
-import org.junit.Test;
+public class MessageSentEvent implements Event {
 
-import de.norvos.account.AccountDataStore;
+	private final String message;
+	private final String receiver;
+	private final long timestamp;
+	private final File attachment;
 
-public class TranslationsTest {
-
-	@Test
-	public void translationAvailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
-		assertEquals("Registration failed. Reason: TestReason", translated);
+	public MessageSentEvent(final String receiver, final String message, final long timestamp, final File attachment) {
+		this.receiver = receiver;
+		this.message = message;
+		this.timestamp = timestamp;
+		this.attachment = attachment;
 	}
 
-	@Test
-	public void translationUnavailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
+	public String getMessage() {
+		return message;
+	}
 
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
+	public String getReceiver() {
+		return receiver;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public File getAttachment(){
+		return attachment;
 	}
 
 }

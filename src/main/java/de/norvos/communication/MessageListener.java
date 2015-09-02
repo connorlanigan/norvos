@@ -16,47 +16,144 @@
  *******************************************************************************/
 package de.norvos.communication;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
+import org.whispersystems.libaxolotl.DuplicateMessageException;
+import org.whispersystems.libaxolotl.InvalidKeyException;
+import org.whispersystems.libaxolotl.InvalidKeyIdException;
+import org.whispersystems.libaxolotl.InvalidMessageException;
+import org.whispersystems.libaxolotl.InvalidVersionException;
+import org.whispersystems.libaxolotl.LegacyMessageException;
+import org.whispersystems.libaxolotl.NoSessionException;
+import org.whispersystems.libaxolotl.UntrustedIdentityException;
+import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureMessagePipe;
 import org.whispersystems.textsecure.api.TextSecureMessageReceiver;
 import org.whispersystems.textsecure.api.crypto.TextSecureCipher;
+import org.whispersystems.textsecure.api.messages.TextSecureContent;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 
-import de.norvos.account.ServerAccount;
-import de.norvos.account.Settings;
-import de.norvos.axolotl.NorvosTrustStore;
+import de.norvos.account.AccountDataStore;
+import de.norvos.axolotl.AxolotlStore;
+import de.norvos.axolotl.TrustStore;
+import de.norvos.log.Errors;
+import javafx.concurrent.Task;
 
-public class MessageListener implements Runnable {
+public class MessageListener extends Task<Void> {
+	final private String password;
+	final private String signalingKey;
+	final private TrustStore trustStore;
+	final private String url;
+	final private String username;
 
-	private boolean listeningForMessages = true;
+	public MessageListener() {
+		url = AccountDataStore.getStringValue("url");
+		username = AccountDataStore.getStringValue("username");
+		trustStore = TrustStore.getInstance();
+		password = AccountDataStore.getStringValue("password");
+		signalingKey = AccountDataStore.getStringValue("signalingKey");
+	}
+
+	@Override
+	protected Void call() {
+		final TextSecureMessageReceiver messageReceiver = new TextSecureMessageReceiver(url, trustStore, username,
+				password, signalingKey);
+		final TextSecureMessagePipe messagePipe = messageReceiver.createMessagePipe();
+
+		while (!isCancelled()) {
+			final TextSecureEnvelope envelope;
+			try {
+				envelope = messagePipe.read(30, TimeUnit.SECONDS);
+			} catch (final Exception e) {
+				continue;
+			}
+			final TextSecureCipher cipher = new TextSecureCipher(envelope.getSourceAddress(),
+					AxolotlStore.getInstance());
+			TextSecureContent content;
+			try {
+				content = cipher.decrypt(envelope);
+				content.getDataMessage();
+
+			} catch (InvalidVersionException | InvalidMessageException | InvalidKeyException | DuplicateMessageException
+					| InvalidKeyIdException | LegacyMessageException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (final UntrustedIdentityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (final NoSessionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		return null;
+	}
 
 	@Override
 	public void run() {
-		ServerAccount account = Settings.getCurrent().getServerAccount();
-		TextSecureMessageReceiver messageReceiver =
-				new TextSecureMessageReceiver(account.getURL(),
-						NorvosTrustStore.get(), account.getUsername(), account.getPassword(), account.getSignalingKey());
-		
+		// This part needs restructuring.
+		/*
+		Errors.debug("##### Listening for messages!");
+
+		final String url = AccountDataStore.getStringValue("url");
+		final String username = AccountDataStore.getStringValue("username");
+		final TrustStore trustStore = TrustStore.getInstance();
+		final String password = AccountDataStore.getStringValue("password");
+		final String signalingKey = AccountDataStore.getStringValue("signalingKey");
+
+		final TextSecureMessageReceiver messageReceiver = new TextSecureMessageReceiver(url, trustStore, username,
+				password, signalingKey);
+
 		TextSecureMessagePipe messagePipe = null;
 
 		try {
 			messagePipe = messageReceiver.createMessagePipe();
 
 			while (listeningForMessages) {
-				TextSecureEnvelope envelope = messagePipe.read(1000, TimeUnit.DAYS);
-				TextSecureCipher cipher =
-						new TextSecureCipher(envelope.getSourceAddress(), Settings.getCurrent().getAxolotlStore());
-				TextSecureDataMessage message = cipher.decrypt(envelope);
+				final TextSecureEnvelope envelope = messagePipe.read(1000, TimeUnit.DAYS);
+				final TextSecureCipher cipher = new TextSecureCipher(envelope.getSourceAddress(),
+						AxolotlStore.getInstance());
+				final TextSecureContent content = cipher.decrypt(envelope);
 
-				System.out.println("Received message: " + message.getBody().get());
+				final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
+
+				System.out.println("####### Received message!!");
+
+				// We currently drop the synchronization messages, because they
+				// seem not to be officially published as of now.
+				//
+				// Optional<TextSecureSyncMessage> syncMessage =
+				// content.getSyncMessage();
+				//
+
+				if (dataMessage.isPresent()) {
+					final TextSecureDataMessage message = dataMessage.get();
+					final String sender = envelope.getSource();
+					if (message.isEndSession()) {
+						System.out.println("Session ended by " + sender + ".");
+					} else {
+						System.out.println("Received message: " + message.getBody().get());
+					}
+				}
+
 			}
 
+		} catch (InvalidVersionException | IOException | TimeoutException | InvalidMessageException
+				| InvalidKeyException | DuplicateMessageException | InvalidKeyIdException | UntrustedIdentityException
+				| LegacyMessageException | NoSessionException e) {
+			// TODO Reorganize try into the while-loop and handles message
+			// errors in a sane way
+			// callback.messageListeningException(e);
 		} finally {
-			if (messagePipe != null)
+			if (messagePipe != null) {
 				messagePipe.shutdown();
-		}
+			}
+		} */
 
 	}
 

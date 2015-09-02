@@ -14,33 +14,33 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.i18n;
+package de.norvos.account;
 
 import static org.junit.Assert.assertEquals;
-
-import java.util.Locale;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import de.norvos.account.AccountDataStore;
-
-public class TranslationsTest {
+public class AccountDataStoreTest {
 
 	@Test
-	public void translationAvailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
-		assertEquals("Registration failed. Reason: TestReason", translated);
+	public void test() {
+		final String s = AccountDataStore.getStringValue("testKey");
+		assertNull(s);
+
+		final byte[] b = AccountDataStore.getBinaryValue("testKey");
+		assertNull(b);
+
+		AccountDataStore.storeStringValue("testKey", "testString");
+		AccountDataStore.storeStringValue("secondTestKey", "secondTestString");
+
+		assertEquals("testString", AccountDataStore.getStringValue("testKey"));
+		assertEquals("secondTestString", AccountDataStore.getStringValue("secondTestKey"));
+
+		AccountDataStore.storeStringValue("testKey", "overwrittenTestString");
+
+		assertEquals("overwrittenTestString", AccountDataStore.getStringValue("testKey"));
+		assertEquals("secondTestString", AccountDataStore.getStringValue("secondTestKey"));
+
 	}
-
-	@Test
-	public void translationUnavailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
-
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
-	}
-
 }
