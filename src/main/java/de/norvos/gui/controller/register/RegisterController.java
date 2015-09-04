@@ -19,7 +19,6 @@ package de.norvos.gui.controller.register;
 import java.io.IOException;
 import java.net.URL;
 
-import de.norvos.gui.controller.Controller;
 import de.norvos.utils.Constants;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -27,15 +26,18 @@ import javafx.scene.Parent;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 
-public class RegisterController extends Controller {
+public class RegisterController {
+
+	private static RegisterController instance;
+
 	@FXML
 	private BorderPane containerPane;
 
 	@FXML
 	private ProgressBar registrationProgress;
 
-	public void loadFXML(final String fxml) {
-		final URL fxmlURL = getClass().getResource(Constants.FXML_LOCATION + fxml);
+	public void loadRegisterPage(final String fxml) {
+		final URL fxmlURL = getClass().getResource(Constants.FXML_LOCATION + "register/" + fxml);
 		final FXMLLoader loader = new FXMLLoader(fxmlURL);
 		Parent parent;
 		try {
@@ -49,8 +51,16 @@ public class RegisterController extends Controller {
 		}
 	}
 
+	public RegisterController() {
+		instance = this;
+	}
+
 	public void setProgress(final float value) {
 		registrationProgress.setProgress(value);
+	}
+
+	public static RegisterController getInstance() {
+		return instance;
 	}
 
 }

@@ -34,6 +34,12 @@ import javafx.stage.Stage;
 
 public class MainWindow extends Application {
 
+	private static MainWindow instance = null;
+
+	public static MainWindow getInstance(){
+		return instance;
+	}
+
 	public static void main(final String[] args) {
 		Security.addProvider(new BouncyCastleProvider());
 
@@ -61,28 +67,26 @@ public class MainWindow extends Application {
 	 * @throws IOException
 	 *             if an error occurs during loading
 	 */
-	public <T> T loadFXML(final String fxml) {
+	public void loadIntoMainWindow(final String fxml) {
 		final URL fxmlURL = getClass().getResource(Constants.FXML_LOCATION + fxml);
 		final FXMLLoader loader = new FXMLLoader(fxmlURL);
 		Parent parent;
 		try {
 			parent = loader.load();
-			final T controller = loader.<T> getController();
 			final Scene scene = new Scene(parent, 600, 400);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
-			return controller;
 		} catch (final IOException e) {
 			// TODO logging
 			System.err.println("FXML could not be loaded: [" + fxml + "]");
 			System.exit(1);
-			return null;
 		}
 	}
 
 	@Override
 	public void start(final Stage primaryStage) {
+		instance = this;
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle(Constants.WINDOW_TITLE);
 		primaryStage.centerOnScreen();
@@ -91,9 +95,9 @@ public class MainWindow extends Application {
 		if (hasToRegister) {
 			initializeDB();
 			Registrator.initialize();
-			loadFXML("register/Register.fxml");
+			loadIntoMainWindow("register/Register.fxml");
 		} else {
-			loadFXML("Overview.fxml");
+			loadIntoMainWindow("Overview.fxml");
 		}
 	}
 

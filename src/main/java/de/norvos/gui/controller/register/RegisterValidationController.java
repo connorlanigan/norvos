@@ -22,7 +22,7 @@ import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedExce
 import org.whispersystems.textsecure.api.push.exceptions.RateLimitException;
 
 import de.norvos.account.Registrator;
-import de.norvos.gui.controller.Controller;
+import de.norvos.utils.DataManipulationUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -67,13 +67,14 @@ public class RegisterValidationController {
 					} catch (final InterruptedException e) {
 					}
 
-					final String verificationCode = verificationCodeInput.getText();
-					if (verificationCode.matches(".*\\w.*")) { // do not accept whitespace
+					final String verificationCode = DataManipulationUtils
+							.extractDigitsFromString(verificationCodeInput.getText());
+					if (!verificationCode.isEmpty()) {
 
 						Registrator.verify(verificationCode);
 
-						final RegisterController controller = (RegisterController) Controller.getInstance();
-						Platform.runLater(() -> controller.loadFXML("register/RegisterComplete.fxml"));
+						final RegisterController controller = RegisterController.getInstance();
+						Platform.runLater(() -> controller.loadRegisterPage("RegisterComplete.fxml"));
 
 					} else {
 						errorEmptyCode.setVisible(true);

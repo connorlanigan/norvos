@@ -34,7 +34,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 
-public class OverviewController extends Controller {
+public class OverviewController{
 
 	private static OverviewController instance;
 
@@ -55,9 +55,6 @@ public class OverviewController extends Controller {
 	@FXML
 	private TextField searchInput;
 
-	public OverviewController() {
-		instance = this;
-	}
 
 	public void clearSearchBar(final ActionEvent event) {
 		searchInput.setText("");

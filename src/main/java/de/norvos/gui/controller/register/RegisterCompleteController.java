@@ -16,7 +16,7 @@
  *******************************************************************************/
 package de.norvos.gui.controller.register;
 
-import de.norvos.gui.controller.Controller;
+import de.norvos.gui.MainWindow;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,7 +28,6 @@ public class RegisterCompleteController {
 	private Button button;
 
 	public void handleButtonClicked(final ActionEvent event) {
-		final RegisterController controller = (RegisterController) Controller.getInstance();
-		Platform.runLater(() -> controller.loadFXML("register/Overview.fxml"));
+		Platform.runLater(() -> MainWindow.getInstance().loadIntoMainWindow("Overview.fxml"));
 	}
 }

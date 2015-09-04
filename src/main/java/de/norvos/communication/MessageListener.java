@@ -16,9 +16,7 @@
  *******************************************************************************/
 package de.norvos.communication;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.whispersystems.libaxolotl.DuplicateMessageException;
 import org.whispersystems.libaxolotl.InvalidKeyException;
@@ -28,18 +26,15 @@ import org.whispersystems.libaxolotl.InvalidVersionException;
 import org.whispersystems.libaxolotl.LegacyMessageException;
 import org.whispersystems.libaxolotl.NoSessionException;
 import org.whispersystems.libaxolotl.UntrustedIdentityException;
-import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureMessagePipe;
 import org.whispersystems.textsecure.api.TextSecureMessageReceiver;
 import org.whispersystems.textsecure.api.crypto.TextSecureCipher;
 import org.whispersystems.textsecure.api.messages.TextSecureContent;
-import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 
 import de.norvos.account.AccountDataStore;
 import de.norvos.axolotl.AxolotlStore;
 import de.norvos.axolotl.TrustStore;
-import de.norvos.log.Errors;
 import javafx.concurrent.Task;
 
 public class MessageListener extends Task<Void> {

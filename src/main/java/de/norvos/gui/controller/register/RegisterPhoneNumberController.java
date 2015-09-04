@@ -25,7 +25,6 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 import de.norvos.account.AccountDataStore;
 import de.norvos.account.Registrator;
-import de.norvos.gui.controller.Controller;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -73,16 +72,16 @@ public class RegisterPhoneNumberController {
 				try {
 					phoneNumber = formatPhoneNumber(phoneNumber);
 					AccountDataStore.storeStringValue("username", phoneNumber);
-					final RegisterController controller = (RegisterController) Controller.getInstance();
+					final RegisterController controller = RegisterController.getInstance();
 
 					try {
 						Registrator.requestCode();
 						Platform.runLater(() -> {
 							controller.setProgress(0.7F);
-							controller.loadFXML("register/RegisterValidation.fxml");
+							controller.loadRegisterPage("RegisterValidation.fxml");
 						});
 					} catch (final IOException e) {
-						Platform.runLater(() -> controller.loadFXML("register/RegisterRequestError.fxml"));
+						Platform.runLater(() -> controller.loadRegisterPage("RegisterRequestError.fxml"));
 					}
 				} catch (final NumberParseException e) {
 					Platform.runLater(() -> {

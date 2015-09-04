@@ -47,7 +47,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 			</children>
 		</FlowPane>
 		<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mobile Number:" wrappingWidth="105.3779296875" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-		<TextField fx:id="mobileNumberInput" maxWidth="170.0" minWidth="10.0" prefHeight="26.0" prefWidth="130.0" text="+49 178 8174362" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+		<TextField fx:id="mobileNumberInput" maxWidth="170.0" minWidth="10.0" prefHeight="26.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 			<GridPane.margin>
 				<Insets right="50.0" />
 			</GridPane.margin>

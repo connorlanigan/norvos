@@ -19,7 +19,6 @@ package de.norvos.gui.controller.register;
 import java.io.IOException;
 
 import de.norvos.account.Registrator;
-import de.norvos.gui.controller.Controller;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -66,10 +65,10 @@ public class RegisterRequestErrorController {
 					} catch (final InterruptedException e) {
 					}
 					Registrator.requestCode();
-					final RegisterController controller = (RegisterController) Controller.getInstance();
+					final RegisterController controller = RegisterController.getInstance();
 					Platform.runLater(() -> {
 						controller.setProgress(0.7F);
-						controller.loadFXML("register/RegisterValidation.fxml");
+						controller.loadRegisterPage("RegisterValidation.fxml");
 					});
 				} catch (final IOException e) {
 					disableSpinningWheel();
