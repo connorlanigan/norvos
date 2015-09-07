@@ -30,11 +30,19 @@ public class RegisterController {
 
 	private static RegisterController instance;
 
+	synchronized public static RegisterController getInstance() {
+		return instance;
+	}
+
 	@FXML
 	private BorderPane containerPane;
 
 	@FXML
 	private ProgressBar registrationProgress;
+
+	public RegisterController() {
+		instance = this;
+	}
 
 	public void loadRegisterPage(final String fxml) {
 		final URL fxmlURL = getClass().getResource(Constants.FXML_LOCATION + "register/" + fxml);
@@ -51,16 +59,8 @@ public class RegisterController {
 		}
 	}
 
-	public RegisterController() {
-		instance = this;
-	}
-
 	public void setProgress(final float value) {
 		registrationProgress.setProgress(value);
-	}
-
-	public static RegisterController getInstance() {
-		return instance;
 	}
 
 }

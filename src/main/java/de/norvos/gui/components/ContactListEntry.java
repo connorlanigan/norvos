@@ -18,12 +18,15 @@ package de.norvos.gui.components;
 
 import java.io.IOException;
 
+import de.norvos.contacts.Contact;
 import de.norvos.eventbus.Event;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.EventBusListener;
 import de.norvos.eventbus.events.MessageReceivedEvent;
 import de.norvos.eventbus.events.MessageSentEvent;
+import de.norvos.gui.controller.OverviewController;
 import de.norvos.utils.Constants;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
@@ -32,6 +35,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
 public class ContactListEntry extends Button implements EventBusListener {
+
+	private Contact contact;
 
 	@FXML
 	private Text contactName;
@@ -62,12 +67,16 @@ public class ContactListEntry extends Button implements EventBusListener {
 		return lastMessage.getText();
 	}
 
-	public String getName() {
-		return contactName.getText();
-	}
-
 	public String getNewMessage() {
 		return String.valueOf(newMessageIndicator.isVisible());
+	}
+
+	public String getUser() {
+		return contact.getPhoneNumber();
+	}
+
+	public void handleClick(final ActionEvent event) {
+		OverviewController.getInstance().loadChat(contact);
 	}
 
 	@FXML
@@ -79,10 +88,6 @@ public class ContactListEntry extends Button implements EventBusListener {
 		lastMessage.setText(value);
 	}
 
-	public void setName(final String value) {
-		contactName.setText(value);
-	}
-
 	public void setNewMessage(final String value) {
 		final boolean newMessage = Boolean.valueOf(value);
 		newMessageIndicator.setVisible(newMessage);
@@ -91,6 +96,11 @@ public class ContactListEntry extends Button implements EventBusListener {
 		} else {
 			getStyleClass().remove("newMessage");
 		}
+	}
+
+	public void setUser(final String value) {
+		contact = new Contact(value);
+		contactName.setText(contact.getDisplayName());
 	}
 
 	@Override

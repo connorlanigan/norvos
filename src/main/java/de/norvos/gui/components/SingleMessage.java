@@ -69,6 +69,12 @@ public class SingleMessage extends BorderPane {
 		messageBox.getStyleClass().setAll(cssClass, baseClass);
 	}
 
+	public void setTime(final long timestamp) {
+		this.timestamp = timestamp;
+		final String string = TimeUtils.formatDate(this.timestamp);
+		time.setText(string);
+	}
+
 	public void setTime(final String timestamp) {
 		this.timestamp = Long.valueOf(timestamp);
 		final String string = TimeUtils.formatDate(this.timestamp);

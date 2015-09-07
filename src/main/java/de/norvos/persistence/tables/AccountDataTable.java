@@ -25,7 +25,7 @@ import de.norvos.persistence.Database;
 public class AccountDataTable implements Table {
 	private static AccountDataTable instance;
 
-	public static AccountDataTable getInstance() {
+	synchronized public static AccountDataTable getInstance() {
 		if (instance == null) {
 			instance = new AccountDataTable();
 		}

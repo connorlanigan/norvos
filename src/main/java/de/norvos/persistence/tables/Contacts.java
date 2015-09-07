@@ -20,58 +20,64 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.whispersystems.libaxolotl.IdentityKey;
-import org.whispersystems.libaxolotl.InvalidKeyException;
-
+import de.norvos.contacts.ContactData;
 import de.norvos.persistence.Database;
 
-public class IdentityKeyTable implements Table {
-	private static IdentityKeyTable instance;
+public class Contacts implements Table {
+	private static Contacts instance;
 
-	synchronized public static IdentityKeyTable getInstance() {
+	synchronized public static Contacts getInstance() {
 		if (instance == null) {
-			instance = new IdentityKeyTable();
+			instance = new Contacts();
 		}
 		return instance;
 	}
 
-	private IdentityKeyTable() {
+	private Contacts() {
+	}
+
+	public ContactData getContactData(final String phoneNumber) {
+		final String query = "SELECT * FROM contacts WHERE phone_number = ?";
+
+		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
+
+			stmt.setString(1, phoneNumber);
+			final ResultSet result = stmt.executeQuery();
+
+			if (result.first()) {
+				final String displayName = result.getString("display_name");
+				final String draftMessage = result.getString("draft_message");
+
+				return new ContactData(phoneNumber, displayName, draftMessage);
+
+			} else {
+				System.err.println("No contact found for [" + phoneNumber + "]");
+			}
+		} catch (final SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ContactData(phoneNumber, "Unknown User", "");
+
 	}
 
 	@Override
 	public String getCreationStatement() {
-		return "CREATE TABLE IF NOT EXISTS identity_keystore ( user_id VARCHAR PRIMARY KEY, identity_key BINARY NOT NULL)";
+		return "CREATE TABLE IF NOT EXISTS contacts (phone_number VARCHAR PRIMARY KEY, display_name VARCHAR, draft_message VARCHAR)";
 	}
 
-	public IdentityKey getIdentity(final String name) throws SQLException {
-		final String query = "SELECT identity_key FROM identity_keystore WHERE user_id = ?";
+	public void storeContactData(final ContactData contact) {
+		final String query = "MERGE INTO contacts VALUES (?, ?, ?)";
 
 		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
-
-			stmt.setString(1, name);
-			final ResultSet result = stmt.executeQuery();
-			if (result.first()) {
-				try {
-					return new IdentityKey(result.getBytes(1), 0);
-				} catch (final InvalidKeyException e) {
-					throw new SQLException(
-							"IdentityKeyTable: Value of identity_key for user_id [" + name + "] is invalid.", e);
-				}
-			} else {
-				return null;
-			}
-		}
-	}
-
-	public void storeIdentity(final String name, final IdentityKey identityKey) throws SQLException {
-		final String query = "MERGE INTO identity_keystore VALUES (?, ?)";
-
-		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
-
-			stmt.setString(1, name);
-			stmt.setBytes(2, identityKey.serialize());
+			stmt.setString(1, contact.getPhoneNumber());
+			stmt.setString(2, contact.getDisplayName());
+			stmt.setString(3, contact.getDraftMessage());
 
 			stmt.execute();
+		} catch (final SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

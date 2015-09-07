@@ -74,6 +74,22 @@ public class EventBus {
 		}
 	}
 
+	/**
+	 * Removes all listener of the specified class from all events.
+	 *
+	 * @param listener
+	 *            the listener class to remove
+	 */
+	synchronized public static void unregisterAll(final Class<? extends EventBusListener> listenerClass) {
+		for (final List<EventBusListener> list : map.values()) {
+			for (final EventBusListener listener : list) {
+				if (listenerClass.isAssignableFrom(listener.getClass())) {
+					list.remove(listener);
+				}
+			}
+		}
+	}
+
 	private EventBus() {
 	}
 

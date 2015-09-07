@@ -22,16 +22,20 @@ import de.norvos.eventbus.Event;
 
 public class MessageSentEvent implements Event {
 
+	private final File attachment;
 	private final String message;
 	private final String receiver;
 	private final long timestamp;
-	private final File attachment;
 
 	public MessageSentEvent(final String receiver, final String message, final long timestamp, final File attachment) {
 		this.receiver = receiver;
 		this.message = message;
 		this.timestamp = timestamp;
 		this.attachment = attachment;
+	}
+
+	public File getAttachment() {
+		return attachment;
 	}
 
 	public String getMessage() {
@@ -44,10 +48,6 @@ public class MessageSentEvent implements Event {
 
 	public long getTimestamp() {
 		return timestamp;
-	}
-
-	public File getAttachment(){
-		return attachment;
 	}
 
 }

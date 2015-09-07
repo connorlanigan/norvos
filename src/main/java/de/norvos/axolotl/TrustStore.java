@@ -36,7 +36,7 @@ public class TrustStore implements org.whispersystems.textsecure.api.push.TrustS
 	 *
 	 * @return the NorvosTrustStore
 	 */
-	public static TrustStore getInstance() {
+	synchronized public static TrustStore getInstance() {
 		if (store == null) {
 			store = new TrustStore();
 		}

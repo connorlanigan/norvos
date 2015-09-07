@@ -29,7 +29,7 @@ import de.norvos.persistence.tables.SessionTable;
 public class SessionStore implements org.whispersystems.libaxolotl.state.SessionStore {
 	private static SessionStore instance;
 
-	public static SessionStore getInstance() {
+	synchronized public static SessionStore getInstance() {
 		if (instance == null) {
 			instance = new SessionStore();
 		}

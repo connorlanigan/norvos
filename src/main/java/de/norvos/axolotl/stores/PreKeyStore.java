@@ -34,7 +34,7 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 
 	private static PreKeyStore instance;
 
-	public static PreKeyStore getInstance() {
+	synchronized public static PreKeyStore getInstance() {
 		if (instance == null) {
 			instance = new PreKeyStore();
 		}

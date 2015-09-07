@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.FlowPane?>
+
+<?import de.norvos.gui.components.SingleMessage?>
+
+<fx:root fx:id="centralPane" prefHeight="200.0" prefWidth="200.0" type="BorderPane" BorderPane.alignment="CENTER" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
+	<bottom>
+		<TextArea fx:id="messageInput" minHeight="80.0" onKeyReleased="#keyReleased" prefHeight="80.0" prefWidth="200.0" promptText="Type a message..." wrapText="true" BorderPane.alignment="CENTER">
+			<BorderPane.margin>
+				<Insets />
+			</BorderPane.margin>
+		</TextArea>
+	</bottom>
+	<center>
+		<VBox fx:id="messageList" prefHeight="200.0" prefWidth="100.0" spacing="5" BorderPane.alignment="CENTER">
+			<children>
+			</children>
+			<BorderPane.margin>
+				<Insets />
+			</BorderPane.margin>
+			<padding>
+				<Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
+			</padding>
+		</VBox>
+	</center>
+	<top>
+		<HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+			<children>
+				<Text fx:id="usernameDisplay" strokeType="OUTSIDE" strokeWidth="0.0" text="Connor Lanigan">
+					<font>
+						<Font size="20.0" />
+					</font>
+					<HBox.margin>
+						<Insets right="10.0" />
+					</HBox.margin>
+				</Text>
+				<CheckBox fx:id="verified" contentDisplay="CENTER" disable="true" mnemonicParsing="false" selected="true" text="Verified" textFill="#06f50a">
+					<tooltip>
+						<Tooltip text="You can be sure that your messages to this contact are secured." />
+					</tooltip>
+				</CheckBox>
+			</children>
+		</HBox>
+	</top>
+	<BorderPane.margin>
+		<Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+	</BorderPane.margin>
+</fx:root>

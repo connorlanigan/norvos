@@ -30,7 +30,7 @@ import de.norvos.persistence.tables.IdentityKeyTable;
 public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.IdentityKeyStore {
 	private static IdentityKeyStore instance;
 
-	public static IdentityKeyStore getInstance() {
+	synchronized public static IdentityKeyStore getInstance() {
 		if (instance == null) {
 			instance = new IdentityKeyStore();
 		}

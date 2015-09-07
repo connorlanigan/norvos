@@ -1,5 +1,6 @@
-package de.norvos.communication;
+package de.norvos.messages;
 
+import java.sql.SQLException;
 import java.util.concurrent.BlockingQueue;
 
 import org.whispersystems.libaxolotl.DuplicateMessageException;
@@ -19,14 +20,16 @@ import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 import de.norvos.axolotl.AxolotlStore;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.MessageReceivedEvent;
+import de.norvos.persistence.tables.DecryptedMessageTable;
 import javafx.concurrent.Task;
 
 public class MessageDecrypter {
 
 	private static BlockingQueue<TextSecureEnvelope> queue;
-	private static boolean running;
+	private static Task<Void> task;
+	private static Thread thread;
 
-	public static void addEncryptedMessage(final TextSecureEnvelope envelope) {
+	public static void pushEncryptedMessage(final TextSecureEnvelope envelope) {
 		while (true) {
 			try {
 				queue.put(envelope);
@@ -37,11 +40,11 @@ public class MessageDecrypter {
 	}
 
 	synchronized public static void start() {
-		if (running) {
+		if (thread != null && thread.isAlive()) {
 			throw new IllegalStateException("MessageDecrypter is already running!");
 		}
 
-		final Task<Void> task = new Task<Void>() {
+		task = new Task<Void>() {
 			@Override
 			protected Void call() {
 				while (!isCancelled()) {
@@ -52,8 +55,18 @@ public class MessageDecrypter {
 						final TextSecureContent content = cipher.decrypt(envelope);
 						final Optional<TextSecureDataMessage> dataMessage = content.getDataMessage();
 						if (dataMessage.isPresent()) {
-							EventBus.sendEvent(new MessageReceivedEvent(envelope, dataMessage.get()));
+							final TextSecureDataMessage dataMessageContent = dataMessage.get();
+							final DecryptedMessage message = new DecryptedMessage(System.currentTimeMillis(), false,
+									dataMessageContent.getBody().get(), envelope.getSource(), "", false);
+							try {
+								DecryptedMessageTable.getInstance().storeMessage(message);
+							} catch (final SQLException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							EventBus.sendEvent(new MessageReceivedEvent(message));
 						} else {
+							content.getSyncMessage();
 							// TODO log synchronize-message
 						}
 					} catch (final InterruptedException e) {
@@ -73,8 +86,12 @@ public class MessageDecrypter {
 			}
 
 		};
-		new Thread(task).start();
-		running = true;
+		thread = new Thread(task);
+		thread.start();
+	}
+
+	synchronized public static void stop() {
+		task.cancel();
 	}
 
 }

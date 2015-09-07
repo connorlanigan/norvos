@@ -33,7 +33,7 @@ public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.Si
 
 	private static SignedPreKeyStore instance;
 
-	public static SignedPreKeyStore getInstance() {
+	synchronized public static SignedPreKeyStore getInstance() {
 		if (instance == null) {
 			instance = new SignedPreKeyStore();
 		}

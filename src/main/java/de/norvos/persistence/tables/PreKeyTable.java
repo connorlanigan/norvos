@@ -28,7 +28,7 @@ import de.norvos.persistence.Database;
 public class PreKeyTable implements Table {
 	private static PreKeyTable instance;
 
-	public static PreKeyTable getInstance() {
+	synchronized public static PreKeyTable getInstance() {
 		if (instance == null) {
 			instance = new PreKeyTable();
 		}

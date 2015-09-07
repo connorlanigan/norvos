@@ -32,7 +32,7 @@ public class SessionTable implements Table {
 
 	private static SessionTable instance;
 
-	public static SessionTable getInstance() {
+	synchronized public static SessionTable getInstance() {
 		if (instance == null) {
 			instance = new SessionTable();
 		}

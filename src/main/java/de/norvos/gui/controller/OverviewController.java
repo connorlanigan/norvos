@@ -18,8 +18,10 @@ package de.norvos.gui.controller;
 
 import java.util.Optional;
 
+import de.norvos.contacts.Contact;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.ApplicationQuitEvent;
+import de.norvos.gui.components.MessageList;
 import de.norvos.utils.Constants;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -31,14 +33,15 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 
-public class OverviewController{
+public class OverviewController {
 
 	private static OverviewController instance;
 
-	public static OverviewController getInstance() {
+	synchronized public static OverviewController getInstance() {
 		return instance;
 	}
 
@@ -46,15 +49,21 @@ public class OverviewController{
 	private VBox contactList;
 
 	@FXML
+	private BorderPane contentPane;
+	@FXML
 	private TextArea messageInput;
 	@FXML
 	private Button quitButton;
+
 	@FXML
 	private Button searchClearButton;
 
 	@FXML
 	private TextField searchInput;
 
+	public OverviewController() {
+		instance = this;
+	}
 
 	public void clearSearchBar(final ActionEvent event) {
 		searchInput.setText("");
@@ -83,6 +92,12 @@ public class OverviewController{
 	@FXML
 	public void initialize() {
 		searchClearButton.setManaged(false);
+	}
+
+	public void loadChat(final Contact contact) {
+		final MessageList messageList = new MessageList();
+		messageList.setUser(contact.getPhoneNumber());
+		contentPane.setCenter(messageList);
 	}
 
 	public void searchInputKeyReleased(final KeyEvent event) {

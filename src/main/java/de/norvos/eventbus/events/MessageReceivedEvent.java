@@ -16,26 +16,18 @@
  *******************************************************************************/
 package de.norvos.eventbus.events;
 
-import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
-import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
-
 import de.norvos.eventbus.Event;
+import de.norvos.messages.DecryptedMessage;
 
 public class MessageReceivedEvent implements Event {
 
-	private final TextSecureEnvelope envelope;
-	private final TextSecureDataMessage message;
+	private final DecryptedMessage message;
 
-	public MessageReceivedEvent(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
-		this.envelope = envelope;
+	public MessageReceivedEvent(final DecryptedMessage message) {
 		this.message = message;
 	}
 
-	public TextSecureEnvelope getEnvelope() {
-		return envelope;
-	}
-
-	public TextSecureDataMessage getMessage() {
+	public DecryptedMessage getMessage() {
 		return message;
 	}
 

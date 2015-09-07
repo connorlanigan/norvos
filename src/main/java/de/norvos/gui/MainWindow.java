@@ -36,7 +36,7 @@ public class MainWindow extends Application {
 
 	private static MainWindow instance = null;
 
-	public static MainWindow getInstance(){
+	synchronized public static MainWindow getInstance() {
 		return instance;
 	}
 
@@ -90,6 +90,11 @@ public class MainWindow extends Application {
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle(Constants.WINDOW_TITLE);
 		primaryStage.centerOnScreen();
+
+		primaryStage.setOnCloseRequest(event -> {
+			primaryStage.setIconified(true);
+			event.consume();
+		});
 
 		final boolean hasToRegister = !"true".equals(AccountDataStore.getStringValue("setupFinished"));
 		if (hasToRegister) {

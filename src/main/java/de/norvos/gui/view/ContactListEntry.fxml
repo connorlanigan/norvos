@@ -7,7 +7,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.shape.*?>
 
-<fx:root alignment="CENTER_LEFT" styleClass="contactListEntry" prefHeight="60.0" prefWidth="200.0"  maxWidth="1.7976931348623157E308" type="Button" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" onAction="#handleClick" prefHeight="60.0" prefWidth="200.0" styleClass="contactListEntry" type="Button" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1">
 	<graphic>
 		<HBox alignment="CENTER_LEFT">
 			<Circle fx:id="newMessageIndicator" fill="#ee8207" radius="5.0" stroke="TRANSPARENT" visible="false">

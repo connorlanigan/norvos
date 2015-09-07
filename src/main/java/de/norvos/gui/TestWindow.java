@@ -24,6 +24,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 
 import de.norvos.account.AccountDataStore;
+import de.norvos.contacts.ContactData;
+import de.norvos.persistence.tables.Contacts;
 import de.norvos.utils.Constants;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +36,10 @@ import javafx.stage.Stage;
 public class TestWindow extends Application {
 
 	public static void main(final String[] args) {
+		Contacts.getInstance().storeContactData(new ContactData("+491788174362", "Connor", ""));
+		Contacts.getInstance().storeContactData(new ContactData("1", "Léanne", ""));
+		Contacts.getInstance().storeContactData(new ContactData("2", "Björn", ""));
+
 		Security.addProvider(new BouncyCastleProvider());
 
 		AxolotlLoggerProvider.setProvider(
@@ -82,6 +88,11 @@ public class TestWindow extends Application {
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle(Constants.WINDOW_TITLE);
 		primaryStage.centerOnScreen();
+
+		primaryStage.setOnCloseRequest(event -> {
+			primaryStage.setIconified(true);
+			event.consume();
+		});
 
 		initializeDB();
 

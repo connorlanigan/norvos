@@ -30,7 +30,7 @@ import de.norvos.persistence.Database;
 public class SignedPreKeyTable implements Table {
 	private static SignedPreKeyTable instance;
 
-	public static SignedPreKeyTable getInstance() {
+	synchronized public static SignedPreKeyTable getInstance() {
 		if (instance == null) {
 			instance = new SignedPreKeyTable();
 		}

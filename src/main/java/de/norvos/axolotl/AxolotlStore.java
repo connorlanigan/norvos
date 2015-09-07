@@ -35,7 +35,7 @@ public class AxolotlStore implements org.whispersystems.libaxolotl.state.Axolotl
 
 	private static AxolotlStore instance;
 
-	public static AxolotlStore getInstance() {
+	synchronized public static AxolotlStore getInstance() {
 		if (instance == null) {
 			instance = new AxolotlStore();
 		}
