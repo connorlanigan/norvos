@@ -48,9 +48,9 @@ public class Registrator {
 		oneTimePreKeys = PreKeyStore.getInstance().initialize();
 		SignedPreKeyStore.getInstance().initialize(identityKeyPair, initialSignedKeyID);
 
-		AccountDataStore.storeStringValue("password", RandomUtils.randomAlphanumerical(passwordLength));
-		AccountDataStore.storeStringValue("signalingKey", RandomUtils.randomAlphanumerical(52));
-		AccountDataStore.storeStringValue("installID", String.valueOf(RandomUtils.generateInstallId()));
+		SettingsService.setPassword(RandomUtils.randomAlphanumerical(passwordLength));
+		SettingsService.setSignalingKey(RandomUtils.randomAlphanumerical(52));
+		SettingsService.setInstallID(RandomUtils.generateInstallId());
 
 		initialized = true;
 	}
@@ -94,13 +94,13 @@ public class Registrator {
 			throw new IllegalStateException("Registrator must request a code before verifying.");
 		}
 
-		final String url = AccountDataStore.getStringValue("url");
-		final String username = AccountDataStore.getStringValue("username");
+		final String url = SettingsService.getURL();
+		final String username = SettingsService.getUsername();
 		final TrustStore trustStore = TrustStore.getInstance();
-		final String password = AccountDataStore.getStringValue("password");
+		final String password = SettingsService.getPassword();
 
-		final String signalingKey = AccountDataStore.getStringValue("signalingKey");
-		final Integer installID = Integer.valueOf(AccountDataStore.getStringValue("installID"));
+		final String signalingKey = SettingsService.getSignalingKey();
+		final Integer installID = SettingsService.getInstallID();
 
 		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
 				password);
@@ -115,6 +115,6 @@ public class Registrator {
 
 		accountManager.setPreKeys(identityKey, lastResortKey, signedPreKey, oneTimePreKeys);
 
-		AccountDataStore.storeStringValue("setupFinished", "true");
+		SettingsService.setSetupFinished(true);
 	}
 }

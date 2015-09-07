@@ -23,19 +23,20 @@ import java.util.Locale;
 import org.junit.Test;
 
 import de.norvos.account.AccountDataStore;
+import de.norvos.account.SettingsService;
 
 public class TranslationsTest {
 
 	@Test
 	public void translationAvailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
+		SettingsService.setLanguage(Language.ENGLISH);
 		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
 		assertEquals("Registration failed. Reason: TestReason", translated);
 	}
 
 	@Test
 	public void translationUnavailable() {
-		AccountDataStore.storeStringValue("locale", Locale.ENGLISH.toLanguageTag());
+		SettingsService.setLanguage(Language.ENGLISH);
 		String translated = Translations.format("this resource does", "not exist", "TestReason");
 		assertEquals("<I18N:this resource does.not exist>", translated);
 

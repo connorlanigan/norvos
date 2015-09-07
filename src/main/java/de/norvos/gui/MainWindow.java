@@ -25,6 +25,7 @@ import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 
 import de.norvos.account.AccountDataStore;
 import de.norvos.account.Registrator;
+import de.norvos.account.SettingsService;
 import de.norvos.utils.Constants;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -55,7 +56,7 @@ public class MainWindow extends Application {
 	}
 
 	private void initializeDB() {
-		AccountDataStore.storeStringValue("url", "https://textsecure-service.whispersystems.org");
+		SettingsService.setURL("https://textsecure-service.whispersystems.org");
 	}
 
 	/**

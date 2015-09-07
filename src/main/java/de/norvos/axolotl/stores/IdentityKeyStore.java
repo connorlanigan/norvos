@@ -23,6 +23,7 @@ import org.whispersystems.libaxolotl.IdentityKeyPair;
 import org.whispersystems.libaxolotl.InvalidKeyException;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
+import de.norvos.account.SettingsService;
 import de.norvos.log.Errors;
 import de.norvos.persistence.tables.AccountDataTable;
 import de.norvos.persistence.tables.IdentityKeyTable;
@@ -43,12 +44,12 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 	@Override
 	public IdentityKeyPair getIdentityKeyPair() {
 		try {
-			final byte[] keyPairBytes = AccountDataTable.getInstance().getBinary("identityKeyPair");
+			final byte[] keyPairBytes = SettingsService.getIdentityKeyPair();
 			if (keyPairBytes == null) {
 				return null;
 			}
 			return new IdentityKeyPair(keyPairBytes);
-		} catch (InvalidKeyException | SQLException e) {
+		} catch (InvalidKeyException e) {
 			Errors.critical("databaseError");
 			return null;
 		}
@@ -110,13 +111,13 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 	}
 
 	@SuppressWarnings("static-method")
-	private void setIdentityKeyPair(final IdentityKeyPair keyPair) throws SQLException {
+	private void setIdentityKeyPair(final IdentityKeyPair keyPair){
 		AccountDataTable.getInstance().storeBinary("identityKeyPair", keyPair.serialize());
 	}
 
 	@SuppressWarnings("static-method")
-	private void setLocalRegistrationId(final int id) throws SQLException {
-		AccountDataTable.getInstance().storeString("localRegistrationId", String.valueOf(id));
+	private void setLocalRegistrationId(final int id){
+		SettingsService.setLocalRegistrationId(id);
 	}
 
 }

@@ -17,28 +17,31 @@
 package de.norvos.gui;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 
-import de.norvos.account.AccountDataStore;
+import de.norvos.account.SettingsService;
 import de.norvos.contacts.ContactData;
+import de.norvos.i18n.Language;
 import de.norvos.persistence.tables.Contacts;
 import de.norvos.utils.Constants;
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class TestWindow extends Application {
+public class TestWindow extends MainWindow {
 
 	public static void main(final String[] args) {
 		Contacts.getInstance().storeContactData(new ContactData("+491788174362", "Connor", ""));
 		Contacts.getInstance().storeContactData(new ContactData("1", "Léanne", ""));
 		Contacts.getInstance().storeContactData(new ContactData("2", "Björn", ""));
+
+		SettingsService.setLanguage(Language.CHINESE);
 
 		Security.addProvider(new BouncyCastleProvider());
 
@@ -50,7 +53,7 @@ public class TestWindow extends Application {
 	private Stage primaryStage;
 
 	private void initializeDB() {
-		AccountDataStore.storeStringValue("url", "https://textsecure-service.whispersystems.org");
+		SettingsService.setURL("https://textsecure-service.whispersystems.org");
 	}
 
 	/**
@@ -85,6 +88,9 @@ public class TestWindow extends Application {
 
 	@Override
 	public void start(final Stage primaryStage) {
+
+		fakeApplicationSingleton();
+
 		this.primaryStage = primaryStage;
 		primaryStage.setTitle(Constants.WINDOW_TITLE);
 		primaryStage.centerOnScreen();
@@ -97,6 +103,19 @@ public class TestWindow extends Application {
 		initializeDB();
 
 		loadFXML("Overview.fxml");
+	}
+
+	private void fakeApplicationSingleton() {
+		try {
+			Field instanceField = MainWindow.class.getDeclaredField("instance");
+			instanceField.setAccessible(true);
+			instanceField.set(null, this);
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+
 	}
 
 }

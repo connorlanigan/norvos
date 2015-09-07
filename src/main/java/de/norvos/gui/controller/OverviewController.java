@@ -16,6 +16,8 @@
  *******************************************************************************/
 package de.norvos.gui.controller;
 
+import static de.norvos.i18n.Translations.T;
+
 import java.util.Optional;
 
 import de.norvos.contacts.Contact;
@@ -23,6 +25,9 @@ import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.ApplicationQuitEvent;
 import de.norvos.gui.components.MessageList;
 import de.norvos.utils.Constants;
+import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -87,6 +92,25 @@ public class OverviewController {
 				Platform.exit();
 			}
 		});
+	}
+
+	public void handleHelpButton(final ActionEvent event) {
+		BrowserLauncher launcher;
+		try {
+			launcher = new BrowserLauncher();
+			launcher.openURLinBrowser(Constants.HELP_URL);
+		} catch (BrowserLaunchingInitializingException | UnsupportedOperatingSystemException e1) {
+			Platform.runLater(() -> {
+				final Alert alert = new Alert(AlertType.INFORMATION);
+				alert.initStyle(StageStyle.UTILITY);
+				alert.setTitle(T("get_help_title"));
+				alert.setHeaderText(T("get_help_header_text"));
+				alert.setContentText(String.format(T("supportMessage"), "\n"+Constants.HELP_URL));
+
+				alert.show();
+			});
+		}
+
 	}
 
 	@FXML

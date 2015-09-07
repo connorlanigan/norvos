@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import de.norvos.persistence.tables.AccountDataTable;
 
 public class AccountDataStore {
-	public static byte[] getBinaryValue(final String key) {
+	static byte[] getBinaryValue(final String key) {
 		try {
 			return AccountDataTable.getInstance().getBinary(key);
 		} catch (final SQLException e) {
@@ -29,7 +29,7 @@ public class AccountDataStore {
 		}
 	}
 
-	public static String getStringValue(final String key) {
+	static String getStringValue(final String key) {
 		try {
 			return AccountDataTable.getInstance().getString(key);
 		} catch (final SQLException e) {
@@ -37,7 +37,7 @@ public class AccountDataStore {
 		}
 	}
 
-	public static boolean storeBinaryValue(final String key, final byte[] value) {
+	static boolean storeBinaryValue(final String key, final byte[] value) {
 		try {
 			AccountDataTable.getInstance().storeBinary(key, value);
 			return true;
@@ -46,7 +46,7 @@ public class AccountDataStore {
 		}
 	}
 
-	public static boolean storeStringValue(final String key, final String value) {
+	static boolean storeStringValue(final String key, final String value) {
 		try {
 			AccountDataTable.getInstance().storeString(key, value);
 			return true;

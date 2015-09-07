@@ -25,6 +25,7 @@ import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 import de.norvos.account.AccountDataStore;
 import de.norvos.account.Registrator;
+import de.norvos.account.SettingsService;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -71,7 +72,7 @@ public class RegisterPhoneNumberController {
 
 				try {
 					phoneNumber = formatPhoneNumber(phoneNumber);
-					AccountDataStore.storeStringValue("username", phoneNumber);
+					SettingsService.setUsername(phoneNumber);
 					final RegisterController controller = RegisterController.getInstance();
 
 					try {

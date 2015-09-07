@@ -101,7 +101,7 @@
 			<right>
 				<HBox fx:id="menuBarRight" BorderPane.alignment="CENTER">
 					<children>
-						<Button fx:id="helpButton" mnemonicParsing="false" text="Help">
+						<Button fx:id="helpButton" mnemonicParsing="false" text="Help" onAction="#handleHelpButton">
 							<HBox.margin>
 								<Insets />
 							</HBox.margin>

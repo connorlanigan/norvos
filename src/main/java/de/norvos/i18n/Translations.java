@@ -25,6 +25,12 @@ import de.norvos.log.Errors;
 
 public class Translations {
 
+	public static String T(final String stringId){
+		final Locale locale = Locale.forLanguageTag(AccountDataStore.getStringValue("locale"));
+		final ResourceBundle res = ResourceBundle.getBundle("de.norvos.i18n.strings", locale);
+		return res.getString(stringId);
+	}
+
 	/**
 	 * Translates the message and returns a formatted string using the specified
 	 * format string and arguments.
