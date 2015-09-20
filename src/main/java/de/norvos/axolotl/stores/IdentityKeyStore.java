@@ -111,7 +111,7 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 	}
 
 	@SuppressWarnings("static-method")
-	private void setIdentityKeyPair(final IdentityKeyPair keyPair){
+	private void setIdentityKeyPair(final IdentityKeyPair keyPair) throws SQLException{
 		AccountDataTable.getInstance().storeBinary("identityKeyPair", keyPair.serialize());
 	}
 

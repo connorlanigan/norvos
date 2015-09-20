@@ -16,52 +16,26 @@
  *******************************************************************************/
 package de.norvos.i18n;
 
+import java.text.MessageFormat;
 import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import de.norvos.account.AccountDataStore;
-import de.norvos.log.Errors;
+import de.norvos.account.SettingsService;
 
 public class Translations {
 
-	public static String T(final String stringId){
-		final Locale locale = Locale.forLanguageTag(AccountDataStore.getStringValue("locale"));
-		final ResourceBundle res = ResourceBundle.getBundle("de.norvos.i18n.strings", locale);
-		return res.getString(stringId);
-	}
-
-	/**
-	 * Translates the message and returns a formatted string using the specified
-	 * format string and arguments.
-	 */
-	public static String format(final String resourceBundle, final String stringId, final Object... args) {
-		return String.format(getMessage(resourceBundle, stringId), args);
-	}
-
-	/**
-	 * Translates the given message.
-	 *
-	 * @param originalMessage
-	 *            message in English
-	 * @return translated message
-	 */
-	private static String getMessage(final String resourceBundle, final String stringId) {
-		String translated = "<I18N:" + resourceBundle + "." + stringId + ">";
-
+	public static String T(final String stringId, final Object... args) {
+		final Locale locale = SettingsService.getLanguage().getLocale();
+		ResourceBundle res;
 		try {
-			final String resourceBundlePath = "de.norvos.i18n.strings." + resourceBundle.toLowerCase() + "."
-					+ resourceBundle;
-			final Locale locale = Locale.forLanguageTag(AccountDataStore.getStringValue("locale"));
-			final ResourceBundle res = ResourceBundle.getBundle(resourceBundlePath, locale);
-
-			translated = res.getString(stringId);
-		} catch (final NullPointerException e) {
-			Errors.debug("Requested translation for a null-pointer.");
-		} catch (final MissingResourceException e) {
-			Errors.debug("Missing translation resource: " + resourceBundle + "#" + stringId);
+			res = ResourceBundle.getBundle("de.norvos.i18n.strings", locale, new UTF8Control());
+			final String patternString = res.getString(stringId);
+			return MessageFormat.format(patternString, args, locale);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return "{i18n-ERR}";
 
-		return translated;
 	}
 }
