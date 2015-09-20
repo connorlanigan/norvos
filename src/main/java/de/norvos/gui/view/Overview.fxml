@@ -26,7 +26,7 @@
 					<top>
 						<HBox fx:id="searchBar" alignment="CENTER" prefWidth="200.0" BorderPane.alignment="CENTER">
 							<children>
-								<TextField fx:id="searchInput" onKeyReleased="#searchInputKeyReleased" promptText="Search..." HBox.hgrow="ALWAYS">
+								<TextField fx:id="searchInput" onKeyReleased="#searchInputKeyReleased" promptText="%search_placeholder" HBox.hgrow="ALWAYS">
 									<opaqueInsets>
 										<Insets right="80.0" />
 									</opaqueInsets>
@@ -58,7 +58,7 @@
 						</VBox>
 					</center>
 					<bottom>
-						<Button fx:id="addContactButton" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="Add a Contact">
+						<Button fx:id="addContactButton" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="%add_contact_button">
 							<HBox.margin>
 								<Insets />
 							</HBox.margin>
@@ -86,7 +86,7 @@
 			<left>
 				<HBox fx:id="menuBarLeft" BorderPane.alignment="CENTER">
 					<children>
-						<Button fx:id="quitButton" mnemonicParsing="false" onAction="#handleQuitButton" text="Quit">
+						<Button fx:id="quitButton" mnemonicParsing="false" onAction="#handleQuitButton" text="%quit_button">
 							<HBox.margin>
 								<Insets right="10.0" />
 							</HBox.margin>
@@ -101,7 +101,7 @@
 			<right>
 				<HBox fx:id="menuBarRight" BorderPane.alignment="CENTER">
 					<children>
-						<Button fx:id="helpButton" mnemonicParsing="false" text="Help" onAction="#handleHelpButton">
+						<Button fx:id="helpButton" mnemonicParsing="false" text="%help_button" onAction="#handleHelpButton">
 							<HBox.margin>
 								<Insets />
 							</HBox.margin>

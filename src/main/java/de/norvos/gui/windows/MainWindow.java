@@ -14,19 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.gui.controller.register;
+package de.norvos.gui.windows;
 
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+/**
+ * The window containing the main user interface.
+ * 
+ * @author Connor Lanigan
+ */
+public class MainWindow extends Window {
 
-public class RegisterCompleteController {
+	private static MainWindow instance = null;
 
-	@FXML
-	private Button button;
-
-	public void handleButtonClicked(final ActionEvent event) {
-		Platform.runLater(() -> Platform.exit());
+	synchronized public static MainWindow getInstance() {
+		return instance;
 	}
+
+	public MainWindow() {
+		super("Overview.fxml", "/", true, 900, 600);
+	}
+
 }

@@ -16,13 +16,14 @@
  *******************************************************************************/
 package de.norvos.log;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import javax.swing.JOptionPane;
 
-import de.norvos.i18n.Translations;
-import de.norvos.utils.FileUtils;
+import de.norvos.utils.ResourceUtils;
 
 //TODO replace self-built logging with Java file rotation logger
 public class Errors {
@@ -42,7 +43,7 @@ public class Errors {
 	 *            optional arguments for the error message
 	 */
 	public static void critical(final String stringId, final Object... args) {
-		final String messageText = Translations.format("errors", stringId, args);
+		final String messageText = translate(stringId, args);
 		critical(messageText);
 		JOptionPane.showMessageDialog(null, messageText, "Norvos – Error", JOptionPane.ERROR_MESSAGE);
 	}
@@ -74,13 +75,13 @@ public class Errors {
 	 *            optional arguments for the warning message
 	 */
 	public static void warning(final String stringId, final Object... args) {
-		final String messageText = Translations.format("errors", stringId, args);
+		final String messageText = translate(stringId, args);
 		warning(messageText);
 		JOptionPane.showMessageDialog(null, messageText, "Norvos – Warning", JOptionPane.WARNING_MESSAGE);
 	}
 
 	private static void writeToFile(final String fullMessage) {
-		try (PrintWriter writer = new PrintWriter(FileUtils.getLogfile().toFile())) {
+		try (PrintWriter writer = new PrintWriter(ResourceUtils.getLogfile().toFile())) {
 			writer.println(fullMessage);
 		} catch (final FileNotFoundException e) {
 		}

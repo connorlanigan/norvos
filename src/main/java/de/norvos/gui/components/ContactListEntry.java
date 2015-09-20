@@ -17,6 +17,7 @@
 package de.norvos.gui.components;
 
 import java.io.IOException;
+import java.net.URL;
 
 import de.norvos.contacts.Contact;
 import de.norvos.eventbus.Event;
@@ -26,6 +27,7 @@ import de.norvos.eventbus.events.MessageReceivedEvent;
 import de.norvos.eventbus.events.MessageSentEvent;
 import de.norvos.gui.controller.OverviewController;
 import de.norvos.utils.Constants;
+import de.norvos.utils.ResourceUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,14 +50,15 @@ public class ContactListEntry extends Button implements EventBusListener {
 	private Circle newMessageIndicator;
 
 	public ContactListEntry() {
-		final FXMLLoader fxmlLoader = new FXMLLoader(
-				getClass().getResource(Constants.FXML_LOCATION + "ContactListEntry.fxml"));
+		final FXMLLoader fxmlLoader = new FXMLLoader();
 
+		URL fxml = getClass().getResource(Constants.FXML_LOCATION + "ContactListEntry.fxml");
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
+		fxmlLoader.setResources(ResourceUtils.getLocalizedStringsBundle());
 
 		try {
-			fxmlLoader.load();
+			fxmlLoader.load(fxml.openStream());
 			EventBus.register(MessageReceivedEvent.class, this);
 			EventBus.register(MessageSentEvent.class, this);
 		} catch (final IOException exception) {

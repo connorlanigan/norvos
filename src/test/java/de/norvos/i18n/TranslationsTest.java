@@ -16,32 +16,28 @@
  *******************************************************************************/
 package de.norvos.i18n;
 
+import static de.norvos.i18n.Translations.translate;
 import static org.junit.Assert.assertEquals;
-
-import java.util.Locale;
 
 import org.junit.Test;
 
-import de.norvos.account.AccountDataStore;
 import de.norvos.account.SettingsService;
+import de.norvos.utils.Constants;
 
 public class TranslationsTest {
 
 	@Test
 	public void translationAvailable() {
-		SettingsService.setLanguage(Language.ENGLISH);
-		final String translated = Translations.format("errors", "registrationFailed", "TestReason");
+		SettingsService.setLanguage(AvailableLanguage.ENGLISH);
+		final String translated = translate("registrationFailed", "TestReason");
 		assertEquals("Registration failed. Reason: TestReason", translated);
 	}
 
 	@Test
 	public void translationUnavailable() {
-		SettingsService.setLanguage(Language.ENGLISH);
-		String translated = Translations.format("this resource does", "not exist", "TestReason");
-		assertEquals("<I18N:this resource does.not exist>", translated);
-
-		translated = Translations.format("errors", "testEntry", "TestReason");
-		assertEquals("<I18N:errors.testEntry>", translated);
+		SettingsService.setLanguage(AvailableLanguage.ENGLISH);
+		final String translated = translate("This does not exist", "TestReason");
+		assertEquals(Constants.I18N_ERROR, translated);
 	}
 
 }

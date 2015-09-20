@@ -4,26 +4,26 @@ import java.util.Locale;
 
 import org.whispersystems.libaxolotl.IdentityKeyPair;
 
-import de.norvos.i18n.Language;
+import de.norvos.i18n.AvailableLanguage;
 
 public class SettingsService {
 
 	private enum Setting {
-		LOCALE("locale"),
-		SERVERURL("server_url"),
-		PASSWORD("password"),
-		INSTALLID("install_id"),
-		USERNAME("username"),
-		SETUPFINISHED("setup_finished"),
-		LOCALREGISTRATIONID("local_registration_id"),
 		IDENTITYKEYPAIR("identity_keypair"),
-		SIGNALINGKEY("signaling_key");
+		INSTALLID("install_id"),
+		LOCALE("locale"),
+		LOCALREGISTRATIONID("local_registration_id"),
+		PASSWORD("password"),
+		SERVERURL("server_url"),
+		SETUPFINISHED("setup_finished"),
+		SIGNALINGKEY("signaling_key"),
+		USERNAME("username");
 
-		Setting(String key) {
+		private final String key;
+
+		Setting(final String key) {
 			this.key = key;
 		}
-
-		private String key;
 
 		@Override
 		public String toString() {
@@ -31,95 +31,92 @@ public class SettingsService {
 		}
 	}
 
-	public static void setLanguage(Language language){
-		setSetting(Setting.LOCALE, language.getLocale().toLanguageTag());
-	}
-
-	public static Language getLanguage(){
-		String languageTag = getStringSetting(Setting.LOCALE);
-		return Language.forLocale(Locale.forLanguageTag(languageTag));
-	}
-
-	public static void setURL(String url) {
-		setSetting(Setting.SERVERURL, url);
-	}
-
-	public static String getURL() {
-		return getStringSetting(Setting.SERVERURL);
-	}
-
-	public static void setLocalRegistrationId(int id) {
-		setSetting(Setting.LOCALREGISTRATIONID, String.valueOf(id));
-	}
-
-	public static int getLocalRegistrationId() {
-		return Integer.valueOf(getStringSetting(Setting.LOCALREGISTRATIONID));
-	}
-
-	public static void setIdentityKeyPair(IdentityKeyPair keyPair) {
-		setSetting(Setting.IDENTITYKEYPAIR, keyPair.serialize());
+	synchronized private static byte[] getBinarySetting(final Setting setting) {
+		return AccountDataStore.getBinaryValue(setting.toString());
 	}
 
 	public static byte[] getIdentityKeyPair() {
 		return getBinarySetting(Setting.IDENTITYKEYPAIR);
 	}
 
-
-	public static void setUsername(String username) {
-		setSetting(Setting.USERNAME, username);
+	public static int getInstallID() {
+		return Integer.valueOf(getStringSetting(Setting.INSTALLID));
 	}
 
-	public static String getUsername() {
-		return getStringSetting(Setting.USERNAME);
+	public static AvailableLanguage getLanguage() {
+		final String languageTag = getStringSetting(Setting.LOCALE);
+		return AvailableLanguage.forLocaleLanguage(Locale.forLanguageTag(languageTag));
 	}
 
-
-	public static void setPassword(String password) {
-		setSetting(Setting.PASSWORD, password);
+	public static int getLocalRegistrationId() {
+		return Integer.valueOf(getStringSetting(Setting.LOCALREGISTRATIONID));
 	}
 
 	public static String getPassword() {
 		return getStringSetting(Setting.PASSWORD);
 	}
 
-	public static void setSignalingKey(String signalingKey) {
-		setSetting(Setting.SIGNALINGKEY, signalingKey);
-	}
-
 	public static String getSignalingKey() {
 		return getStringSetting(Setting.SIGNALINGKEY);
 	}
 
-	public static void setInstallID(int installID) {
-		setSetting(Setting.INSTALLID, String.valueOf(installID));
+	synchronized private static String getStringSetting(final Setting setting) {
+		return AccountDataStore.getStringValue(setting.toString());
 	}
 
-	public static int getInstallID() {
-		return Integer.valueOf(getStringSetting(Setting.INSTALLID));
+	public static String getURL() {
+		return getStringSetting(Setting.SERVERURL);
 	}
 
-	public static void setSetupFinished(boolean finished) {
-		setSetting(Setting.SETUPFINISHED, String.valueOf(finished));
+	public static String getUsername() {
+		return getStringSetting(Setting.USERNAME);
 	}
 
 	public static boolean isSetupFinished() {
 		return Boolean.valueOf(getStringSetting(Setting.SETUPFINISHED));
 	}
 
+	public static void setIdentityKeyPair(final IdentityKeyPair keyPair) {
+		setSetting(Setting.IDENTITYKEYPAIR, keyPair.serialize());
+	}
 
-	synchronized private static void setSetting(Setting setting, String value) {
+	public static void setInstallID(final int installID) {
+		setSetting(Setting.INSTALLID, String.valueOf(installID));
+	}
+
+	public static void setLanguage(final AvailableLanguage language) {
+		setSetting(Setting.LOCALE, language.getLocale().toLanguageTag());
+	}
+
+	public static void setLocalRegistrationId(final int id) {
+		setSetting(Setting.LOCALREGISTRATIONID, String.valueOf(id));
+	}
+
+	public static void setPassword(final String password) {
+		setSetting(Setting.PASSWORD, password);
+	}
+
+	synchronized private static void setSetting(final Setting setting, final byte[] value) {
+		AccountDataStore.storeBinaryValue(setting.toString(), value);
+	}
+
+	synchronized private static void setSetting(final Setting setting, final String value) {
 		AccountDataStore.storeStringValue(setting.toString(), value);
 	}
 
-	synchronized private static String getStringSetting(Setting setting) {
-		return AccountDataStore.getStringValue(setting.toString());
+	public static void setSetupFinished(final boolean finished) {
+		setSetting(Setting.SETUPFINISHED, String.valueOf(finished));
 	}
 
-	synchronized private static byte[] getBinarySetting(Setting setting) {
-		return AccountDataStore.getBinaryValue(setting.toString());
+	public static void setSignalingKey(final String signalingKey) {
+		setSetting(Setting.SIGNALINGKEY, signalingKey);
 	}
 
-	synchronized private static void setSetting(Setting setting, byte[] value) {
-		AccountDataStore.storeBinaryValue(setting.toString(), value);
+	public static void setURL(final String url) {
+		setSetting(Setting.SERVERURL, url);
+	}
+
+	public static void setUsername(final String username) {
+		setSetting(Setting.USERNAME, username);
 	}
 }

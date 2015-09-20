@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import de.norvos.persistence.tables.Table;
-import de.norvos.utils.FileUtils;
+import de.norvos.utils.ResourceUtils;
 
 public class Database {
 	private static Connection connection;
@@ -49,7 +49,7 @@ public class Database {
 				System.err.println("yep");
 				throw new SQLException(e);
 			}
-			connection = DriverManager.getConnection("jdbc:h2:" + FileUtils.getDatabaseDirectory());
+			connection = DriverManager.getConnection("jdbc:h2:" + ResourceUtils.getDatabaseDirectory());
 		}
 	}
 }

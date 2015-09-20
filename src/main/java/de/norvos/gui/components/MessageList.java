@@ -1,12 +1,16 @@
 package de.norvos.gui.components;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import de.norvos.contacts.Contact;
 import de.norvos.messages.DecryptedMessage;
 import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
+import de.norvos.utils.ResourceUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
@@ -31,14 +35,15 @@ public class MessageList extends BorderPane {
 	private CheckBox verified;
 
 	public MessageList() {
-		final FXMLLoader fxmlLoader = new FXMLLoader(
-				getClass().getResource(Constants.FXML_LOCATION + "MessageList.fxml"));
+		final FXMLLoader fxmlLoader = new FXMLLoader();
 
+		URL fxml = getClass().getResource(Constants.FXML_LOCATION + "MessageList.fxml");
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
+		fxmlLoader.setResources(ResourceUtils.getLocalizedStringsBundle());
 
 		try {
-			fxmlLoader.load();
+			fxmlLoader.load(fxml.openStream());
 		} catch (final IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -46,6 +51,11 @@ public class MessageList extends BorderPane {
 
 	public String getUser() {
 		return user;
+	}
+
+	public void initialize() {
+		// TODO get verified status
+		setVerified(false);
 	}
 
 	public void keyReleased(final KeyEvent event) {
@@ -64,6 +74,17 @@ public class MessageList extends BorderPane {
 			singleMessage.setSent(String.valueOf(message.isSent()));
 			singleMessage.setTime(message.getTimestamp());
 			messageList.getChildren().add(singleMessage);
+		}
+	}
+
+	private void setVerified(final boolean value) {
+		verified.setSelected(value);
+
+		// TODO change color
+		if (value) {
+			verified.setText(translate("verified_label"));
+		} else {
+			verified.setText(translate("not_verified_label"));
 		}
 	}
 

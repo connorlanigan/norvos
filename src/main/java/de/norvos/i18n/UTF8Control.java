@@ -22,14 +22,16 @@ import java.util.ResourceBundle.Control;
  * @author Connor Lanigan
  */
 public class UTF8Control extends Control {
-	public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-			throws IllegalAccessException, InstantiationException, IOException {
-		String bundleName = toBundleName(baseName, locale);
+	@Override
+	public ResourceBundle newBundle(final String baseName, final Locale locale, final String format,
+			final ClassLoader loader, final boolean reload)
+					throws IllegalAccessException, InstantiationException, IOException {
+		final String bundleName = toBundleName(baseName, locale);
 		ResourceBundle bundle = null;
 		if (format.equals("java.class")) {
 			try {
 				@SuppressWarnings("unchecked")
-				Class<? extends ResourceBundle> bundleClass = (Class<? extends ResourceBundle>) loader
+				final Class<? extends ResourceBundle> bundleClass = (Class<? extends ResourceBundle>) loader
 						.loadClass(bundleName);
 
 				// If the class isn't a ResourceBundle subclass, throw a
@@ -39,7 +41,7 @@ public class UTF8Control extends Control {
 				} else {
 					throw new ClassCastException(bundleClass.getName() + " cannot be cast to ResourceBundle");
 				}
-			} catch (ClassNotFoundException e) {
+			} catch (final ClassNotFoundException e) {
 			}
 		} else if (format.equals("java.properties")) {
 			// Connor Lanigan: The check in toResourceName0 is skipped, as that
@@ -53,27 +55,25 @@ public class UTF8Control extends Control {
 			final boolean reloadFlag = reload;
 			InputStream stream = null;
 			try {
-				stream = AccessController.doPrivileged(new PrivilegedExceptionAction<InputStream>() {
-					public InputStream run() throws IOException {
-						InputStream is = null;
-						if (reloadFlag) {
-							URL url = classLoader.getResource(resourceName);
-							if (url != null) {
-								URLConnection connection = url.openConnection();
-								if (connection != null) {
-									// Disable caches to get fresh data for
-									// reloading.
-									connection.setUseCaches(false);
-									is = connection.getInputStream();
-								}
+				stream = AccessController.doPrivileged((PrivilegedExceptionAction<InputStream>) () -> {
+					InputStream is = null;
+					if (reloadFlag) {
+						final URL url = classLoader.getResource(resourceName);
+						if (url != null) {
+							final URLConnection connection = url.openConnection();
+							if (connection != null) {
+								// Disable caches to get fresh data for
+								// reloading.
+								connection.setUseCaches(false);
+								is = connection.getInputStream();
 							}
-						} else {
-							is = classLoader.getResourceAsStream(resourceName);
 						}
-						return is;
+					} else {
+						is = classLoader.getResourceAsStream(resourceName);
 					}
+					return is;
 				});
-			} catch (PrivilegedActionException e) {
+			} catch (final PrivilegedActionException e) {
 				throw (IOException) e.getException();
 			}
 			if (stream != null) {

@@ -16,12 +16,36 @@
  *******************************************************************************/
 package de.norvos.utils;
 
+import de.norvos.i18n.AvailableLanguage;
+
 public class Constants {
 
+	/**
+	 * The application name, used throughout the application.
+	 */
 	public final static String APPLICATON_NAME = "Norvos";
+	/**
+	 * The default language to use, when the system language is not yet
+	 * available in the application.
+	 */
+	public final static AvailableLanguage DEFAULT_LANGUAGE = AvailableLanguage.ENGLISH;
+	/**
+	 * The location where FXML files are stored.
+	 */
 	public final static String FXML_LOCATION = "/de/norvos/gui/view/";
-	public final static String WINDOW_TITLE = "Norvos";
+	/**
+	 * The URL displayed to end users where they can view the manual and get
+	 * help.
+	 */
 	public static final String HELP_URL = "https://starfishinteractive.org/norvos/usermanual";
+	/**
+	 * The placeholder for untranslatable texts.
+	 */
+	public final static String I18N_ERROR = "{i18n-ERR}";
+	/**
+	 * The title for the main application window.
+	 */
+	public final static String WINDOW_TITLE = "Norvos";
 
 	private Constants() {
 	}

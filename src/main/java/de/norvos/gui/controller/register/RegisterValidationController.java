@@ -16,8 +16,6 @@
  *******************************************************************************/
 package de.norvos.gui.controller.register;
 
-import java.io.IOException;
-
 import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
 import org.whispersystems.textsecure.api.push.exceptions.RateLimitException;
 
@@ -83,13 +81,13 @@ public class RegisterValidationController {
 						spinningWheel.setVisible(false);
 					}
 
-				} catch (final IOException exception) {
+				} catch (final Exception exception) {
 					if (exception instanceof RateLimitException) {
 						errorRateLimit.setVisible(true);
 					} else if (exception instanceof AuthorizationFailedException) {
 						errorAuthorization.setVisible(true);
 					} else {
-						System.err.println("other exception: " + exception.getClass().toString());
+						exception.printStackTrace();
 					}
 
 					button.setVisible(true);

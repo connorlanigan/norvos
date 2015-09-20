@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import de.norvos.utils.Constants;
+import de.norvos.utils.ResourceUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -46,10 +47,12 @@ public class RegisterController {
 
 	public void loadRegisterPage(final String fxml) {
 		final URL fxmlURL = getClass().getResource(Constants.FXML_LOCATION + "register/" + fxml);
-		final FXMLLoader loader = new FXMLLoader(fxmlURL);
+		final FXMLLoader loader = new FXMLLoader();
+
+		loader.setResources(ResourceUtils.getLocalizedStringsBundle());
 		Parent parent;
 		try {
-			parent = loader.load();
+			parent = loader.load(fxmlURL.openStream());
 			containerPane.getChildren().clear();
 			containerPane.setCenter(parent);
 		} catch (final IOException e) {

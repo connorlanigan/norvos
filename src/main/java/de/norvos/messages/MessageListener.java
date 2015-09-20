@@ -22,7 +22,7 @@ import org.whispersystems.textsecure.api.TextSecureMessagePipe;
 import org.whispersystems.textsecure.api.TextSecureMessageReceiver;
 import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 
-import de.norvos.account.AccountDataStore;
+import de.norvos.account.SettingsService;
 import de.norvos.axolotl.TrustStore;
 import javafx.concurrent.Task;
 
@@ -34,11 +34,11 @@ public class MessageListener extends Task<Void> {
 	final private String username;
 
 	public MessageListener() {
-		url = AccountDataStore.getStringValue("url");
-		username = AccountDataStore.getStringValue("username");
+		url = SettingsService.getURL();
+		username = SettingsService.getUsername();
 		trustStore = TrustStore.getInstance();
-		password = AccountDataStore.getStringValue("password");
-		signalingKey = AccountDataStore.getStringValue("signalingKey");
+		password = SettingsService.getPassword();
+		signalingKey = SettingsService.getSignalingKey();
 	}
 
 	@Override

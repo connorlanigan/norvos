@@ -1,8 +1,10 @@
 package de.norvos.gui.components;
 
 import java.io.IOException;
+import java.net.URL;
 
 import de.norvos.utils.Constants;
+import de.norvos.utils.ResourceUtils;
 import de.norvos.utils.TimeUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,14 +28,15 @@ public class SingleMessage extends BorderPane {
 	private Long timestamp;
 
 	public SingleMessage() {
-		final FXMLLoader fxmlLoader = new FXMLLoader(
-				getClass().getResource(Constants.FXML_LOCATION + "SingleMessage.fxml"));
+		final FXMLLoader fxmlLoader = new FXMLLoader();
 
+		URL fxml = getClass().getResource(Constants.FXML_LOCATION + "SingleMessage.fxml");
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
+		fxmlLoader.setResources(ResourceUtils.getLocalizedStringsBundle());
 
 		try {
-			fxmlLoader.load();
+			fxmlLoader.load(fxml.openStream());
 			setSent(getSent());
 		} catch (final IOException exception) {
 			throw new RuntimeException(exception);

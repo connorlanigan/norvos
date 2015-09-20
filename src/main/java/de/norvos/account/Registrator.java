@@ -44,8 +44,10 @@ public class Registrator {
 	final static public String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
 
 	public static void initialize() {
-		final IdentityKeyPair identityKeyPair = IdentityKeyStore.getInstance().initialize();
+		IdentityKeyStore.getInstance().initialize();
 		oneTimePreKeys = PreKeyStore.getInstance().initialize();
+
+		final IdentityKeyPair identityKeyPair = IdentityKeyStore.getInstance().getIdentityKeyPair();
 		SignedPreKeyStore.getInstance().initialize(identityKeyPair, initialSignedKeyID);
 
 		SettingsService.setPassword(RandomUtils.randomAlphanumerical(passwordLength));
@@ -67,10 +69,10 @@ public class Registrator {
 		if (!initialized) {
 			throw new IllegalStateException("Registrator must be initialized by calling initialize() first.");
 		}
-		final String url = AccountDataStore.getStringValue("url");
-		final String username = AccountDataStore.getStringValue("username");
+		final String url = SettingsService.getURL();
+		final String username = SettingsService.getUsername();
 		final TrustStore trustStore = TrustStore.getInstance();
-		final String password = AccountDataStore.getStringValue("password");
+		final String password = SettingsService.getPassword();
 
 		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
 				password);
@@ -107,7 +109,7 @@ public class Registrator {
 
 		accountManager.verifyAccount(verificationCode, signalingKey, SMS_UNSUPPORTED, installID);
 
-		accountManager.setGcmId(Optional.of("Not using GCM."));
+		accountManager.setGcmId(Optional.of("Norvos does not support GCM."));
 
 		final IdentityKey identityKey = IdentityKeyStore.getInstance().getIdentityKeyPair().getPublicKey();
 		final PreKeyRecord lastResortKey = PreKeyStore.getInstance().getLastResortKey();

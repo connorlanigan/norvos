@@ -16,6 +16,8 @@
  *******************************************************************************/
 package de.norvos.gui.controller.register;
 
+import static de.norvos.utils.DebugProvider.debug;
+
 import java.io.IOException;
 
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -23,7 +25,6 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
-import de.norvos.account.AccountDataStore;
 import de.norvos.account.Registrator;
 import de.norvos.account.SettingsService;
 import javafx.application.Platform;
@@ -82,9 +83,16 @@ public class RegisterPhoneNumberController {
 							controller.loadRegisterPage("RegisterValidation.fxml");
 						});
 					} catch (final IOException e) {
+						debug(e.getMessage());
 						Platform.runLater(() -> controller.loadRegisterPage("RegisterRequestError.fxml"));
 					}
 				} catch (final NumberParseException e) {
+					try {
+						Thread.sleep(300);
+					} catch (final InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					Platform.runLater(() -> {
 						button.setVisible(true);
 						spinningWheel.setVisible(false);

@@ -38,15 +38,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	<children>
 		<FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="180.0" prefWidth="435.0" GridPane.columnSpan="2">
 			<children>
-				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Almost finished!">
+				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%sms_code_title_label">
 					<font>
 						<Font size="39.0" />
 					</font>
 				</Text>
-				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="You will now receive a SMS containing your personal verification code. Enter it below to complete your registration." textAlignment="CENTER" wrappingWidth="300.0" />
+				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%enter_sms_code_label" textAlignment="CENTER" wrappingWidth="300.0" />
 			</children>
 		</FlowPane>
-		<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Verification Code:" wrappingWidth="122.3779296875" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+		<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%sms_code_input_label" wrappingWidth="122.3779296875" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
 		<TextField fx:id="verificationCodeInput" maxWidth="170.0" minWidth="10.0" prefHeight="26.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 			<GridPane.margin>
 				<Insets right="50.0" />
@@ -54,18 +54,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		</TextField>
       <StackPane GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="TOP">
          <children>
-            <Text fx:id="errorAuthorization" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="That code is wrong." visible="false" StackPane.alignment="CENTER" />
-            <Text fx:id="errorRateLimit" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Slow down a bit!" visible="false" StackPane.alignment="CENTER" />
-            <Text fx:id="errorEmptyCode" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="...nope." visible="false" StackPane.alignment="CENTER" />
+            <Text fx:id="errorAuthorization" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="%sms_code_authorization_error" visible="false" StackPane.alignment="CENTER" />
+            <Text fx:id="errorRateLimit" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="%sms_code_rate_limit_error" visible="false" StackPane.alignment="CENTER" />
+            <Text fx:id="errorEmptyCode" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="%sms_code_empty_error" visible="false" StackPane.alignment="CENTER" />
          </children>
       </StackPane>
       <StackPane GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
          <children>
-      		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" styleClass="button-dark" text="Next">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Button>
+      		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" styleClass="button-dark" text="%next" />
             <ProgressIndicator fx:id="spinningWheel" visible="false" />
          </children>
       </StackPane>

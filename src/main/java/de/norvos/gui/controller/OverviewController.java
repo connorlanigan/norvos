@@ -16,7 +16,7 @@
  *******************************************************************************/
 package de.norvos.gui.controller;
 
-import static de.norvos.i18n.Translations.T;
+import static de.norvos.i18n.Translations.translate;
 
 import java.util.Optional;
 
@@ -78,22 +78,6 @@ public class OverviewController {
 		// reset search result
 	}
 
-	public void handleQuitButton(final ActionEvent event) {
-		Platform.runLater(() -> {
-			final Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.initStyle(StageStyle.UTILITY);
-			alert.setTitle("Quit " + Constants.APPLICATON_NAME);
-			alert.setHeaderText("Quit " + Constants.APPLICATON_NAME + "?");
-			alert.setContentText("You will no longer receive messages.");
-
-			final Optional<ButtonType> result = alert.showAndWait();
-			if (result.get() == ButtonType.OK) {
-				EventBus.sendEvent(new ApplicationQuitEvent());
-				Platform.exit();
-			}
-		});
-	}
-
 	public void handleHelpButton(final ActionEvent event) {
 		BrowserLauncher launcher;
 		try {
@@ -103,14 +87,30 @@ public class OverviewController {
 			Platform.runLater(() -> {
 				final Alert alert = new Alert(AlertType.INFORMATION);
 				alert.initStyle(StageStyle.UTILITY);
-				alert.setTitle(T("get_help_title"));
-				alert.setHeaderText(T("get_help_header_text"));
-				alert.setContentText(String.format(T("supportMessage"), "\n"+Constants.HELP_URL));
+				alert.setTitle(translate("get_help_title"));
+				alert.setHeaderText(translate("get_help_header_text"));
+				alert.setContentText(translate("supportMessage", "\n" + Constants.HELP_URL));
 
 				alert.show();
 			});
 		}
 
+	}
+
+	public void handleQuitButton(final ActionEvent event) {
+		Platform.runLater(() -> {
+			final Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.initStyle(StageStyle.UTILITY);
+			alert.setTitle(translate("quit_title",Constants.APPLICATON_NAME));
+			alert.setHeaderText(translate("quit_header", Constants.APPLICATON_NAME));
+			alert.setContentText(translate("quit_warning_message"));
+
+			final Optional<ButtonType> result = alert.showAndWait();
+			if (result.get() == ButtonType.OK) {
+				EventBus.sendEvent(new ApplicationQuitEvent());
+				Platform.exit();
+			}
+		});
 	}
 
 	@FXML
@@ -132,6 +132,6 @@ public class OverviewController {
 			searchClearButton.setDisable(true);
 			searchClearButton.setManaged(false);
 		}
-		// start search
+		// TODO start search
 	}
 }

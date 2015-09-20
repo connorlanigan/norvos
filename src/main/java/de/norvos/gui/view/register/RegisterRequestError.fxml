@@ -43,20 +43,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </ProgressIndicator>
       		<FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="180.0" prefWidth="435.0">
       			<children>
-      				<Text fx:id="errorTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Oh, no!">
+      				<Text fx:id="errorTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="%sms_code_request_error_title">
       					<font>
       						<Font size="39.0" />
       					</font>
       				</Text>
-      				<Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" text="We encountered an error while requesting your verification code. Make sure you have a working internet connection." textAlignment="CENTER" wrappingWidth="300.0" />
+      				<Text fx:id="errorMsg" strokeType="OUTSIDE" strokeWidth="0.0" text="%sms_code_request_error_message" textAlignment="CENTER" wrappingWidth="300.0" />
       			</children>
       		</FlowPane>
          </children>
       </StackPane>
-		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" styleClass="button-dark" text="Retry" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
-         <font>
-            <Font size="20.0" />
-         </font></Button>
+		<Button fx:id="button" defaultButton="true" mnemonicParsing="false" onAction="#handleButtonClicked" styleClass="button-dark" text="Retry" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
 	</children>
 	<padding>
 		<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

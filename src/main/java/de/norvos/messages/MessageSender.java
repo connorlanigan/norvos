@@ -28,7 +28,7 @@ import org.whispersystems.textsecure.api.messages.TextSecureAttachment;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
 import org.whispersystems.textsecure.api.push.TextSecureAddress;
 
-import de.norvos.account.AccountDataStore;
+import de.norvos.account.SettingsService;
 import de.norvos.axolotl.AxolotlStore;
 import de.norvos.axolotl.TrustStore;
 import de.norvos.eventbus.EventBus;
@@ -43,10 +43,10 @@ public class MessageSender {
 	}
 
 	private static TextSecureMessageSender getMessageSender() {
-		final String url = AccountDataStore.getStringValue("url");
-		final String username = AccountDataStore.getStringValue("username");
+		final String url = SettingsService.getURL();
+		final String username = SettingsService.getUsername();
 		final TrustStore trustStore = TrustStore.getInstance();
-		final String password = AccountDataStore.getStringValue("password");
+		final String password = SettingsService.getPassword();
 
 		return new TextSecureMessageSender(url, trustStore, username, password, AxolotlStore.getInstance(),
 				Optional.absent());

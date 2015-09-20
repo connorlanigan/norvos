@@ -13,7 +13,7 @@
 
 <fx:root fx:id="centralPane" prefHeight="200.0" prefWidth="200.0" type="BorderPane" BorderPane.alignment="CENTER" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
 	<bottom>
-		<TextArea fx:id="messageInput" minHeight="80.0" onKeyReleased="#keyReleased" prefHeight="80.0" prefWidth="200.0" promptText="Type a message..." wrapText="true" BorderPane.alignment="CENTER">
+		<TextArea fx:id="messageInput" minHeight="80.0" onKeyReleased="#keyReleased" prefHeight="80.0" prefWidth="200.0" promptText="%prompt_message_placeholder" wrapText="true" BorderPane.alignment="CENTER">
 			<BorderPane.margin>
 				<Insets />
 			</BorderPane.margin>
@@ -34,7 +34,7 @@
 	<top>
 		<HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<children>
-				<Text fx:id="usernameDisplay" strokeType="OUTSIDE" strokeWidth="0.0" text="Connor Lanigan">
+				<Text fx:id="usernameDisplay" strokeType="OUTSIDE" strokeWidth="0.0">
 					<font>
 						<Font size="20.0" />
 					</font>
@@ -42,9 +42,9 @@
 						<Insets right="10.0" />
 					</HBox.margin>
 				</Text>
-				<CheckBox fx:id="verified" contentDisplay="CENTER" disable="true" mnemonicParsing="false" selected="true" text="Verified" textFill="#06f50a">
+				<CheckBox fx:id="verified" contentDisplay="CENTER" disable="true" mnemonicParsing="false" textFill="#06f50a">
 					<tooltip>
-						<Tooltip text="You can be sure that your messages to this contact are secured." />
+						<Tooltip text="%verified_tooltip" />
 					</tooltip>
 				</CheckBox>
 			</children>

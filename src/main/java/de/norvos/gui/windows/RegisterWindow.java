@@ -14,33 +14,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.utils;
+package de.norvos.gui.windows;
 
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+/**
+ * The window containing the registration process.
+ * 
+ * @author Connor Lanigan
+ */
+public class RegisterWindow extends Window {
 
-public class FileUtils {
+	private static RegisterWindow instance = null;
 
-	public static Path getDatabaseDirectory() {
-		return getDataDirectory().resolve("configuration");
+	synchronized public static RegisterWindow getInstance() {
+		return instance;
 	}
 
-	public static Path getDataDirectory() {
-		final Path directory = FileSystems.getDefault().getPath(System.getProperty("user.home"), ".norvos");
-		directory.toFile().mkdirs();
-		try {
-			Files.setAttribute(directory, "dos:hidden", true);
-		} catch (final IOException e) {
-		}
-		return directory;
+	public RegisterWindow() {
+		super("register/Register.fxml", "register/", false, 600, 400);
 	}
 
-	public static Path getLogfile() {
-		return getDataDirectory().resolve("application.log");
-	}
-
-	private FileUtils() {
-	}
 }

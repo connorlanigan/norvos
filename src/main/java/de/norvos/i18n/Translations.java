@@ -21,21 +21,35 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import de.norvos.account.SettingsService;
+import de.norvos.utils.Constants;
+import de.norvos.utils.ResourceUtils;
 
 public class Translations {
 
-	public static String T(final String stringId, final Object... args) {
+	private static String format(final String patternString, final Object[] args) {
 		final Locale locale = SettingsService.getLanguage().getLocale();
-		ResourceBundle res;
-		try {
-			res = ResourceBundle.getBundle("de.norvos.i18n.strings", locale, new UTF8Control());
-			final String patternString = res.getString(stringId);
+		if (args.length == 1) {
+			return MessageFormat.format(patternString, args[0], locale);
+		} else {
 			return MessageFormat.format(patternString, args, locale);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		return "{i18n-ERR}";
+	}
+
+	private static String translate(final String stringId) {
+		final ResourceBundle res = ResourceUtils.getLocalizedStringsBundle();
+		return res.getString(stringId);
+	}
+
+	public static String translate(final String stringId, final Object... args) {
+		try {
+			final String translated = translate(stringId);
+			final String formatted = format(translated, args);
+
+			return formatted;
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return Constants.I18N_ERROR;
+		}
 
 	}
 }

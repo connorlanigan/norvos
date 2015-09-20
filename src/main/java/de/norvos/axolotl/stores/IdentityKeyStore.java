@@ -49,7 +49,7 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 				return null;
 			}
 			return new IdentityKeyPair(keyPairBytes);
-		} catch (InvalidKeyException e) {
+		} catch (final InvalidKeyException e) {
 			Errors.critical("databaseError");
 			return null;
 		}
@@ -69,17 +69,10 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 		}
 	}
 
-	public IdentityKeyPair initialize() {
-		try {
-			final IdentityKeyPair identityKeyPair = KeyHelper.generateIdentityKeyPair();
-			setIdentityKeyPair(identityKeyPair);
-			setLocalRegistrationId(KeyHelper.generateRegistrationId(true));
-
-			return identityKeyPair;
-		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			return null;
-		}
+	public void initialize() {
+		final IdentityKeyPair identityKeyPair = KeyHelper.generateIdentityKeyPair();
+		setIdentityKeyPair(identityKeyPair);
+		setLocalRegistrationId(KeyHelper.generateRegistrationId(true));
 	}
 
 	@Override
@@ -111,12 +104,12 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 	}
 
 	@SuppressWarnings("static-method")
-	private void setIdentityKeyPair(final IdentityKeyPair keyPair) throws SQLException{
-		AccountDataTable.getInstance().storeBinary("identityKeyPair", keyPair.serialize());
+	private void setIdentityKeyPair(final IdentityKeyPair keyPair) {
+		SettingsService.setIdentityKeyPair(keyPair);
 	}
 
 	@SuppressWarnings("static-method")
-	private void setLocalRegistrationId(final int id){
+	private void setLocalRegistrationId(final int id) {
 		SettingsService.setLocalRegistrationId(id);
 	}
 
