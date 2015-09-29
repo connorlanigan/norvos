@@ -30,18 +30,18 @@ import de.norvos.persistence.tables.DecryptedMessageTable;
  *
  * @author Connor Lanigan
  */
-public class MessageService {
+public class MessagePersistenceService {
 
-	private static MessageService instance;
+	private static MessagePersistenceService instance;
 
-	synchronized public static MessageService getInstance() {
+	synchronized public static MessagePersistenceService getInstance() {
 		if (instance == null) {
-			instance = new MessageService();
+			instance = new MessagePersistenceService();
 		}
 		return instance;
 	}
 
-	private MessageService() {
+	private MessagePersistenceService() {
 	}
 
 	/**

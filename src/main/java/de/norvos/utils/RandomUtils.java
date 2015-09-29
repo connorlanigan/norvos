@@ -27,6 +27,7 @@ import java.util.Enumeration;
 
 /**
  * Provides various utility methods related to random data.
+ * 
  * @author Connor Lanigan
  */
 public class RandomUtils {

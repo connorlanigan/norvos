@@ -18,7 +18,7 @@ package de.norvos.gui.windows;
 
 /**
  * The window containing the main user interface.
- * 
+ *
  * @author Connor Lanigan
  */
 public class MainWindow extends Window {

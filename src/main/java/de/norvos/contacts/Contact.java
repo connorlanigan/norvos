@@ -1,6 +1,24 @@
+/*******************************************************************************
+ * Copyright (C) 2015 Connor Lanigan (email: dev@connorlanigan.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *******************************************************************************/
 package de.norvos.contacts;
 
-import de.norvos.persistence.tables.Contacts;
+import org.whispersystems.textsecure.api.push.TextSecureAddress;
+
+import de.norvos.persistence.tables.ContactsTable;
 
 /**
  * Represents a contact.
@@ -28,19 +46,22 @@ public class Contact {
 	 * @return the contact's human readable name
 	 */
 	public String getDisplayName() {
-		return Contacts.getInstance().getContactData(phoneNumber).getDisplayName();
+		return ContactsTable.getInstance().getContactData(phoneNumber).getDisplayName();
 	}
 
 	/**
-	 * Returns the stored draft message (a message that was typed but not yet sent) for this contact.
+	 * Returns the stored draft message (a message that was typed but not yet
+	 * sent) for this contact.
+	 * 
 	 * @return the stored draft message
 	 */
 	public String getDraftMessage() {
-		return Contacts.getInstance().getContactData(phoneNumber).getDraftMessage();
+		return ContactsTable.getInstance().getContactData(phoneNumber).getDraftMessage();
 	}
 
 	/**
 	 * Returns the phone number of this contact.
+	 * 
 	 * @return the contact's phone number
 	 */
 	public String getPhoneNumber() {
@@ -49,12 +70,18 @@ public class Contact {
 
 	/**
 	 * Store a message as the contact's draft message.
-	 * @param draftMessage the message to store
+	 * 
+	 * @param draftMessage
+	 *            the message to store
 	 */
 	synchronized public void setDraftMessage(final String draftMessage) {
-		final ContactData contactData = Contacts.getInstance().getContactData(phoneNumber);
+		final ContactData contactData = ContactsTable.getInstance().getContactData(phoneNumber);
 		contactData.setDraftMessage(draftMessage);
-		Contacts.getInstance().storeContactData(contactData);
+		ContactsTable.getInstance().storeContactData(contactData);
+	}
+
+	public TextSecureAddress toTSAddress() {
+		return new TextSecureAddress(phoneNumber);
 	}
 
 }

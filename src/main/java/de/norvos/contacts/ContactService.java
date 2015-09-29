@@ -14,27 +14,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package de.norvos.utils;
+package de.norvos.contacts;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Provides various utility methods related to data manipulation.
- * 
+ * Provides access to managing contacts.
+ *
  * @author Connor Lanigan
  */
-public class DataManipulationUtils {
+public class ContactService {
+	private static ContactService instance;
 
-	/**
-	 * Removes all non-digit characters from a string.
-	 * 
-	 * @param input
-	 *            the string to extract the digits from
-	 * @return the string with all non-digit characters removed
-	 */
-	public static String extractDigitsFromString(final String input) {
-		return input.replaceAll("\\D", "");
+	synchronized public static ContactService getInstance() {
+		if (instance == null) {
+			instance = new ContactService();
+		}
+		return instance;
 	}
 
-	private DataManipulationUtils() {
+	private ContactService() {
 	}
 
+	public List<Contact> getAllContacts() {
+		// TODO fetch all contacts from database
+		return Collections.emptyList();
+	}
+
+	public Contact getByNumber(final String number) {
+		return new Contact(number);
+	}
 }

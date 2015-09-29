@@ -32,6 +32,7 @@ import de.norvos.persistence.tables.PreKeyTable;
 
 /**
  * Contains the prekey-related data for the TextSecure protocol.
+ * 
  * @author Connor Lanigan
  */
 public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeyStore {

@@ -26,16 +26,17 @@ import org.whispersystems.textsecure.api.TextSecureMessageSender;
 import org.whispersystems.textsecure.api.crypto.UntrustedIdentityException;
 import org.whispersystems.textsecure.api.messages.TextSecureAttachment;
 import org.whispersystems.textsecure.api.messages.TextSecureDataMessage;
-import org.whispersystems.textsecure.api.push.TextSecureAddress;
 
 import de.norvos.account.SettingsService;
 import de.norvos.axolotl.AxolotlStore;
 import de.norvos.axolotl.TrustStore;
+import de.norvos.contacts.Contact;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.MessageSentEvent;
 
 /**
  * Provides methods for sending messages to other users.
+ * 
  * @author Connor Lanigan
  */
 public class MessageSender {
@@ -61,21 +62,21 @@ public class MessageSender {
 		return "application/octet-stream";
 	}
 
-	public static void sendMediaMessage(final String recipientId, final String message, final File attachment)
+	public static void sendMediaMessage(final Contact contact, final String message, final File attachment)
 			throws UntrustedIdentityException, IOException {
 
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message)
 				.withAttachment(createAttachment(attachment)).build();
-		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		EventBus.sendEvent(new MessageSentEvent(recipientId, message, System.currentTimeMillis(), attachment));
+		getMessageSender().sendMessage(contact.toTSAddress(), messageBody);
+		EventBus.sendEvent(new MessageSentEvent(contact, message, System.currentTimeMillis(), attachment));
 	}
 
-	public static void sendTextMessage(final String recipientId, final String message)
+	public static void sendTextMessage(final Contact contact, final String message)
 			throws UntrustedIdentityException, IOException {
 		System.err.println("About to send message: " + message);
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
-		getMessageSender().sendMessage(new TextSecureAddress(recipientId), messageBody);
-		EventBus.sendEvent(new MessageSentEvent(recipientId, message, System.currentTimeMillis(), null));
+		getMessageSender().sendMessage(contact.toTSAddress(), messageBody);
+		EventBus.sendEvent(new MessageSentEvent(contact, message, System.currentTimeMillis(), null));
 	}
 
 }

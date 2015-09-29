@@ -26,6 +26,7 @@ import de.norvos.utils.ResourceUtils;
 
 /**
  * Provides translations of strings.
+ * 
  * @author Connor Lanigan
  */
 public class Translations {
@@ -45,9 +46,13 @@ public class Translations {
 	}
 
 	/**
-	 * Translates a string and formats it. The translated text is automatically formatted by passing the parameters to {@link MessageFormat}.
-	 * @param stringId the ID of the string (taken from the .properties-file)
-	 * @param args the arguments for formatting
+	 * Translates a string and formats it. The translated text is automatically
+	 * formatted by passing the parameters to {@link MessageFormat}.
+	 * 
+	 * @param stringId
+	 *            the ID of the string (taken from the .properties-file)
+	 * @param args
+	 *            the arguments for formatting
 	 * @return the translated and formatted string
 	 */
 	public static String translate(final String stringId, final Object... args) {

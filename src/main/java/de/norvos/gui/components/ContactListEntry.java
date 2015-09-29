@@ -38,6 +38,7 @@ import javafx.scene.text.Text;
 
 /**
  * An entry in the GUI representing a contact in the contact list.
+ * 
  * @author Connor Lanigan
  */
 public class ContactListEntry extends Button implements EventBusListener {
@@ -56,7 +57,7 @@ public class ContactListEntry extends Button implements EventBusListener {
 	public ContactListEntry() {
 		final FXMLLoader fxmlLoader = new FXMLLoader();
 
-		URL fxml = getClass().getResource(Constants.FXML_LOCATION + "ContactListEntry.fxml");
+		final URL fxml = getClass().getResource(Constants.FXML_LOCATION + "ContactListEntry.fxml");
 		fxmlLoader.setRoot(this);
 		fxmlLoader.setController(this);
 		fxmlLoader.setResources(ResourceUtils.getLocalizedStringsBundle());

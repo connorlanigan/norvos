@@ -27,17 +27,19 @@ import de.norvos.axolotl.TrustStore;
 import javafx.concurrent.Task;
 
 /**
- * Listens for messages from the server and sends them for decryption to the {@link MessageDecrypter}.
+ * Listens for messages from the server and sends them for decryption to the
+ * {@link MessageDecrypter}.
+ * 
  * @author Connor Lanigan
  */
 public class MessageListener extends Task<Void> {
+	static private MessageListener instance;
 	final private String password;
 	final private String signalingKey;
 	final private TrustStore trustStore;
 	final private String url;
-	final private String username;
 
-	static private MessageListener instance;
+	final private String username;
 
 	public MessageListener() {
 		url = SettingsService.getURL();
@@ -49,7 +51,7 @@ public class MessageListener extends Task<Void> {
 
 	@Override
 	protected Void call() {
-		if(instance != null && instance != this){
+		if (instance != null && instance != this) {
 			throw new RuntimeException("Can't run two MessageListeners at the same time.");
 		}
 		instance = this;

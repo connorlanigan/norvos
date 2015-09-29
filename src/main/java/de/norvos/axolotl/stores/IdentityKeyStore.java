@@ -30,6 +30,7 @@ import de.norvos.persistence.tables.IdentityKeyTable;
 
 /**
  * Contains the identity-related data for the TextSecure protocol.
+ * 
  * @author Connor Lanigan
  */
 public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.IdentityKeyStore {

@@ -34,6 +34,7 @@ import de.norvos.utils.RandomUtils;
 
 /**
  * Provides methods to register a client with the server.
+ * 
  * @author Connor Lanigan
  */
 public class Registrator {
@@ -68,7 +69,9 @@ public class Registrator {
 	}
 
 	/**
-	 * Requests a verification SMS code for this client from the server. The Registrator needs to be {@link Registrator#initialize() initialized} first.
+	 * Requests a verification SMS code for this client from the server. The
+	 * Registrator needs to be {@link Registrator#initialize() initialized}
+	 * first.
 	 *
 	 * @throws IOException
 	 *             if an error occurs during registering

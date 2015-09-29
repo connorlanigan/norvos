@@ -18,7 +18,7 @@ package de.norvos.gui.windows;
 
 /**
  * The window containing the registration process.
- * 
+ *
  * @author Connor Lanigan
  */
 public class RegisterWindow extends Window {

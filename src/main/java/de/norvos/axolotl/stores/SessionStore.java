@@ -28,6 +28,7 @@ import de.norvos.persistence.tables.SessionTable;
 
 /**
  * Contains the session-related data for the TextSecure protocol.
+ * 
  * @author Connor Lanigan
  */
 public class SessionStore implements org.whispersystems.libaxolotl.state.SessionStore {

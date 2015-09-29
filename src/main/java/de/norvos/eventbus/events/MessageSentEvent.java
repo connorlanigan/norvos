@@ -18,21 +18,23 @@ package de.norvos.eventbus.events;
 
 import java.io.File;
 
+import de.norvos.contacts.Contact;
 import de.norvos.eventbus.Event;
 
 /**
  * An event indicating that a message has been sent.
+ * 
  * @author Connor Lanigan
  */
 public class MessageSentEvent implements Event {
 
 	private final File attachment;
+	private final Contact contact;
 	private final String message;
-	private final String receiver;
 	private final long timestamp;
 
-	public MessageSentEvent(final String receiver, final String message, final long timestamp, final File attachment) {
-		this.receiver = receiver;
+	public MessageSentEvent(final Contact contact, final String message, final long timestamp, final File attachment) {
+		this.contact = contact;
 		this.message = message;
 		this.timestamp = timestamp;
 		this.attachment = attachment;
@@ -46,8 +48,8 @@ public class MessageSentEvent implements Event {
 		return message;
 	}
 
-	public String getReceiver() {
-		return receiver;
+	public Contact getReceiver() {
+		return contact;
 	}
 
 	public long getTimestamp() {

@@ -32,7 +32,9 @@ import de.norvos.axolotl.stores.SessionStore;
 import de.norvos.axolotl.stores.SignedPreKeyStore;
 
 /**
- * The store containing all data needed for the encryption and decryption process in the TextSecure protocol.
+ * The store containing all data needed for the encryption and decryption
+ * process in the TextSecure protocol.
+ * 
  * @author Connor Lanigan
  */
 public class AxolotlStore implements org.whispersystems.libaxolotl.state.AxolotlStore {

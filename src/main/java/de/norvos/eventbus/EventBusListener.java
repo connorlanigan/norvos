@@ -19,6 +19,7 @@ package de.norvos.eventbus;
 /**
  * An interface of all listeners that can be registered with the
  * {@link de.norvos.eventbus.EventBus EventBus}.
+ * 
  * @author Connor Lanigan
  */
 public interface EventBusListener {

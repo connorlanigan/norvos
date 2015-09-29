@@ -104,7 +104,7 @@ public class OverviewController {
 		Platform.runLater(() -> {
 			final Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.initStyle(StageStyle.UTILITY);
-			alert.setTitle(translate("quit_title",Constants.APPLICATON_NAME));
+			alert.setTitle(translate("quit_title", Constants.APPLICATON_NAME));
 			alert.setHeaderText(translate("quit_header", Constants.APPLICATON_NAME));
 			alert.setContentText(translate("quit_warning_message"));
 

@@ -21,15 +21,19 @@ import java.sql.SQLException;
 import de.norvos.persistence.tables.AccountDataTable;
 
 /**
- * Allows access to storing and reading raw settings values from and to the user settings database.
+ * Allows access to storing and reading raw settings values from and to the user
+ * settings database.
+ * 
  * @author Connor Lanigan
  */
 public class AccountDataStore {
 	/**
-	 * Get a binary value from the account data table. Do not use this method directly
-	 * to access user settings, instead use the {@link SettingsService} methods.
+	 * Get a binary value from the account data table. Do not use this method
+	 * directly to access user settings, instead use the {@link SettingsService}
+	 * methods.
 	 *
-	 * @param key the table entry key
+	 * @param key
+	 *            the table entry key
 	 * @return the stored value
 	 */
 	static byte[] getBinaryValue(final String key) {
@@ -41,10 +45,12 @@ public class AccountDataStore {
 	}
 
 	/**
-	 * Get a string value from the account data table. Do not use this method directly
-	 * to access user settings, instead use the {@link SettingsService} methods.
+	 * Get a string value from the account data table. Do not use this method
+	 * directly to access user settings, instead use the {@link SettingsService}
+	 * methods.
 	 *
-	 * @param key the table entry key
+	 * @param key
+	 *            the table entry key
 	 * @return the stored value
 	 */
 	static String getStringValue(final String key) {
@@ -56,11 +62,14 @@ public class AccountDataStore {
 	}
 
 	/**
-	 * Store a binary value into the account data table. Do not use this method directly
-	 * to access user settings, instead use the {@link SettingsService} methods.
+	 * Store a binary value into the account data table. Do not use this method
+	 * directly to access user settings, instead use the {@link SettingsService}
+	 * methods.
 	 *
-	 * @param key the table entry key
-	 * @param value the value to store
+	 * @param key
+	 *            the table entry key
+	 * @param value
+	 *            the value to store
 	 * @return <code>true</code> if and only if the storing was successful
 	 */
 	static boolean storeBinaryValue(final String key, final byte[] value) {
@@ -73,11 +82,14 @@ public class AccountDataStore {
 	}
 
 	/**
-	 * Store a string value into the account data table. Do not use this method directly
-	 * to access user settings, instead use the {@link SettingsService} methods.
+	 * Store a string value into the account data table. Do not use this method
+	 * directly to access user settings, instead use the {@link SettingsService}
+	 * methods.
 	 *
-	 * @param key the table entry key
-	 * @param value the value to store
+	 * @param key
+	 *            the table entry key
+	 * @param value
+	 *            the value to store
 	 * @return <code>true</code> if and only if the storing was successful
 	 */
 	static boolean storeStringValue(final String key, final String value) {

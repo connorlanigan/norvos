@@ -23,17 +23,17 @@ import java.sql.SQLException;
 import de.norvos.contacts.ContactData;
 import de.norvos.persistence.Database;
 
-public class Contacts implements Table {
-	private static Contacts instance;
+public class ContactsTable implements Table {
+	private static ContactsTable instance;
 
-	synchronized public static Contacts getInstance() {
+	synchronized public static ContactsTable getInstance() {
 		if (instance == null) {
-			instance = new Contacts();
+			instance = new ContactsTable();
 		}
 		return instance;
 	}
 
-	private Contacts() {
+	private ContactsTable() {
 	}
 
 	public ContactData getContactData(final String phoneNumber) {

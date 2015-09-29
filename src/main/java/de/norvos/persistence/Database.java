@@ -26,6 +26,7 @@ import de.norvos.utils.ResourceUtils;
 
 /**
  * Provides access to the database.
+ * 
  * @author Connor Lanigan
  */
 public class Database {
@@ -33,6 +34,7 @@ public class Database {
 
 	/**
 	 * Closes the database connection.
+	 * 
 	 * @throws SQLException
 	 */
 	public static void close() throws SQLException {
@@ -49,7 +51,8 @@ public class Database {
 	 * @param table
 	 *            the table to ensure existence for
 	 * @return a connection to the database (to allow for method chaining)
-	 * @throws SQLException if an error occurs during interaction with the database
+	 * @throws SQLException
+	 *             if an error occurs during interaction with the database
 	 */
 	public static Connection ensureTableExists(final Table table) throws SQLException {
 		establishConnection();
