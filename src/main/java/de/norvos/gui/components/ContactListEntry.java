@@ -36,6 +36,10 @@ import javafx.scene.control.Label;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+/**
+ * An entry in the GUI representing a contact in the contact list.
+ * @author Connor Lanigan
+ */
 public class ContactListEntry extends Button implements EventBusListener {
 
 	private Contact contact;

@@ -23,9 +23,10 @@ import java.util.List;
 /**
  * Distributes events to listeners that have previously registered to be
  * notified.
- *
+ * @author Connor Lanigan
  */
 public class EventBus {
+	//TODO use weak references
 	static private HashMap<Class<? extends Event>, List<EventBusListener>> map = new HashMap<>();
 
 	private static List<EventBusListener> getListForEvent(final Class<? extends Event> event) {

@@ -11,6 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * A GUI element representing a single message.
+ * @author Connor Lanigan
+ */
 public class SingleMessage extends BorderPane {
 
 	private final static String baseClass = "message";

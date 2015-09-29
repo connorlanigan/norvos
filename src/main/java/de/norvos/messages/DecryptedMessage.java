@@ -1,5 +1,9 @@
 package de.norvos.messages;
 
+/**
+ * Contains the data of a decrypted message.
+ * @author Connor Lanigan
+ */
 public class DecryptedMessage {
 
 	private final String address;

@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Represents a language that is available in this application.
+ * @author Connor Lanigan
+ */
 public enum AvailableLanguage {
 	ENGLISH("English", Locale.ENGLISH),
 	GERMAN("Deutsch", Locale.GERMAN),
@@ -11,8 +15,8 @@ public enum AvailableLanguage {
 	/**
 	 * Represents a language used only for testing. Every translated key will be
 	 * translated as "XXX", so that it can be seen in the running application
-	 * where strings are hardcoded. Do not use this language in the production
-	 * version.
+	 * where strings are hardcoded. <strong>Do not use this language in the production
+	 * version.</strong>
 	 */
 	TEST("Test", new Locale("test"));
 

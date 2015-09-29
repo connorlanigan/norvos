@@ -23,12 +23,20 @@ import de.norvos.eventbus.events.MessageReceivedEvent;
 import de.norvos.persistence.tables.DecryptedMessageTable;
 import javafx.concurrent.Task;
 
+/**
+ * Provides methods for decrypting received messages.
+ * @author Connor Lanigan
+ */
 public class MessageDecrypter {
 
 	private static BlockingQueue<TextSecureEnvelope> queue;
 	private static Task<Void> task;
 	private static Thread thread;
 
+	/**
+	 * Adds an encrypted message to the queue. It will be automatically decrypted.
+	 * @param envelope the encrypted message envelope
+	 */
 	public static void pushEncryptedMessage(final TextSecureEnvelope envelope) {
 		while (true) {
 			try {
@@ -39,6 +47,9 @@ public class MessageDecrypter {
 		}
 	}
 
+	/**
+	 * Starts the Decrypter. It will automatically decrypt messages from the queue and fire a {@link MessageReceivedEvent} after decrypting each one.
+	 */
 	synchronized public static void start() {
 		if (thread != null && thread.isAlive()) {
 			throw new IllegalStateException("MessageDecrypter is already running!");
@@ -90,6 +101,9 @@ public class MessageDecrypter {
 		thread.start();
 	}
 
+	/**
+	 * Stops the Decrypter.
+	 */
 	synchronized public static void stop() {
 		task.cancel();
 	}

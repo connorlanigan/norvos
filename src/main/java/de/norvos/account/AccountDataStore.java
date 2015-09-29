@@ -20,8 +20,19 @@ import java.sql.SQLException;
 
 import de.norvos.persistence.tables.AccountDataTable;
 
+/**
+ * Allows access to storing and reading raw settings values from and to the user settings database.
+ * @author Connor Lanigan
+ */
 public class AccountDataStore {
-	public static byte[] getBinaryValue(final String key) {
+	/**
+	 * Get a binary value from the account data table. Do not use this method directly
+	 * to access user settings, instead use the {@link SettingsService} methods.
+	 *
+	 * @param key the table entry key
+	 * @return the stored value
+	 */
+	static byte[] getBinaryValue(final String key) {
 		try {
 			return AccountDataTable.getInstance().getBinary(key);
 		} catch (final SQLException e) {
@@ -29,7 +40,14 @@ public class AccountDataStore {
 		}
 	}
 
-	public static String getStringValue(final String key) {
+	/**
+	 * Get a string value from the account data table. Do not use this method directly
+	 * to access user settings, instead use the {@link SettingsService} methods.
+	 *
+	 * @param key the table entry key
+	 * @return the stored value
+	 */
+	static String getStringValue(final String key) {
 		try {
 			return AccountDataTable.getInstance().getString(key);
 		} catch (final SQLException e) {
@@ -37,7 +55,15 @@ public class AccountDataStore {
 		}
 	}
 
-	public static boolean storeBinaryValue(final String key, final byte[] value) {
+	/**
+	 * Store a binary value into the account data table. Do not use this method directly
+	 * to access user settings, instead use the {@link SettingsService} methods.
+	 *
+	 * @param key the table entry key
+	 * @param value the value to store
+	 * @return <code>true</code> if and only if the storing was successful
+	 */
+	static boolean storeBinaryValue(final String key, final byte[] value) {
 		try {
 			AccountDataTable.getInstance().storeBinary(key, value);
 			return true;
@@ -46,7 +72,15 @@ public class AccountDataStore {
 		}
 	}
 
-	public static boolean storeStringValue(final String key, final String value) {
+	/**
+	 * Store a string value into the account data table. Do not use this method directly
+	 * to access user settings, instead use the {@link SettingsService} methods.
+	 *
+	 * @param key the table entry key
+	 * @param value the value to store
+	 * @return <code>true</code> if and only if the storing was successful
+	 */
+	static boolean storeStringValue(final String key, final String value) {
 		try {
 			AccountDataTable.getInstance().storeString(key, value);
 			return true;

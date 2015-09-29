@@ -25,7 +25,12 @@ import javax.swing.JOptionPane;
 
 import de.norvos.utils.ResourceUtils;
 
-//TODO replace self-built logging with Java file rotation logger
+//TODO replace self-built logging with Java file rotation logger. Also, error message dialogs should not be automatically shown. See de.norvos.utils.DebugProvider
+/**
+ * Provides methods for logging errors, warnings and debug messages.
+ *
+ * @author Connor Lanigan
+ */
 public class Errors {
 	private static void critical(final String message) {
 		final String logMessage = "[CRITICAL] " + message;

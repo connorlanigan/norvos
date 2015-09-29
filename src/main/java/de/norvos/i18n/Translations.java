@@ -24,6 +24,10 @@ import de.norvos.account.SettingsService;
 import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
 
+/**
+ * Provides translations of strings.
+ * @author Connor Lanigan
+ */
 public class Translations {
 
 	private static String format(final String patternString, final Object[] args) {
@@ -40,6 +44,12 @@ public class Translations {
 		return res.getString(stringId);
 	}
 
+	/**
+	 * Translates a string and formats it. The translated text is automatically formatted by passing the parameters to {@link MessageFormat}.
+	 * @param stringId the ID of the string (taken from the .properties-file)
+	 * @param args the arguments for formatting
+	 * @return the translated and formatted string
+	 */
 	public static String translate(final String stringId, final Object... args) {
 		try {
 			final String translated = translate(stringId);

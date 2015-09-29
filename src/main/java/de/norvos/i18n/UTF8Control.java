@@ -16,8 +16,10 @@ import java.util.ResourceBundle.Control;
 /**
  * This Control loads the ResourceBundle as UTF-8. <br>
  * <br>
- * <i>Note: lines differing from the default implementation are marked with
- * "// Connor Lanigan:"</i>
+ * <strong>Note:</strong><br>
+ * This class heavily relies on Oracle's implementation of the class.<br>
+ * Lines differing from the default implementation are marked with
+ * "// UTF8Control:"
  *
  * @author Connor Lanigan
  */
@@ -44,7 +46,7 @@ public class UTF8Control extends Control {
 			} catch (final ClassNotFoundException e) {
 			}
 		} else if (format.equals("java.properties")) {
-			// Connor Lanigan: The check in toResourceName0 is skipped, as that
+			// UTF8Control: The check in toResourceName0 is skipped, as that
 			// method is marked protected and the check is not needed in this
 			// application. Thus, toResourceName is used instead.
 			final String resourceName = toResourceName(bundleName, "properties");
@@ -78,7 +80,7 @@ public class UTF8Control extends Control {
 			}
 			if (stream != null) {
 				try {
-					// Connor Lanigan: This line is changed to read the resource
+					// UTF8Control: This line is changed to read the resource
 					// bundle as UTF-8.
 					bundle = new PropertyResourceBundle(new InputStreamReader(stream, "UTF-8"));
 				} finally {

@@ -34,6 +34,10 @@ import de.norvos.axolotl.TrustStore;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.MessageSentEvent;
 
+/**
+ * Provides methods for sending messages to other users.
+ * @author Connor Lanigan
+ */
 public class MessageSender {
 
 	private static TextSecureAttachment createAttachment(final File attachmentFile) throws FileNotFoundException {

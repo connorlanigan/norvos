@@ -18,6 +18,10 @@ package de.norvos.eventbus.events;
 
 import de.norvos.eventbus.Event;
 
+/**
+ * An event indicating that the application has been requested to quit.
+ * @author Connor Lanigan
+ */
 public class ApplicationQuitEvent implements Event {
 
 }

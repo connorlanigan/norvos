@@ -30,6 +30,9 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
+/**
+ * @author Connor Lanigan
+ */
 public class RegisterValidationController {
 
 	@FXML

@@ -19,6 +19,7 @@ package de.norvos.eventbus;
 /**
  * An event that can be distributed through the
  * {@link de.norvos.eventbus.EventBus EventBus}.
+ * @author Connor Lanigan
  */
 public interface Event {
 }

@@ -42,6 +42,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.StageStyle;
 
+/**
+ * @author Connor Lanigan
+ */
 public class OverviewController {
 
 	private static OverviewController instance;

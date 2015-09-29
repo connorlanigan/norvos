@@ -27,6 +27,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * @author Connor Lanigan
+ */
 public class RegisterController {
 
 	private static RegisterController instance;

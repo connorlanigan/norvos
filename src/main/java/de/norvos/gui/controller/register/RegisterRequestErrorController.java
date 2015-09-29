@@ -27,6 +27,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.text.Text;
 
+/**
+ * @author Connor Lanigan
+ */
 public class RegisterRequestErrorController {
 
 	@FXML

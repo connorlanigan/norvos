@@ -25,6 +25,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Enumeration;
 
+/**
+ * Provides various utility methods related to random data.
+ * @author Connor Lanigan
+ */
 public class RandomUtils {
 
 	static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

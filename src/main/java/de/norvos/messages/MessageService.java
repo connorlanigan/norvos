@@ -7,6 +7,10 @@ import java.util.List;
 
 import de.norvos.contacts.Contact;
 
+/**
+ * Provides access to stored messages.
+ * @author Connor Lanigan
+ */
 public class MessageService {
 
 	private static MessageService instance;
@@ -21,6 +25,11 @@ public class MessageService {
 	private MessageService() {
 	}
 
+	/**
+	 * Return all messages stored for a given user.
+	 * @param user the user for which to fetch stored messages
+	 * @return List of all messages locally stored for that user
+	 */
 	public List<DecryptedMessage> getMessages(final Contact user) {
 		// TODO this is debug code
 		final DecryptedMessage one = new DecryptedMessage(System.currentTimeMillis() - 300000, false, "Hallo Du",

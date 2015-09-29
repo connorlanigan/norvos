@@ -20,6 +20,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+/**
+ * The GUI area containg the messages for a contact.
+ * @author Connor Lanigan
+ */
 public class MessageList extends BorderPane {
 
 	private Contact contact;

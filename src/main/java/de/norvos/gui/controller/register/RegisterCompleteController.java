@@ -21,6 +21,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
+/**
+ * @author Connor Lanigan
+ */
 public class RegisterCompleteController {
 
 	@FXML

@@ -18,6 +18,10 @@ package de.norvos.axolotl;
 
 import java.io.InputStream;
 
+/**
+ * Contains the certificate for communicating with the server.
+ * @author Connor Lanigan
+ */
 public class TrustStore implements org.whispersystems.textsecure.api.push.TrustStore {
 
 	/**

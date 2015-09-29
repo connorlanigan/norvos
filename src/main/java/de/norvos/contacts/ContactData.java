@@ -1,34 +1,43 @@
 package de.norvos.contacts;
 
+/**
+ * Contains the data of a contact.
+ * @author Connor Lanigan
+ */
 public class ContactData {
 	private String displayName;
 	private String draftMessage;
 
 	private final String phoneNumber;
 
+	/**
+	 * @param phoneNumber the contact's phone number
+	 * @param displayName the contact's display (human readable) name
+	 * @param draftMessage the message stored as draft
+	 */
 	public ContactData(final String phoneNumber, final String displayName, final String draftMessage) {
 		this.phoneNumber = phoneNumber;
 		this.displayName = displayName;
 		this.draftMessage = draftMessage;
 	}
 
-	public String getDisplayName() {
+	String getDisplayName() {
 		return displayName;
 	}
 
-	public String getDraftMessage() {
+	String getDraftMessage() {
 		return draftMessage;
 	}
 
-	public String getPhoneNumber() {
+	String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setDisplayName(final String displayName) {
+	void setDisplayName(final String displayName) {
 		this.displayName = displayName;
 	}
 
-	public void setDraftMessage(final String draftMessage) {
+	void setDraftMessage(final String draftMessage) {
 		this.draftMessage = draftMessage;
 	}
 }

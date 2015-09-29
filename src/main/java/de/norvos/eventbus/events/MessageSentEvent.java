@@ -20,6 +20,10 @@ import java.io.File;
 
 import de.norvos.eventbus.Event;
 
+/**
+ * An event indicating that a message has been sent.
+ * @author Connor Lanigan
+ */
 public class MessageSentEvent implements Event {
 
 	private final File attachment;

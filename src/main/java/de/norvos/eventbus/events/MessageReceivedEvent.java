@@ -19,6 +19,10 @@ package de.norvos.eventbus.events;
 import de.norvos.eventbus.Event;
 import de.norvos.messages.DecryptedMessage;
 
+/**
+ * An event indicating that a decrypted message has been received.
+ * @author Connor Lanigan
+ */
 public class MessageReceivedEvent implements Event {
 
 	private final DecryptedMessage message;

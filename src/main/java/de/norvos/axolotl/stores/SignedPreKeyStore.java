@@ -29,6 +29,10 @@ import org.whispersystems.libaxolotl.util.KeyHelper;
 import de.norvos.log.Errors;
 import de.norvos.persistence.tables.SignedPreKeyTable;
 
+/**
+ * Contains the signed-prekey-related data for the TextSecure protocol.
+ * @author Connor Lanigan
+ */
 public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.SignedPreKeyStore {
 
 	private static SignedPreKeyStore instance;

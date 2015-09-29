@@ -32,6 +32,10 @@ import de.norvos.axolotl.stores.PreKeyStore;
 import de.norvos.axolotl.stores.SignedPreKeyStore;
 import de.norvos.utils.RandomUtils;
 
+/**
+ * Provides methods to register a client with the server.
+ * @author Connor Lanigan
+ */
 public class Registrator {
 	private static boolean initialized = false;
 	final static private int initialSignedKeyID = 5;
@@ -43,6 +47,12 @@ public class Registrator {
 
 	final static public String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
 
+	/**
+	 * Initialize the Registrator. This will generate new keys, and a new
+	 * installation ID.<br>
+	 * <strong>Warning: All existing user data is possibly destroyed after
+	 * calling this method.</strong>
+	 */
 	public static void initialize() {
 		IdentityKeyStore.getInstance().initialize();
 		oneTimePreKeys = PreKeyStore.getInstance().initialize();
@@ -58,7 +68,7 @@ public class Registrator {
 	}
 
 	/**
-	 * Requests a verification code for this client from the server.
+	 * Requests a verification SMS code for this client from the server. The Registrator needs to be {@link Registrator#initialize() initialized} first.
 	 *
 	 * @throws IOException
 	 *             if an error occurs during registering
@@ -83,7 +93,7 @@ public class Registrator {
 	}
 
 	/**
-	 * Verifys
+	 * Verifies the received SMS code.
 	 *
 	 * @param verificationCode
 	 * @throws IOException
