@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import de.norvos.contacts.Contact;
+import de.norvos.contacts.ContactService;
 import de.norvos.eventbus.Event;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.EventBusListener;
@@ -38,7 +39,7 @@ import javafx.scene.text.Text;
 
 /**
  * An entry in the GUI representing a contact in the contact list.
- * 
+ *
  * @author Connor Lanigan
  */
 public class ContactListEntry extends Button implements EventBusListener {
@@ -107,7 +108,7 @@ public class ContactListEntry extends Button implements EventBusListener {
 	}
 
 	public void setUser(final String value) {
-		contact = new Contact(value);
+		contact = ContactService.getInstance().getByNumber(value);
 		contactName.setText(contact.getDisplayName());
 	}
 

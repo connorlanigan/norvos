@@ -19,11 +19,6 @@ package de.norvos.utils;
 import de.norvos.i18n.AvailableLanguage;
 
 public class Constants {
-
-	/**
-	 * The application name, used throughout the application.
-	 */
-	public final static String APPLICATON_NAME = "Norvos";
 	/**
 	 * The default language to use, when the system language is not yet
 	 * available in the application.
@@ -42,6 +37,8 @@ public class Constants {
 	 * The placeholder for untranslatable texts.
 	 */
 	public final static String I18N_ERROR = "{i18n-ERR}";
+	public final static int SINGLETON_LOCK_PORT = 64308;
+
 	/**
 	 * The title for the main application window.
 	 */

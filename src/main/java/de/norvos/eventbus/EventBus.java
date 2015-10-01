@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Distributes events to listeners that have previously registered to be
  * notified.
- * 
+ *
  * @author Connor Lanigan
  */
 public class EventBus {

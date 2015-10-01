@@ -46,7 +46,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 				<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%enter_phonenumber_label" textAlignment="CENTER" wrappingWidth="300.0" />
 			</children>
 		</FlowPane>
-		<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%mobile_number_input_label" wrappingWidth="105.3779296875" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+		<Text strokeType="OUTSIDE" strokeWidth="0.0" text="%mobile_number_input_label" wrappingWidth="150" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
 		<TextField fx:id="mobileNumberInput" maxWidth="170.0" minWidth="10.0" prefHeight="26.0" prefWidth="130.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 			<GridPane.margin>
 				<Insets right="50.0" />

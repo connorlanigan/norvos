@@ -16,27 +16,32 @@
  *******************************************************************************/
 package de.norvos.axolotl.stores;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.IdentityKeyPair;
 import org.whispersystems.libaxolotl.InvalidKeyException;
 import org.whispersystems.libaxolotl.InvalidKeyIdException;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
-import de.norvos.log.Errors;
 import de.norvos.persistence.tables.SignedPreKeyTable;
+import de.norvos.utils.Errors;
+import de.norvos.utils.UnreachableCodeException;
 
 /**
  * Contains the signed-prekey-related data for the TextSecure protocol.
- * 
+ *
  * @author Connor Lanigan
  */
 public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.SignedPreKeyStore {
-
 	private static SignedPreKeyStore instance;
+
+	final static Logger LOGGER = LoggerFactory.getLogger(SignedPreKeyStore.class);
 
 	synchronized public static SignedPreKeyStore getInstance() {
 		if (instance == null) {
@@ -53,8 +58,10 @@ public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.Si
 		try {
 			return null != SignedPreKeyTable.getInstance().loadKey(signedPreKeyId);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			return false;
+			LOGGER.error("Signed pre key could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -62,7 +69,10 @@ public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.Si
 		try {
 			storeSignedPreKey(signedPreKeyId, KeyHelper.generateSignedPreKey(identityKeyPair, signedPreKeyId));
 		} catch (final InvalidKeyException e) {
-			Errors.critical("cannotCreateKey");
+			LOGGER.error("Identity key pair for storage in SignedPreKeyStore was invalid.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -71,11 +81,15 @@ public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.Si
 		try {
 			final SignedPreKeyRecord record = SignedPreKeyTable.getInstance().loadKey(signedPreKeyId);
 			if (record == null) {
+				LOGGER.debug("Tried to fetch SignedPreKeyRecord for the invalid key ID [{}].", signedPreKeyId);
 				throw new InvalidKeyIdException("Key id " + signedPreKeyId + " has no associated PreKeyRecord.");
 			}
 			return SignedPreKeyTable.getInstance().loadKey(signedPreKeyId);
 		} catch (final SQLException e) {
-			throw new InvalidKeyIdException(e);
+			LOGGER.error("Signed pre key could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -84,8 +98,10 @@ public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.Si
 		try {
 			return SignedPreKeyTable.getInstance().loadAll();
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			return new LinkedList<SignedPreKeyRecord>();
+			LOGGER.error("Signed pre keys could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -94,7 +110,10 @@ public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.Si
 		try {
 			SignedPreKeyTable.getInstance().deleteKey(signedPreKeyId);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
+			LOGGER.error("Signed pre key could not be removed from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -103,7 +122,10 @@ public class SignedPreKeyStore implements org.whispersystems.libaxolotl.state.Si
 		try {
 			SignedPreKeyTable.getInstance().storeKey(signedPreKeyId, record);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
+			LOGGER.error("Signed pre key could not be stored to database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 }

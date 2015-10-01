@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.List;
 
 import de.norvos.contacts.Contact;
+import de.norvos.contacts.ContactService;
 import de.norvos.messages.DecryptedMessage;
 import de.norvos.messages.MessagePersistenceService;
 import de.norvos.utils.Constants;
@@ -38,7 +39,7 @@ import javafx.scene.text.Text;
 
 /**
  * The GUI area containg the messages for a contact.
- * 
+ *
  * @author Connor Lanigan
  */
 public class MessageList extends BorderPane {
@@ -85,7 +86,7 @@ public class MessageList extends BorderPane {
 
 	public void setUser(final String user) {
 		this.user = user;
-		contact = new Contact(user);
+		contact = ContactService.getInstance().getByNumber(user);
 		usernameDisplay.setText(contact.getDisplayName());
 		messageInput.setText(contact.getDraftMessage());
 		final List<DecryptedMessage> list = MessagePersistenceService.getInstance().getMessages(contact);

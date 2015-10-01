@@ -16,9 +16,10 @@
  *******************************************************************************/
 package de.norvos.gui.controller.register;
 
-import static de.norvos.utils.DebugProvider.debug;
-
 import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -40,6 +41,8 @@ import javafx.scene.text.Text;
  * @author Connor Lanigan
  */
 public class RegisterPhoneNumberController {
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(RegisterPhoneNumberController.class);
 
 	@FXML
 	private Button button;
@@ -86,15 +89,14 @@ public class RegisterPhoneNumberController {
 							controller.loadRegisterPage("RegisterValidation.fxml");
 						});
 					} catch (final IOException e) {
-						debug(e.getMessage());
+						LOGGER.info("Requesting the validation code from the server failed.", e);
 						Platform.runLater(() -> controller.loadRegisterPage("RegisterRequestError.fxml"));
 					}
 				} catch (final NumberParseException e) {
+					LOGGER.info("The entered mobile phone number was invalid.", e);
 					try {
 						Thread.sleep(300);
 					} catch (final InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 					Platform.runLater(() -> {
 						button.setVisible(true);

@@ -16,25 +16,32 @@
  *******************************************************************************/
 package de.norvos.axolotl.stores;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.IdentityKey;
 import org.whispersystems.libaxolotl.IdentityKeyPair;
 import org.whispersystems.libaxolotl.InvalidKeyException;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
 import de.norvos.account.SettingsService;
-import de.norvos.log.Errors;
 import de.norvos.persistence.tables.AccountDataTable;
 import de.norvos.persistence.tables.IdentityKeyTable;
+import de.norvos.utils.Errors;
+import de.norvos.utils.UnreachableCodeException;
 
 /**
  * Contains the identity-related data for the TextSecure protocol.
- * 
+ *
  * @author Connor Lanigan
  */
 public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.IdentityKeyStore {
 	private static IdentityKeyStore instance;
+
+	final static Logger LOGGER = LoggerFactory.getLogger(IdentityKeyStore.class);
 
 	synchronized public static IdentityKeyStore getInstance() {
 		if (instance == null) {
@@ -55,8 +62,10 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 			}
 			return new IdentityKeyPair(keyPairBytes);
 		} catch (final InvalidKeyException e) {
-			Errors.critical("databaseError");
-			return null;
+			LOGGER.error("Identity key pair received from database was invalid.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -69,8 +78,10 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 			}
 			return Integer.valueOf(registrationIdString);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			return KeyHelper.generateRegistrationId(true);
+			LOGGER.error("Error while fetching local registration ID. ", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -91,10 +102,10 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 			return true;
 
 		} catch (final SQLException e) {
-			System.err.println(e.getMessage());
-			;
-			Errors.critical("databaseError");
-			return true;
+			LOGGER.error("Error while looking up identity trust. ", e);
+			Errors.showError(translate("databaseError"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -103,8 +114,10 @@ public class IdentityKeyStore implements org.whispersystems.libaxolotl.state.Ide
 		try {
 			IdentityKeyTable.getInstance().storeIdentity(name, identityKey);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			throw new NullPointerException(e.getMessage());
+			LOGGER.error("Error while saving identity.", e);
+			Errors.showError(translate("databaseError"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 

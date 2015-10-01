@@ -18,10 +18,16 @@ package de.norvos.contacts;
 
 /**
  * Contains the data of a contact.
- * 
+ *
  * @author Connor Lanigan
  */
 public class ContactData {
+	public enum ContactState {
+		KNOWN_USER,
+		UNKNOWN_USER
+	}
+
+	private final ContactState contactState;
 	private String displayName;
 	private String draftMessage;
 
@@ -35,10 +41,16 @@ public class ContactData {
 	 * @param draftMessage
 	 *            the message stored as draft
 	 */
-	public ContactData(final String phoneNumber, final String displayName, final String draftMessage) {
+	public ContactData(final String phoneNumber, final String displayName, final String draftMessage,
+			final ContactState unknownUser) {
 		this.phoneNumber = phoneNumber;
 		this.displayName = displayName;
 		this.draftMessage = draftMessage;
+		contactState = unknownUser;
+	}
+
+	public ContactState getContactState() {
+		return contactState;
 	}
 
 	public String getDisplayName() {

@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.util.guava.Optional;
 import org.whispersystems.textsecure.api.TextSecureMessageSender;
 import org.whispersystems.textsecure.api.crypto.UntrustedIdentityException;
@@ -36,10 +38,11 @@ import de.norvos.eventbus.events.MessageSentEvent;
 
 /**
  * Provides methods for sending messages to other users.
- * 
+ *
  * @author Connor Lanigan
  */
 public class MessageSender {
+	final static Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
 
 	private static TextSecureAttachment createAttachment(final File attachmentFile) throws FileNotFoundException {
 		final FileInputStream attachmentStream = new FileInputStream(attachmentFile);
@@ -73,7 +76,7 @@ public class MessageSender {
 
 	public static void sendTextMessage(final Contact contact, final String message)
 			throws UntrustedIdentityException, IOException {
-		System.err.println("About to send message: " + message);
+		LOGGER.debug("About to send message: [{}]", message);
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
 		getMessageSender().sendMessage(contact.toTSAddress(), messageBody);
 		EventBus.sendEvent(new MessageSentEvent(contact, message, System.currentTimeMillis(), null));

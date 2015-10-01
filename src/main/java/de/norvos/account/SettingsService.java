@@ -24,7 +24,7 @@ import de.norvos.i18n.AvailableLanguage;
 
 /**
  * Allows access to user settings.
- * 
+ *
  * @author Connor Lanigan
  */
 public class SettingsService {

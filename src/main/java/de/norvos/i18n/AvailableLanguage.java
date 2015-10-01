@@ -20,9 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import de.norvos.utils.Constants;
+
 /**
  * Represents a language that is available in this application.
- * 
+ *
  * @author Connor Lanigan
  */
 public enum AvailableLanguage {
@@ -57,6 +59,22 @@ public enum AvailableLanguage {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * This returns the language that is probably best suited for a new user. It
+	 * uses the systemLocale, if available, or else the Default Language of this
+	 * application.
+	 */
+	public static AvailableLanguage getDefaultLanguage() {
+		final Locale systemLocale = Locale.getDefault();
+		AvailableLanguage applicationLanguage = forLocaleLanguage(systemLocale);
+
+		if (applicationLanguage == null) {
+			applicationLanguage = Constants.DEFAULT_LANGUAGE;
+		}
+
+		return applicationLanguage;
 	}
 
 	private Locale code;

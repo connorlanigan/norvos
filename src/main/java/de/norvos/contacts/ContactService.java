@@ -16,8 +16,15 @@
  *******************************************************************************/
 package de.norvos.contacts;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.util.Collections;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.norvos.persistence.tables.ContactsTable;
 
 /**
  * Provides access to managing contacts.
@@ -26,6 +33,8 @@ import java.util.List;
  */
 public class ContactService {
 	private static ContactService instance;
+
+	final static Logger LOGGER = LoggerFactory.getLogger(ContactService.class);
 
 	synchronized public static ContactService getInstance() {
 		if (instance == null) {
@@ -44,5 +53,23 @@ public class ContactService {
 
 	public Contact getByNumber(final String number) {
 		return new Contact(number);
+	}
+
+	ContactData getContactData(final Contact contact) {
+		final ContactData data = ContactsTable.getInstance().getContactData(contact.getPhoneNumber());
+		if (data != null) {
+			return data;
+		} else {
+			LOGGER.debug("Requested contact data for [{}] not found in contact list.", contact.getPhoneNumber());
+			return unknownUser(contact.getPhoneNumber());
+		}
+	}
+
+	void setContactData(final ContactData contactData) {
+		ContactsTable.getInstance().storeContactData(contactData);
+	}
+
+	private ContactData unknownUser(final String phoneNumber) {
+		return new ContactData(phoneNumber, translate("unknown_user"), "", ContactData.ContactState.UNKNOWN_USER);
 	}
 }

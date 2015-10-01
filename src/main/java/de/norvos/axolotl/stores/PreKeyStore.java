@@ -16,28 +16,33 @@
  *******************************************************************************/
 package de.norvos.axolotl.stores;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.InvalidKeyIdException;
 import org.whispersystems.libaxolotl.state.PreKeyRecord;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 import org.whispersystems.libaxolotl.util.Medium;
 
-import de.norvos.log.Errors;
 import de.norvos.persistence.tables.AccountDataTable;
 import de.norvos.persistence.tables.PreKeyTable;
+import de.norvos.utils.Errors;
+import de.norvos.utils.UnreachableCodeException;
 
 /**
  * Contains the prekey-related data for the TextSecure protocol.
- * 
+ *
  * @author Connor Lanigan
  */
 public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeyStore {
-
 	private static PreKeyStore instance;
+	final static Logger LOGGER = LoggerFactory.getLogger(PreKeyStore.class);
 
 	synchronized public static PreKeyStore getInstance() {
 		if (instance == null) {
@@ -54,9 +59,10 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 		try {
 			return PreKeyTable.getInstance().getKey(preKeyId) != null;
 		} catch (final SQLException e) {
-			System.err.println(e.getMessage());
-			Errors.critical("databaseError");
-			return false;
+			LOGGER.error("PreKey could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -72,8 +78,10 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 			}
 			return new PreKeyRecord(record);
 		} catch (IOException | SQLException e) {
-			Errors.critical("databaseError");
-			return null;
+			LOGGER.error("Last Resort key could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -101,8 +109,10 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 			}
 			return PreKeyTable.getInstance().getKey(preKeyId);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			throw new InvalidKeyIdException(e);
+			LOGGER.error("PreKey could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -111,7 +121,10 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 		try {
 			PreKeyTable.getInstance().deleteKey(preKeyId);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
+			LOGGER.error("PreKey could not be removed from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -120,7 +133,10 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 		try {
 			AccountDataTable.getInstance().storeBinary("lastResortKey", record.serialize());
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
+			LOGGER.error("Last Resort Key could not be stored to database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -129,8 +145,10 @@ public class PreKeyStore implements org.whispersystems.libaxolotl.state.PreKeySt
 		try {
 			PreKeyTable.getInstance().storeKey(preKeyId, record);
 		} catch (final SQLException e) {
-			System.err.println(e.getMessage());
-			Errors.critical("databaseError");
+			LOGGER.error("PreKey could not be stored to database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 }

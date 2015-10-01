@@ -16,11 +16,20 @@
  *******************************************************************************/
 package de.norvos.gui.controller.register;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.norvos.utils.Constants;
+import de.norvos.utils.Errors;
 import de.norvos.utils.ResourceUtils;
+import de.norvos.utils.UnreachableCodeException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,8 +40,9 @@ import javafx.scene.layout.BorderPane;
  * @author Connor Lanigan
  */
 public class RegisterController {
-
 	private static RegisterController instance;
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(RegisterController.class);
 
 	synchronized public static RegisterController getInstance() {
 		return instance;
@@ -59,9 +69,11 @@ public class RegisterController {
 			containerPane.getChildren().clear();
 			containerPane.setCenter(parent);
 		} catch (final IOException e) {
-			// TODO logging
-			System.err.println("FXML could not be loaded: [" + fxmlURL + "]");
-			e.printStackTrace();
+			LOGGER.error("FXML could not be loaded.", e);
+			JOptionPane.showMessageDialog(null, translate("unexpected_quit"), "Norvos – Error",
+					JOptionPane.WARNING_MESSAGE);
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 

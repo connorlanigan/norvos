@@ -27,14 +27,14 @@ import de.norvos.i18n.UTF8Control;
 
 /**
  * Provides various utility methods related to resources.
- * 
+ *
  * @author Connor Lanigan
  */
 public class ResourceUtils {
 
 	/**
 	 * Returns the path to the database directory.
-	 * 
+	 *
 	 * @return the path
 	 */
 	public static Path getDatabaseDirectory() {
@@ -44,7 +44,7 @@ public class ResourceUtils {
 	/**
 	 * Returns the path to the data directory. If it does not yet exist on the
 	 * file system, it is created.
-	 * 
+	 *
 	 * @return the path
 	 */
 	public static Path getDataDirectory() {
@@ -60,7 +60,7 @@ public class ResourceUtils {
 	/**
 	 * Provides a ResourceBundle containing the string for the currently chosen
 	 * language.
-	 * 
+	 *
 	 * @return the ResourceBundle
 	 */
 	public static ResourceBundle getLocalizedStringsBundle() {
@@ -71,7 +71,7 @@ public class ResourceUtils {
 
 	/**
 	 * Returns the path of the application log file.
-	 * 
+	 *
 	 * @return
 	 */
 	public static Path getLogfile() {

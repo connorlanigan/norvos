@@ -16,23 +16,29 @@
  *******************************************************************************/
 package de.norvos.axolotl.stores;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.sql.SQLException;
-import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.AxolotlAddress;
 import org.whispersystems.libaxolotl.state.SessionRecord;
 
-import de.norvos.log.Errors;
 import de.norvos.persistence.tables.SessionTable;
+import de.norvos.utils.Errors;
+import de.norvos.utils.UnreachableCodeException;
 
 /**
  * Contains the session-related data for the TextSecure protocol.
- * 
+ *
  * @author Connor Lanigan
  */
 public class SessionStore implements org.whispersystems.libaxolotl.state.SessionStore {
 	private static SessionStore instance;
+
+	final static Logger LOGGER = LoggerFactory.getLogger(SessionStore.class);
 
 	synchronized public static SessionStore getInstance() {
 		if (instance == null) {
@@ -49,8 +55,10 @@ public class SessionStore implements org.whispersystems.libaxolotl.state.Session
 		try {
 			return null != SessionTable.getInstance().getSession(address);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			return false;
+			LOGGER.error("Session could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -59,7 +67,10 @@ public class SessionStore implements org.whispersystems.libaxolotl.state.Session
 		try {
 			SessionTable.getInstance().deleteSessions(name);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
+			LOGGER.error("Sessions could not be deleted from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -68,7 +79,10 @@ public class SessionStore implements org.whispersystems.libaxolotl.state.Session
 		try {
 			SessionTable.getInstance().deleteSession(address);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
+			LOGGER.error("Single session could not be deleted from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -77,8 +91,10 @@ public class SessionStore implements org.whispersystems.libaxolotl.state.Session
 		try {
 			return SessionTable.getInstance().getSessions(name);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			return new LinkedList<Integer>();
+			LOGGER.error("Subdevice sessions could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -91,8 +107,10 @@ public class SessionStore implements org.whispersystems.libaxolotl.state.Session
 			}
 			return record;
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
-			return new SessionRecord();
+			LOGGER.error("Session could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -101,7 +119,10 @@ public class SessionStore implements org.whispersystems.libaxolotl.state.Session
 		try {
 			SessionTable.getInstance().storeSession(address, record);
 		} catch (final SQLException e) {
-			Errors.critical("databaseError");
+			LOGGER.error("Session could not be stored to database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 

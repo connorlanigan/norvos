@@ -16,41 +16,47 @@
  *******************************************************************************/
 package de.norvos.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 import org.whispersystems.libaxolotl.logging.AxolotlLogger;
-
-import de.norvos.MainApplication;
 
 /**
  * Provides debugging methods for the Axolotl protocol.
  *
  * @author Connor Lanigan
  */
-public class DebugProvider implements AxolotlLogger {
+public class AxolotlLoggerImpl implements AxolotlLogger {
 
-	/**
-	 * Logs a debug message. The given string will be formatted using
-	 * {@link String#format(String, Object...) String.format()}.
-	 *
-	 * @param string
-	 *            the string
-	 * @param args
-	 *            the parameters for formatting
-	 */
-	public static void debug(final String string, final Object... args) {
-		if (MainApplication.arguments.contains("debugMessages")) {
-			if (args.length == 1) {
-				System.out.println(String.format(string, args[0]));
-			} else {
-				System.out.println(String.format(string, args));
-			}
-		}
-	}
+	final Logger LOGGER = LoggerFactory.getLogger(AxolotlLoggerImpl.class);
 
 	/**
 	 * Logs a message.
 	 */
 	@Override
 	public void log(final int priority, final String tag, final String message) {
-		debug("%d [%s]: %s", priority, tag, message);
+		final Marker marker = MarkerFactory.getMarker(tag);
+		switch (priority) {
+
+		case AxolotlLogger.VERBOSE:
+		case AxolotlLogger.DEBUG:
+			LOGGER.debug(marker, message);
+			break;
+		case AxolotlLogger.INFO:
+			LOGGER.info(marker, message);
+			break;
+		case AxolotlLogger.WARN:
+			LOGGER.warn(marker, message);
+			break;
+		case AxolotlLogger.ERROR:
+			LOGGER.error(marker, message);
+			break;
+		case AxolotlLogger.ASSERT:
+			LOGGER.trace(marker, message);
+			break;
+		default:
+			LOGGER.error(marker, "## Unknown Loglevel Message: ##" + message);
+		}
 	}
 }

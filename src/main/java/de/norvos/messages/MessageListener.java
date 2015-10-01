@@ -29,7 +29,7 @@ import javafx.concurrent.Task;
 /**
  * Listens for messages from the server and sends them for decryption to the
  * {@link MessageDecrypter}.
- * 
+ *
  * @author Connor Lanigan
  */
 public class MessageListener extends Task<Void> {

@@ -16,15 +16,24 @@
  *******************************************************************************/
 package de.norvos.persistence.tables;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.norvos.contacts.ContactData;
 import de.norvos.persistence.Database;
+import de.norvos.utils.Errors;
+import de.norvos.utils.UnreachableCodeException;
 
 public class ContactsTable implements Table {
 	private static ContactsTable instance;
+
+	final static Logger LOGGER = LoggerFactory.getLogger(ContactsTable.class);
 
 	synchronized public static ContactsTable getInstance() {
 		if (instance == null) {
@@ -48,16 +57,16 @@ public class ContactsTable implements Table {
 				final String displayName = result.getString("display_name");
 				final String draftMessage = result.getString("draft_message");
 
-				return new ContactData(phoneNumber, displayName, draftMessage);
-
+				return new ContactData(phoneNumber, displayName, draftMessage, ContactData.ContactState.KNOWN_USER);
 			} else {
-				System.err.println("No contact found for [" + phoneNumber + "]");
+				return null;
 			}
 		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Contact data could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
-		return new ContactData(phoneNumber, "Unknown User", "");
 
 	}
 

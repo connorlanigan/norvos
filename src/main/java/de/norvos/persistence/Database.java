@@ -21,20 +21,25 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.norvos.persistence.tables.Table;
 import de.norvos.utils.ResourceUtils;
 
 /**
  * Provides access to the database.
- * 
+ *
  * @author Connor Lanigan
  */
 public class Database {
 	private static Connection connection;
 
+	final static Logger LOGGER = LoggerFactory.getLogger(Database.class);
+
 	/**
 	 * Closes the database connection.
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	public static void close() throws SQLException {
@@ -68,7 +73,7 @@ public class Database {
 				Class.forName("org.h2.Driver");
 				connection = DriverManager.getConnection("jdbc:h2:" + ResourceUtils.getDatabaseDirectory());
 			} catch (final ClassNotFoundException e) {
-				System.err.println("The database driver is not available!");
+				LOGGER.error("The database driver is not available!", e);
 				throw new SQLException(e);
 			}
 		}

@@ -16,14 +16,21 @@
  *******************************************************************************/
 package de.norvos.gui.windows;
 
-import static de.norvos.utils.DebugProvider.debug;
+import static de.norvos.i18n.Translations.translate;
 
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.norvos.account.SettingsService;
 import de.norvos.utils.Constants;
+import de.norvos.utils.Errors;
 import de.norvos.utils.ResourceUtils;
+import de.norvos.utils.UnreachableCodeException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -38,6 +45,7 @@ import javafx.stage.Stage;
  */
 public abstract class Window extends Application {
 
+	private final static Logger LOGGER = LoggerFactory.getLogger(Window.class);
 	private final URL FXML;
 	private final double initialHeight;
 	private final double initialWidth;
@@ -98,17 +106,19 @@ public abstract class Window extends Application {
 		loader.setResources(ResourceUtils.getLocalizedStringsBundle());
 		Parent parent;
 		try {
-			debug("Loading [%s] in location [%s] with language [%s].", FXML, LOCATION, SettingsService.getLanguage());
+			LOGGER.debug("Loading [{}] in location [{}[ with language [{}].", FXML, LOCATION,
+					SettingsService.getLanguage().name());
 			parent = loader.load(FXML.openStream());
 			final Scene scene = new Scene(parent, initialWidth, initialHeight);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (final IOException e) {
-			// TODO logging
-			System.err.println("FXML could not be loaded: [" + FXML + "]");
-			e.printStackTrace();
-			System.exit(1);
+			LOGGER.error("FXML could not be loaded.", e);
+			JOptionPane.showMessageDialog(null, translate("unexpected_quit"), "Norvos – Error",
+					JOptionPane.WARNING_MESSAGE);
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 

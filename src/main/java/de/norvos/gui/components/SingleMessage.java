@@ -29,7 +29,7 @@ import javafx.scene.layout.BorderPane;
 
 /**
  * A GUI element representing a single message.
- * 
+ *
  * @author Connor Lanigan
  */
 public class SingleMessage extends BorderPane {

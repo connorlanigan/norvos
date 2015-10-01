@@ -18,8 +18,6 @@ package de.norvos.contacts;
 
 import org.whispersystems.textsecure.api.push.TextSecureAddress;
 
-import de.norvos.persistence.tables.ContactsTable;
-
 /**
  * Represents a contact.
  *
@@ -35,7 +33,7 @@ public class Contact {
 	 * @param phoneNumber
 	 *            the contact's phone number
 	 */
-	public Contact(final String phoneNumber) {
+	Contact(final String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
@@ -46,22 +44,22 @@ public class Contact {
 	 * @return the contact's human readable name
 	 */
 	public String getDisplayName() {
-		return ContactsTable.getInstance().getContactData(phoneNumber).getDisplayName();
+		return ContactService.getInstance().getContactData(this).getDisplayName();
 	}
 
 	/**
 	 * Returns the stored draft message (a message that was typed but not yet
 	 * sent) for this contact.
-	 * 
+	 *
 	 * @return the stored draft message
 	 */
 	public String getDraftMessage() {
-		return ContactsTable.getInstance().getContactData(phoneNumber).getDraftMessage();
+		return ContactService.getInstance().getContactData(this).getDraftMessage();
 	}
 
 	/**
 	 * Returns the phone number of this contact.
-	 * 
+	 *
 	 * @return the contact's phone number
 	 */
 	public String getPhoneNumber() {
@@ -70,14 +68,14 @@ public class Contact {
 
 	/**
 	 * Store a message as the contact's draft message.
-	 * 
+	 *
 	 * @param draftMessage
 	 *            the message to store
 	 */
 	synchronized public void setDraftMessage(final String draftMessage) {
-		final ContactData contactData = ContactsTable.getInstance().getContactData(phoneNumber);
+		final ContactData contactData = ContactService.getInstance().getContactData(this);
 		contactData.setDraftMessage(draftMessage);
-		ContactsTable.getInstance().storeContactData(contactData);
+		ContactService.getInstance().setContactData(contactData);
 	}
 
 	public TextSecureAddress toTSAddress() {

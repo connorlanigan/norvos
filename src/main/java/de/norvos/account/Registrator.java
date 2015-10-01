@@ -34,7 +34,7 @@ import de.norvos.utils.RandomUtils;
 
 /**
  * Provides methods to register a client with the server.
- * 
+ *
  * @author Connor Lanigan
  */
 public class Registrator {

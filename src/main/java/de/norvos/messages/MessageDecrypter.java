@@ -16,10 +16,10 @@
  *******************************************************************************/
 package de.norvos.messages;
 
-import static de.norvos.utils.DebugProvider.debug;
-
 import java.util.concurrent.BlockingQueue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.DuplicateMessageException;
 import org.whispersystems.libaxolotl.InvalidKeyException;
 import org.whispersystems.libaxolotl.InvalidKeyIdException;
@@ -45,30 +45,30 @@ import javafx.concurrent.Task;
  * @author Connor Lanigan
  */
 public class MessageDecrypter {
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageDecrypter.class);
 	private static BlockingQueue<TextSecureEnvelope> queue;
 	private static Task<Void> task;
 	private static Thread thread;
 
 	private static void handleEndSessionMessage(final TextSecureEnvelope envelope,
 			final TextSecureDataMessage message) {
-		debug("End-session-message received. Will be ignored.");
+		LOGGER.warn("End-session-message received. Will be ignored.");
 	}
 
 	private static void handleGroupMessage(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
-		debug("Group message received. Will be ignored.");
+		LOGGER.warn("Group message received. Will be ignored.");
 	}
 
 	protected static void handleInvalidMessage(final TextSecureEnvelope envelope) {
-		debug("Invalid message received. Will be ignored.");
+		LOGGER.warn("Invalid message received. Will be ignored.");
 	}
 
 	private static void handleMediaMessage(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
-		debug("Media message received. Will be ignored.");
+		LOGGER.warn("Media message received. Will be ignored.");
 	}
 
 	private static void handleSyncMessage(final TextSecureSyncMessage syncMessage) {
-		debug("Synchronization message received. Will be ignored.");
+		LOGGER.warn("Synchronization message received. Will be ignored.");
 	}
 
 	private static void handleTextMessage(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
@@ -79,7 +79,7 @@ public class MessageDecrypter {
 	}
 
 	protected static void handleUntrustedMessage(final TextSecureEnvelope envelope) {
-		debug("Untrusted message received. Will be ignored.");
+		LOGGER.warn("Untrusted message received. Will be ignored.");
 	}
 
 	/**

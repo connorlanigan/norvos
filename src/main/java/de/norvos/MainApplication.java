@@ -16,26 +16,20 @@
  *******************************************************************************/
 package de.norvos;
 
-import static de.norvos.utils.DebugProvider.debug;
-
 import java.security.Security;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 
-import de.norvos.account.Registrator;
 import de.norvos.account.SettingsService;
-import de.norvos.contacts.ContactData;
 import de.norvos.gui.windows.MainWindow;
 import de.norvos.gui.windows.RegisterWindow;
 import de.norvos.i18n.AvailableLanguage;
-import de.norvos.persistence.tables.ContactsTable;
-import de.norvos.utils.Constants;
-import de.norvos.utils.DebugProvider;
+import de.norvos.utils.ApplicationSingleton;
+import de.norvos.utils.ArgumentsHandler;
+import de.norvos.utils.AxolotlLoggerImpl;
 import javafx.application.Application;
 
 /**
@@ -44,86 +38,49 @@ import javafx.application.Application;
  * @author Connor Lanigan
  */
 public class MainApplication {
+	final static Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
-	public static List<String> arguments;
-
-	/**
-	 * Sets data and configuration that is used for debug mode.
-	 */
-	private static void enableDebugMode() {
-		System.out.println("## Warning! Debug mode enabled! The displayed data"
-				+ "may be modified and behaviour might be altered!");
-		ContactsTable.getInstance().storeContactData(new ContactData("+491788174362", "Connor", ""));
-		ContactsTable.getInstance().storeContactData(new ContactData("1", "Léanne", ""));
-		ContactsTable.getInstance().storeContactData(new ContactData("2", "Björn", ""));
-	}
-
-	private static boolean hasRegistered() {
-		return SettingsService.isSetupFinished();
+	private static boolean hasToRegister() {
+		return !SettingsService.isSetupFinished() && !ArgumentsHandler.INSTANCE.getSkipRegistration();
 	}
 
 	/**
 	 * Sets the default values for a new user.
 	 */
 	private static void initializeWithDefaultSettings() {
-		SettingsService.setURL("https://textsecure-service.whispersystems.org");
-		debug("URL: %s", SettingsService.getURL());
-		setDefaultLanguage();
+		final String defaultURL = "https://textsecure-service.whispersystems.org";
+		SettingsService.setURL(defaultURL);
+		LOGGER.debug("Setting server URL to [{}].", defaultURL);
+		SettingsService.setLanguage(AvailableLanguage.getDefaultLanguage());
+	}
+
+	/**
+	 * Initializes all libraries.
+	 */
+	private static void initLibraries() {
+		Security.addProvider(new BouncyCastleProvider());
+		AxolotlLoggerProvider.setProvider(new AxolotlLoggerImpl());
 	}
 
 	public static void main(final String[] args) {
-		arguments = Collections.unmodifiableList(Arrays.asList(args));
+		ApplicationSingleton.checkAndLock();
+		LOGGER.info("Starting application.");
 
-		Security.addProvider(new BouncyCastleProvider());
+		ArgumentsHandler.INSTANCE.init(args);
 
-		AxolotlLoggerProvider.setProvider(new DebugProvider());
+		initLibraries();
 
-		final boolean skipRegistration = arguments.contains("skipRegistration");
-
-		if (arguments.contains("debug")) {
-			enableDebugMode();
-		}
-
-		if (!hasRegistered() && !skipRegistration) {
+		if (hasToRegister()) {
 			initializeWithDefaultSettings();
-			Registrator.initialize();
 
-			preWindowLaunch();
 			Application.launch(RegisterWindow.class, args);
 
-			if (!hasRegistered()) {
+			// completely end the program if the user has not completed the
+			// registration
+			if (!SettingsService.isSetupFinished()) {
 				System.exit(0);
 			}
 		}
-		preWindowLaunch();
 		Application.launch(MainWindow.class, args);
-	}
-
-	/**
-	 * Has to be executed before opening a new window. This will set the
-	 * window's display language.
-	 */
-	private static void preWindowLaunch() {
-		if (arguments.contains("testTranslation")) {
-			SettingsService.setLanguage(AvailableLanguage.TEST);
-		} else {
-			setDefaultLanguage();
-		}
-	}
-
-	/**
-	 * This automatically sets the language that is probably best suited for a
-	 * new user. It uses the systemLocale, if available, or else the Default
-	 * Language of this application.
-	 */
-	private static void setDefaultLanguage() {
-		final Locale systemLocale = Locale.getDefault();
-		AvailableLanguage applicationLanguage = AvailableLanguage.forLocaleLanguage(systemLocale);
-
-		if (applicationLanguage == null) {
-			applicationLanguage = Constants.DEFAULT_LANGUAGE;
-		}
-
-		SettingsService.setLanguage(applicationLanguage);
 	}
 }

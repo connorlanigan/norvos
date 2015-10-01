@@ -16,6 +16,8 @@
  *******************************************************************************/
 package de.norvos.gui.windows;
 
+import de.norvos.account.Registrator;
+
 /**
  * The window containing the registration process.
  *
@@ -31,6 +33,7 @@ public class RegisterWindow extends Window {
 
 	public RegisterWindow() {
 		super("register/Register.fxml", "register/", false, 600, 400);
+		Registrator.initialize();
 	}
 
 }

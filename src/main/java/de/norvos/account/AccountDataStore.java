@@ -23,7 +23,7 @@ import de.norvos.persistence.tables.AccountDataTable;
 /**
  * Allows access to storing and reading raw settings values from and to the user
  * settings database.
- * 
+ *
  * @author Connor Lanigan
  */
 public class AccountDataStore {
