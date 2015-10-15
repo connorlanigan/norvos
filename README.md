@@ -9,6 +9,23 @@ The development blog, where updates and other announcements are placed, is locat
 The current progress can be seen on the [project board](https://waffle.io/StarfishInteractive/norvos/join).
 
 
+## Instructions
+
+This section will describe how to use norvos to send and receive encrypted chat messages.
+
+#### Step 1. Build Norvos
+
+Clone the norvos repo and build it.
+
+````
+  $ git clone https://github.com/StarfishInteractive/norvos.git
+  $ cd norvos
+  $ mvn clean install
+
+   
+````
+
+#### Step 2. Use Norvos
 
 
 ## Helping development
