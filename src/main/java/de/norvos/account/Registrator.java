@@ -91,7 +91,11 @@ public class Registrator {
 		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
 				password, Constants.USER_AGENT);
 
+		try{
 		accountManager.requestSmsVerificationCode();
+		} catch(Exception e){
+			throw new IOException(e);
+		}
 
 		requested = true;
 	}
