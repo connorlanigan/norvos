@@ -65,8 +65,13 @@ public class SettingsService {
 	}
 
 	public static AvailableLanguage getLanguage() {
-		final String languageTag = getStringSetting(Setting.LOCALE);
-		return AvailableLanguage.forLocaleLanguage(Locale.forLanguageTag(languageTag));
+		
+		try {
+			final String languageTag = getStringSetting(Setting.LOCALE);
+			return AvailableLanguage.forLocaleLanguage(Locale.forLanguageTag(languageTag));
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static int getLocalRegistrationId() {
