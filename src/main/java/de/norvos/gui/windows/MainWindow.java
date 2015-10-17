@@ -31,6 +31,7 @@ public class MainWindow extends Window {
 
 	public MainWindow() {
 		super("Overview.fxml", "/", true, 900, 600);
+		instance = this;
 	}
 
 }

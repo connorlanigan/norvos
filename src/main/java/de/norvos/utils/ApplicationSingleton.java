@@ -13,7 +13,7 @@ public class ApplicationSingleton {
 
 	synchronized public static void checkAndLock() {
 		if (!alreadyLocked) {
-			new Thread(() -> {
+			Thread t = new Thread(() -> {
 				try {
 					final InetAddress localhost = InetAddress.getByName("127.0.0.1");
 
@@ -31,7 +31,9 @@ public class ApplicationSingleton {
 				} catch (Exception e) {
 					portLockingFailed = true;
 				}
-			} , "Port Locking Thread").start();
+			} , "Port Locking Thread");
+			t.setDaemon(true);
+			t.start();
 
 			try {
 				Thread.sleep(1000);

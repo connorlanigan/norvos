@@ -43,7 +43,7 @@ import javafx.stage.Stage;
  *
  * @author Connor Lanigan
  */
-public abstract class Window extends Application {
+public abstract class Window {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Window.class);
 	private final URL FXML;
@@ -51,7 +51,9 @@ public abstract class Window extends Application {
 	private final double initialWidth;
 	private final URL LOCATION;
 	private final boolean minimizeOnClose;
-	private Stage primaryStage;
+	private Stage stage;
+	private Boolean hasQuit;
+	private final Object hasQuitLock = new Object();
 
 	/**
 	 * Creates a Window which loads the given FXML file. It is important to
@@ -79,6 +81,7 @@ public abstract class Window extends Application {
 		FXML = getClass().getResource(Constants.FXML_LOCATION + fxml);
 		LOCATION = getClass().getResource(Constants.FXML_LOCATION + includeLocation);
 		this.minimizeOnClose = minimizeOnClose;
+		hasQuit = false;
 	}
 
 	/**
@@ -86,17 +89,27 @@ public abstract class Window extends Application {
 	 * remove the focus from the currently focused input element.
 	 */
 	public void focusWindow() {
-		primaryStage.requestFocus();
+		stage.requestFocus();
 	}
 
 	private void initWindow() {
-		primaryStage.setTitle(Constants.WINDOW_TITLE);
-		primaryStage.centerOnScreen();
-		if (minimizeOnClose) {
-			primaryStage.setOnCloseRequest(event -> {
-				primaryStage.setIconified(true);
+		stage.setTitle(Constants.WINDOW_TITLE);
+		stage.centerOnScreen();
+		stage.setOnCloseRequest(event -> {
+			if (minimizeOnClose) {
+				stage.setIconified(true);
 				event.consume();
-			});
+			} else {
+				releaseWindowQuitLock();
+			}
+		});
+
+	}
+
+	public void releaseWindowQuitLock() {
+		synchronized (hasQuitLock) {
+			hasQuit = true;
+			hasQuitLock.notifyAll();
 		}
 	}
 
@@ -111,8 +124,8 @@ public abstract class Window extends Application {
 			parent = loader.load(FXML.openStream());
 			final Scene scene = new Scene(parent, initialWidth, initialHeight);
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			stage.setScene(scene);
+			stage.show();
 		} catch (final IOException e) {
 			LOGGER.error("FXML could not be loaded.", e);
 			JOptionPane.showMessageDialog(null, translate("unexpected_quit"), "Norvos – Error",
@@ -122,17 +135,30 @@ public abstract class Window extends Application {
 		}
 	}
 
-	@Override
 	public void start(final Stage primaryStage) {
-		this.primaryStage = primaryStage;
+		this.stage = primaryStage;
 		initWindow();
 		loadWindowContent();
+	}
+
+	public void waitForClose() {
+		if (minimizeOnClose) {
+			throw new IllegalStateException("Can't wait for close on a window with \"minimizeOnClose\" enabled");
+		}
+		synchronized (hasQuitLock) {
+			while (!hasQuit) {
+				try {
+					hasQuitLock.wait();
+				} catch (InterruptedException e) {
+				}
+			}
+		}
 	}
 
 	/**
 	 * Brings the window to the front.
 	 */
 	public void toFront() {
-		primaryStage.toFront();
+		stage.toFront();
 	}
 }

@@ -33,6 +33,7 @@ public class RegisterWindow extends Window {
 
 	public RegisterWindow() {
 		super("register/Register.fxml", "register/", false, 600, 400);
+		instance = this;
 		Registrator.initialize();
 	}
 

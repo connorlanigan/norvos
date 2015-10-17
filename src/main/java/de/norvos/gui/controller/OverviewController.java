@@ -24,6 +24,7 @@ import de.norvos.contacts.Contact;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.ApplicationQuitEvent;
 import de.norvos.gui.components.MessageList;
+import de.norvos.gui.windows.MainWindow;
 import de.norvos.utils.Constants;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -111,6 +112,7 @@ public class OverviewController {
 			final Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK) {
 				EventBus.sendEvent(new ApplicationQuitEvent());
+				MainWindow.getInstance().releaseWindowQuitLock();
 				Platform.exit();
 			}
 		});

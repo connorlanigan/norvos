@@ -22,22 +22,31 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
+import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
+import org.whispersystems.textsecure.api.push.exceptions.RateLimitException;
 
+import de.norvos.account.Registrator;
 import de.norvos.account.SettingsService;
+import de.norvos.gui.controller.register.RegisterController;
 import de.norvos.gui.windows.MainWindow;
 import de.norvos.gui.windows.RegisterWindow;
+import de.norvos.gui.windows.Window;
 import de.norvos.i18n.AvailableLanguage;
 import de.norvos.utils.ApplicationSingleton;
 import de.norvos.utils.ArgumentsHandler;
 import de.norvos.utils.AxolotlLoggerImpl;
+import de.norvos.utils.DataManipulationUtils;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.stage.Stage;
 
 /**
  * The main application and entry point of the application.
  *
  * @author Connor Lanigan
  */
-public class MainApplication {
+public class MainApplication extends Application {
 	final static Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
 	private static boolean hasToRegister() {
@@ -70,17 +79,43 @@ public class MainApplication {
 
 		initLibraries();
 
-		if (hasToRegister()) {
-			initializeWithDefaultSettings();
+		Application.launch(MainApplication.class, args);
 
-			Application.launch(RegisterWindow.class, args);
+	}
 
-			// completely end the program if the user has not completed the
-			// registration
-			if (!SettingsService.isSetupFinished()) {
-				System.exit(0);
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+
+		final Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				try {
+					if (hasToRegister()) {
+						initializeWithDefaultSettings();
+
+						Window registerWindow = new RegisterWindow();
+						Platform.runLater(() -> registerWindow.start(primaryStage));
+						registerWindow.waitForClose();
+
+						// completely end the program if the user has not
+						// completed
+						// the
+						// registration
+						if (!SettingsService.isSetupFinished()) {
+							LOGGER.info("Registration has been aborted.");
+							System.exit(0);
+						}
+					}
+
+					Window mainWindow = new MainWindow();
+					Platform.runLater(() -> mainWindow.start(new Stage()));
+				} catch (Throwable e) {
+					LOGGER.debug(e.getMessage(), e);
+				}
+				return (Void) null;
 			}
-		}
-		Application.launch(MainWindow.class, args);
+		};
+		new Thread(task).start();
+
 	}
 }
