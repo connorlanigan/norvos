@@ -16,9 +16,17 @@
  *******************************************************************************/
 package de.norvos.account;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.norvos.persistence.tables.AccountDataTable;
+import de.norvos.persistence.tables.ContactsTable;
+import de.norvos.utils.Errors;
+import de.norvos.utils.UnreachableCodeException;
 
 /**
  * Allows access to storing and reading raw settings values from and to the user
@@ -27,6 +35,7 @@ import de.norvos.persistence.tables.AccountDataTable;
  * @author Connor Lanigan
  */
 public class AccountDataStore {
+	final static Logger LOGGER = LoggerFactory.getLogger(AccountDataStore.class);
 	/**
 	 * Get a binary value from the account data table. Do not use this method
 	 * directly to access user settings, instead use the {@link SettingsService}
@@ -40,7 +49,10 @@ public class AccountDataStore {
 		try {
 			return AccountDataTable.getInstance().getBinary(key);
 		} catch (final SQLException e) {
-			return null;
+			LOGGER.error("Binary value for key ["+key+"] could not be fetched to database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -57,7 +69,10 @@ public class AccountDataStore {
 		try {
 			return AccountDataTable.getInstance().getString(key);
 		} catch (final SQLException e) {
-			return null;
+			LOGGER.error("Settings string ["+key+"] could not be fetched from database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -77,7 +92,10 @@ public class AccountDataStore {
 			AccountDataTable.getInstance().storeBinary(key, value);
 			return true;
 		} catch (final SQLException e) {
-			return false;
+			LOGGER.error("Binary value for key ["+key+"] could not be stored to database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 
@@ -97,7 +115,10 @@ public class AccountDataStore {
 			AccountDataTable.getInstance().storeString(key, value);
 			return true;
 		} catch (final SQLException e) {
-			return false;
+			LOGGER.error("String value ["+value+"] for key ["+key+"] could not be stored to database.", e);
+			Errors.showError(translate("unexpected_quit"));
+			Errors.stopApplication();
+			throw new UnreachableCodeException();
 		}
 	}
 }

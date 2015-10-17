@@ -35,13 +35,14 @@ import de.norvos.axolotl.TrustStore;
 import de.norvos.contacts.Contact;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.MessageSentEvent;
+import de.norvos.utils.Constants;
 
 /**
  * Provides methods for sending messages to other users.
  *
  * @author Connor Lanigan
  */
-public class MessageSender {
+class MessageSender {
 	final static Logger LOGGER = LoggerFactory.getLogger(MessageSender.class);
 
 	private static TextSecureAttachment createAttachment(final File attachmentFile) throws FileNotFoundException {
@@ -57,7 +58,7 @@ public class MessageSender {
 		final String password = SettingsService.getPassword();
 
 		return new TextSecureMessageSender(url, trustStore, username, password, AxolotlStore.getInstance(),
-				Optional.absent());
+				Constants.USER_AGENT, Optional.absent());
 	}
 
 	private static String getMimeType(final File file) {

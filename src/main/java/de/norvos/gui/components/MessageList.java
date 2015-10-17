@@ -25,7 +25,7 @@ import java.util.List;
 import de.norvos.contacts.Contact;
 import de.norvos.contacts.ContactService;
 import de.norvos.messages.DecryptedMessage;
-import de.norvos.messages.MessagePersistenceService;
+import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
 import javafx.fxml.FXML;
@@ -89,7 +89,7 @@ public class MessageList extends BorderPane {
 		contact = ContactService.getInstance().getByNumber(user);
 		usernameDisplay.setText(contact.getDisplayName());
 		messageInput.setText(contact.getDraftMessage());
-		final List<DecryptedMessage> list = MessagePersistenceService.getInstance().getMessages(contact);
+		final List<DecryptedMessage> list = MessageService.getInstance().getMessages(contact);
 		for (final DecryptedMessage message : list) {
 			final SingleMessage singleMessage = new SingleMessage();
 			singleMessage.setMessage(message.getBody());

@@ -30,6 +30,7 @@ import de.norvos.axolotl.TrustStore;
 import de.norvos.axolotl.stores.IdentityKeyStore;
 import de.norvos.axolotl.stores.PreKeyStore;
 import de.norvos.axolotl.stores.SignedPreKeyStore;
+import de.norvos.utils.Constants;
 import de.norvos.utils.RandomUtils;
 
 /**
@@ -44,7 +45,7 @@ public class Registrator {
 	final static private int passwordLength = 40;
 
 	private static boolean requested = false;
-	final static boolean SMS_UNSUPPORTED = false;
+	final static boolean REDPHONE_UNSUPPORTED = false;
 
 	final static public String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
 
@@ -88,7 +89,7 @@ public class Registrator {
 		final String password = SettingsService.getPassword();
 
 		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
-				password);
+				password, Constants.USER_AGENT);
 
 		accountManager.requestSmsVerificationCode();
 
@@ -118,9 +119,9 @@ public class Registrator {
 		final Integer installID = SettingsService.getInstallID();
 
 		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
-				password);
+				password, Constants.USER_AGENT);
 
-		accountManager.verifyAccount(verificationCode, signalingKey, SMS_UNSUPPORTED, installID);
+		accountManager.verifyAccountWithCode(verificationCode, signalingKey, installID, REDPHONE_UNSUPPORTED);
 
 		accountManager.setGcmId(Optional.of("Norvos does not support GCM."));
 

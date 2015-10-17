@@ -18,9 +18,15 @@ package de.norvos.messages;
 
 import static de.norvos.i18n.Translations.translate;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.whispersystems.textsecure.api.crypto.UntrustedIdentityException;
 
 import de.norvos.contacts.Contact;
 import de.norvos.persistence.tables.DecryptedMessageTable;
@@ -31,6 +37,7 @@ import de.norvos.persistence.tables.DecryptedMessageTable;
  * @author Connor Lanigan
  */
 public class MessageService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
 
 	private static MessageService instance;
 
@@ -42,6 +49,11 @@ public class MessageService {
 	}
 
 	private MessageService() {
+	}
+
+	synchronized public void startReceiving(){
+		new MessageListener().run();
+		MessageDecrypter.start();
 	}
 
 	/**
@@ -67,8 +79,28 @@ public class MessageService {
 		try {
 			DecryptedMessageTable.getInstance().storeMessage(message);
 		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Untrusted Identity while sending message.", e);
+		}
+	}
+
+	public void sendMessage(final Contact contact, final String message, final File attachment) {
+		try {
+			MessageSender.sendMediaMessage(contact, message, attachment);
+		} catch (UntrustedIdentityException e) {
+			LOGGER.error("Untrusted Identity while sending message.", e);
+		} catch (IOException e) {
+			LOGGER.error("IOException while sending message.", e);
+		}
+
+	}
+
+	public void sendMessage(final Contact contact, final String message) {
+		try {
+			MessageSender.sendTextMessage(contact, message);
+		} catch (UntrustedIdentityException e) {
+			LOGGER.error("Untrusted Identity while sending message.", e);
+		} catch (IOException e) {
+			LOGGER.error("IOException while sending message.", e);
 		}
 	}
 

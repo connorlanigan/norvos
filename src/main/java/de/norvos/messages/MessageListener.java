@@ -24,6 +24,7 @@ import org.whispersystems.textsecure.api.messages.TextSecureEnvelope;
 
 import de.norvos.account.SettingsService;
 import de.norvos.axolotl.TrustStore;
+import de.norvos.utils.Constants;
 import javafx.concurrent.Task;
 
 /**
@@ -32,7 +33,7 @@ import javafx.concurrent.Task;
  *
  * @author Connor Lanigan
  */
-public class MessageListener extends Task<Void> {
+class MessageListener extends Task<Void> {
 	static private MessageListener instance;
 	final private String password;
 	final private String signalingKey;
@@ -56,7 +57,7 @@ public class MessageListener extends Task<Void> {
 		}
 		instance = this;
 		final TextSecureMessageReceiver messageReceiver = new TextSecureMessageReceiver(url, trustStore, username,
-				password, signalingKey);
+				password, signalingKey, Constants.USER_AGENT);
 		final TextSecureMessagePipe messagePipe = messageReceiver.createMessagePipe();
 
 		while (!isCancelled()) {

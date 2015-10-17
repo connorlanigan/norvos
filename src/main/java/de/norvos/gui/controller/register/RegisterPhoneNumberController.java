@@ -104,7 +104,7 @@ public class RegisterPhoneNumberController {
 						errorMessage.setVisible(true);
 					});
 				}
-				return null;
+				return (Void) null;
 			}
 		};
 		new Thread(task).start();

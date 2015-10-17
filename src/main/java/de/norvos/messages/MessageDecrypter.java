@@ -74,7 +74,7 @@ public class MessageDecrypter {
 	private static void handleTextMessage(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
 		final DecryptedMessage decryptedMessage = new DecryptedMessage(System.currentTimeMillis(), false,
 				message.getBody().get(), envelope.getSource(), "", false);
-		MessagePersistenceService.getInstance().storeMessage(decryptedMessage);
+		MessageService.getInstance().storeMessage(decryptedMessage);
 		EventBus.sendEvent(new MessageReceivedEvent(decryptedMessage));
 	}
 

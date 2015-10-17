@@ -33,6 +33,14 @@ import de.norvos.i18n.UTF8Control;
 public class ResourceUtils {
 
 	/**
+	 * Returns the current version of the application.
+	 * @return the version string
+	 */
+	public static String getApplicationVersion(){
+		return ResourceUtils.class.getPackage().getImplementationVersion();
+	}
+
+	/**
 	 * Returns the path to the database directory.
 	 *
 	 * @return the path
@@ -52,7 +60,7 @@ public class ResourceUtils {
 		directory.toFile().mkdirs();
 		try {
 			Files.setAttribute(directory, "dos:hidden", true);
-		} catch (final IOException e) {
+		} catch (final Exception e) {
 		}
 		return directory;
 	}
