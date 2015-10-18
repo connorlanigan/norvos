@@ -40,9 +40,10 @@ public class DecryptedMessage {
 
 	private final boolean sent;
 	private final long timestamp;
+	private final long messageId;
 
 	public DecryptedMessage(final long timestamp, final boolean read, final String body, final String address,
-			final String mismatchedIdentities, final boolean sent, final long attachmentId) {
+			final String mismatchedIdentities, final boolean sent, final long attachmentId, final long messageId) {
 		this.read = read;
 		this.body = body;
 		this.address = address;
@@ -50,10 +51,15 @@ public class DecryptedMessage {
 		this.timestamp = timestamp;
 		this.sent = sent;
 		this.attachmentId = attachmentId;
+		this.messageId = messageId;
 	}
 
 	public String getAddress() {
 		return address;
+	}
+
+	public long getMessageId(){
+		return messageId;
 	}
 
 	public File getAttachment() {

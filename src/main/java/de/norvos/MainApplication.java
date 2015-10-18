@@ -111,6 +111,7 @@ public class MainApplication extends Application {
 
 					final Window mainWindow = new MainWindow();
 					Platform.runLater(() -> mainWindow.start(new Stage()));
+					Thread.sleep(2000);
 				} catch (final Throwable e) {
 					LOGGER.debug(e.getMessage(), e);
 				}

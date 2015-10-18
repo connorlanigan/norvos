@@ -37,6 +37,7 @@ import org.whispersystems.textsecure.api.messages.multidevice.TextSecureSyncMess
 import de.norvos.axolotl.AxolotlStore;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.MessageReceivedEvent;
+import de.norvos.utils.Constants;
 import javafx.concurrent.Task;
 
 /**
@@ -74,7 +75,7 @@ public class MessageDecrypter {
 	private static void handleTextMessage(final TextSecureEnvelope envelope, final TextSecureDataMessage message) {
 		// TODO save attachments
 		final DecryptedMessage decryptedMessage = new DecryptedMessage(System.currentTimeMillis(), false,
-				message.getBody().get(), envelope.getSource(), "", false, 0);
+				message.getBody().get(), envelope.getSource(), "", false, Constants.NO_ATTACHMENT_ID, Constants.NO_MESSAGE_ID);
 		MessageService.getInstance().storeMessage(decryptedMessage);
 		EventBus.sendEvent(new MessageReceivedEvent(decryptedMessage));
 	}

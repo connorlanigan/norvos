@@ -14,25 +14,25 @@
 	-fx-border-style: solid;
 }
 
-#searchClearButton{
+.XButton{
 	-fx-background-radius:35px;
 	-fx-background-color:rgb(220, 220, 220);
 }
-#searchClearButton:hover{
+.XButton:hover{
 	-fx-background-color:rgb(200, 200, 200);
 }
-#searchClearButton:pressed{
+.XButton:pressed{
 	-fx-background-color:rgb(160, 160, 160);
 }
-#searchClearButton:disabled{
+.XButton:disabled{
 	visibility:hidden;
 }
 
 .verifiedContactLabel{
-	
+
 }
 .unverifiedContactLabel{
-	
+
 }
 
 

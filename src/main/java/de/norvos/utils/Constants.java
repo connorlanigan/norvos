@@ -46,6 +46,9 @@ public class Constants {
 	 */
 	public final static String WINDOW_TITLE = "Norvos";
 
+	public final static int NO_ATTACHMENT_ID = 0;
+	public final static int NO_MESSAGE_ID = -1;
+
 	private Constants() {
 	}
 

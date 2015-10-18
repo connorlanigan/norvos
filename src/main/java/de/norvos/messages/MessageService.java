@@ -82,17 +82,25 @@ public class MessageService {
 		}
 
 	}
+	public void deleteMessage(long messageId){
+		try {
+			DecryptedMessageTable.getInstance().deleteMessage(messageId);
+		} catch (final SQLException e) {
+			LOGGER.error("Error while deleting message {} to database.", messageId);
+		}
+	}
 
 	synchronized public void startReceiving() {
 		new MessageListener().run();
 		MessageDecrypter.start();
 	}
 
-	void storeMessage(final DecryptedMessage message) {
+	long storeMessage(final DecryptedMessage message) {
 		try {
-			DecryptedMessageTable.getInstance().storeMessage(message);
+			return DecryptedMessageTable.getInstance().storeMessage(message);
 		} catch (final SQLException e) {
 			LOGGER.error("Error while saving message to database.", e);
+			return 0;
 		}
 	}
 

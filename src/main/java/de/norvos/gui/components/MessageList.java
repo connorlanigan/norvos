@@ -97,11 +97,16 @@ public class MessageList extends BorderPane implements EventBusListener {
 		}
 	}
 
-	private void addMessage(final String message, final long timestamp, final File attachment, final boolean sent) {
+	public void removeMessage(SingleMessage message){
+		messageList.getChildren().remove(message);
+	}
+
+	private void addMessage(final String message, final long timestamp, final File attachment, final boolean sent, final long messageId) {
 		final SingleMessage singleMessage = new SingleMessage();
 		singleMessage.setMessage(message);
 		singleMessage.setSent(String.valueOf(sent));
 		singleMessage.setTime(timestamp);
+		singleMessage.setMessageId(messageId);
 		messageList.getChildren().add(singleMessage);
 
 	}
@@ -154,7 +159,7 @@ public class MessageList extends BorderPane implements EventBusListener {
 		messageInput.setText(contact.getDraftMessage());
 		final List<DecryptedMessage> list = MessageService.getInstance().getMessages(contact);
 		for (final DecryptedMessage message : list) {
-			addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), message.isSent());
+			addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), message.isSent(), message.getMessageId());
 		}
 	}
 
@@ -181,13 +186,13 @@ public class MessageList extends BorderPane implements EventBusListener {
 			final MessageSentEvent messageSentEvent = (MessageSentEvent) event;
 			if (getContact().equals(messageSentEvent.getContact())) {
 				addMessage(messageSentEvent.getMessage(), messageSentEvent.getTimestamp(),
-						messageSentEvent.getAttachment(), true);
+						messageSentEvent.getAttachment(), true, messageSentEvent.getMessageId());
 			}
 		} else if (event instanceof MessageReceivedEvent) {
 			final MessageReceivedEvent messageReceivedEvent = (MessageReceivedEvent) event;
 			final DecryptedMessage message = messageReceivedEvent.getMessage();
 			if (getContact().equals(message.getContact())) {
-				addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), false);
+				addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), false, -1);
 			}
 		}
 	}
