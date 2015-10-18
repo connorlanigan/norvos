@@ -16,7 +16,6 @@
  *******************************************************************************/
 package de.norvos.utils;
 
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -34,9 +33,10 @@ public class ResourceUtils {
 
 	/**
 	 * Returns the current version of the application.
+	 *
 	 * @return the version string
 	 */
-	public static String getApplicationVersion(){
+	public static String getApplicationVersion() {
 		return ResourceUtils.class.getPackage().getImplementationVersion();
 	}
 

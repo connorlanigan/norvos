@@ -22,12 +22,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
-import org.whispersystems.textsecure.api.push.exceptions.AuthorizationFailedException;
-import org.whispersystems.textsecure.api.push.exceptions.RateLimitException;
 
-import de.norvos.account.Registrator;
 import de.norvos.account.SettingsService;
-import de.norvos.gui.controller.register.RegisterController;
 import de.norvos.gui.windows.MainWindow;
 import de.norvos.gui.windows.RegisterWindow;
 import de.norvos.gui.windows.Window;
@@ -35,7 +31,6 @@ import de.norvos.i18n.AvailableLanguage;
 import de.norvos.utils.ApplicationSingleton;
 import de.norvos.utils.ArgumentsHandler;
 import de.norvos.utils.AxolotlLoggerImpl;
-import de.norvos.utils.DataManipulationUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -84,7 +79,7 @@ public class MainApplication extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(final Stage primaryStage) throws Exception {
 
 		final Task<Void> task = new Task<Void>() {
 			@Override
@@ -93,7 +88,7 @@ public class MainApplication extends Application {
 					if (hasToRegister()) {
 						initializeWithDefaultSettings();
 
-						Window registerWindow = new RegisterWindow();
+						final Window registerWindow = new RegisterWindow();
 						Platform.runLater(() -> registerWindow.start(primaryStage));
 						registerWindow.waitForClose();
 
@@ -107,12 +102,12 @@ public class MainApplication extends Application {
 						}
 					}
 
-					Window mainWindow = new MainWindow();
+					final Window mainWindow = new MainWindow();
 					Platform.runLater(() -> mainWindow.start(new Stage()));
-				} catch (Throwable e) {
+				} catch (final Throwable e) {
 					LOGGER.debug(e.getMessage(), e);
 				}
-				return (Void) null;
+				return null;
 			}
 		};
 		new Thread(task).start();

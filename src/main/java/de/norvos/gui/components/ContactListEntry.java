@@ -85,6 +85,7 @@ public class ContactListEntry extends Button implements EventBusListener {
 	}
 
 	public void handleClick(final ActionEvent event) {
+		setNewMessage("false");
 		OverviewController.getInstance().loadChat(contact);
 	}
 
@@ -114,12 +115,12 @@ public class ContactListEntry extends Button implements EventBusListener {
 
 	@Override
 	public void update(final Event event) {
-		// TODO Auto-generated method stub
 		if (event instanceof MessageReceivedEvent) {
-
+			setNewMessage("true");
+			setLastMessage("↘ " + ((MessageSentEvent) event).getMessage());
 		} else if (event instanceof MessageSentEvent) {
+			setNewMessage("false");
+			setLastMessage("↗ " + ((MessageSentEvent) event).getMessage());
 		}
-
 	}
-
 }

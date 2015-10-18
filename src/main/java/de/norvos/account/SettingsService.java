@@ -65,11 +65,11 @@ public class SettingsService {
 	}
 
 	public static AvailableLanguage getLanguage() {
-		
+
 		try {
 			final String languageTag = getStringSetting(Setting.LOCALE);
 			return AvailableLanguage.forLocaleLanguage(Locale.forLanguageTag(languageTag));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return null;
 		}
 	}

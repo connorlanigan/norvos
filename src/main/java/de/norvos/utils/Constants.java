@@ -39,12 +39,12 @@ public class Constants {
 	public final static String I18N_ERROR = "{i18n-ERR}";
 	public final static int SINGLETON_LOCK_PORT = 64308;
 
+	public final static String USER_AGENT = "Norvos";
+
 	/**
 	 * The title for the main application window.
 	 */
 	public final static String WINDOW_TITLE = "Norvos";
-
-	public final static String USER_AGENT = "Norvos";
 
 	private Constants() {
 	}

@@ -97,7 +97,7 @@ public class RegisterValidationController {
 					spinningWheel.setVisible(false);
 				}
 
-				return (Void) null;
+				return null;
 			}
 		};
 		new Thread(task).start();

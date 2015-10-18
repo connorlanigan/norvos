@@ -42,7 +42,7 @@ public class DecryptedMessageTable implements Table {
 	public String getCreationStatement() {
 		return "CREATE TABLE IF NOT EXISTS decrypted_messages ("
 				+ "id VARCHAR PRIMARY KEY auto_increment, time_received LONG, thread_id INTEGER,"
-				+ "read BOOLEAN, body VARCHAR, address VARCHAR, mismatched_identities VARCHAR, sent BOOLEAN";
+				+ "read BOOLEAN, body VARCHAR, address VARCHAR, mismatched_identities VARCHAR, sent BOOLEAN)";
 	}
 
 	public List<DecryptedMessage> getMessages(final String address) {
@@ -61,8 +61,9 @@ public class DecryptedMessageTable implements Table {
 				final String mismatchedIdentities = result.getString("mismatched_identities");
 				final boolean sent = result.getBoolean("sent");
 
+				// TODO store and read attachments
 				final DecryptedMessage message = new DecryptedMessage(timestamp, read, body, address,
-						mismatchedIdentities, sent);
+						mismatchedIdentities, sent, 0);
 				list.add(message);
 			}
 		} catch (final SQLException e) {

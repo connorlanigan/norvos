@@ -44,12 +44,12 @@ public class MessageSentEvent implements Event {
 		return attachment;
 	}
 
-	public String getMessage() {
-		return message;
+	public Contact getContact() {
+		return contact;
 	}
 
-	public Contact getReceiver() {
-		return contact;
+	public String getMessage() {
+		return message;
 	}
 
 	public long getTimestamp() {

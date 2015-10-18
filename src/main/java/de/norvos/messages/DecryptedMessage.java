@@ -16,6 +16,12 @@
  *******************************************************************************/
 package de.norvos.messages;
 
+import java.io.File;
+
+import de.norvos.contacts.Contact;
+import de.norvos.contacts.ContactService;
+import de.norvos.persistence.AttachmentStore;
+
 /**
  * Contains the data of a decrypted message.
  *
@@ -24,6 +30,8 @@ package de.norvos.messages;
 public class DecryptedMessage {
 
 	private final String address;
+	private final long attachmentId;
+
 	private final String body;
 
 	private final String mismatchedIdentities;
@@ -31,25 +39,33 @@ public class DecryptedMessage {
 	private final boolean read;
 
 	private final boolean sent;
-
 	private final long timestamp;
 
 	public DecryptedMessage(final long timestamp, final boolean read, final String body, final String address,
-			final String mismatchedIdentities, final boolean sent) {
+			final String mismatchedIdentities, final boolean sent, final long attachmentId) {
 		this.read = read;
 		this.body = body;
 		this.address = address;
 		this.mismatchedIdentities = mismatchedIdentities;
 		this.timestamp = timestamp;
 		this.sent = sent;
+		this.attachmentId = attachmentId;
 	}
 
 	public String getAddress() {
 		return address;
 	}
 
+	public File getAttachment() {
+		return AttachmentStore.getAttachment(attachmentId);
+	}
+
 	public String getBody() {
 		return body;
+	}
+
+	public Contact getContact() {
+		return ContactService.getInstance().getByNumber(getAddress());
 	}
 
 	public String getMismatchedIdentities() {

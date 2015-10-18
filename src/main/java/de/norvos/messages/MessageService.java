@@ -37,9 +37,9 @@ import de.norvos.persistence.tables.DecryptedMessageTable;
  * @author Connor Lanigan
  */
 public class MessageService {
-	private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
-
 	private static MessageService instance;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MessageService.class);
 
 	synchronized public static MessageService getInstance() {
 		if (instance == null) {
@@ -51,11 +51,6 @@ public class MessageService {
 	private MessageService() {
 	}
 
-	synchronized public void startReceiving(){
-		new MessageListener().run();
-		MessageDecrypter.start();
-	}
-
 	/**
 	 * Return all messages stored for a given user.
 	 *
@@ -64,43 +59,49 @@ public class MessageService {
 	 * @return List of all messages locally stored for that user
 	 */
 	public List<DecryptedMessage> getMessages(final Contact user) {
-		// TODO this is debug code
-		final DecryptedMessage one = new DecryptedMessage(System.currentTimeMillis() - 300000, false, "Hi there!",
-				"+491234", "", true);
-		final DecryptedMessage two = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
-				"Hello " + user.getDisplayName() + "!", "+491234", "", false);
-		final DecryptedMessage three = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
-				translate("databaseError"), "+491234", "", false);
-
-		return Arrays.asList(one, two, three);
+		return DecryptedMessageTable.getInstance().getMessages(user.getPhoneNumber());
+//		// TODO this is debug code
+//		final DecryptedMessage one = new DecryptedMessage(System.currentTimeMillis() - 300000, false, "Hi there!",
+//				"+491234", "", true, 0);
+//		final DecryptedMessage two = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
+//				"Hello " + user.getDisplayName() + "!", "+491234", "", false, 0);
+//		final DecryptedMessage three = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
+//				translate("databaseError"), "+491234", "", false, 0);
+//
+//		return Arrays.asList(one, two, three);
 	}
 
-	public void storeMessage(final DecryptedMessage message) {
+	public void sendMessage(final Contact contact, final String message) {
 		try {
-			DecryptedMessageTable.getInstance().storeMessage(message);
-		} catch (final SQLException e) {
+			MessageSender.sendTextMessage(contact, message);
+		} catch (final UntrustedIdentityException e) {
 			LOGGER.error("Untrusted Identity while sending message.", e);
+		} catch (final IOException e) {
+			LOGGER.error("IOException while sending message.", e);
 		}
 	}
 
 	public void sendMessage(final Contact contact, final String message, final File attachment) {
 		try {
 			MessageSender.sendMediaMessage(contact, message, attachment);
-		} catch (UntrustedIdentityException e) {
+		} catch (final UntrustedIdentityException e) {
 			LOGGER.error("Untrusted Identity while sending message.", e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			LOGGER.error("IOException while sending message.", e);
 		}
 
 	}
 
-	public void sendMessage(final Contact contact, final String message) {
+	synchronized public void startReceiving() {
+		new MessageListener().run();
+		MessageDecrypter.start();
+	}
+
+	void storeMessage(final DecryptedMessage message) {
 		try {
-			MessageSender.sendTextMessage(contact, message);
-		} catch (UntrustedIdentityException e) {
+			DecryptedMessageTable.getInstance().storeMessage(message);
+		} catch (final SQLException e) {
 			LOGGER.error("Untrusted Identity while sending message.", e);
-		} catch (IOException e) {
-			LOGGER.error("IOException while sending message.", e);
 		}
 	}
 

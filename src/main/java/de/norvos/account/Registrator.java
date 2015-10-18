@@ -44,8 +44,8 @@ public class Registrator {
 	private static List<PreKeyRecord> oneTimePreKeys;
 	final static private int passwordLength = 40;
 
-	private static boolean requested = false;
 	final static boolean REDPHONE_UNSUPPORTED = false;
+	private static boolean requested = false;
 
 	final static public String WHISPERSYSTEMS_REGISTRATION_ID = "312334754206";
 
@@ -91,9 +91,9 @@ public class Registrator {
 		final TextSecureAccountManager accountManager = new TextSecureAccountManager(url, trustStore, username,
 				password, Constants.USER_AGENT);
 
-		try{
-		accountManager.requestSmsVerificationCode();
-		} catch(Exception e){
+		try {
+			accountManager.requestSmsVerificationCode();
+		} catch (final Exception e) {
 			throw new IOException(e);
 		}
 

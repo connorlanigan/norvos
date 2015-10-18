@@ -59,8 +59,10 @@ public class OverviewController {
 
 	@FXML
 	private BorderPane contentPane;
+	private Contact currentlyDisplayedContact;
 	@FXML
 	private TextArea messageInput;
+
 	@FXML
 	private Button quitButton;
 
@@ -80,6 +82,10 @@ public class OverviewController {
 		searchClearButton.setManaged(false);
 		searchInput.requestFocus();
 		// reset search result
+	}
+
+	public Contact getCurrentlyDisplayedContact() {
+		return currentlyDisplayedContact;
 	}
 
 	public void handleHelpButton(final ActionEvent event) {
@@ -127,6 +133,7 @@ public class OverviewController {
 		final MessageList messageList = new MessageList();
 		messageList.setUser(contact.getPhoneNumber());
 		contentPane.setCenter(messageList);
+		currentlyDisplayedContact = contact;
 	}
 
 	public void searchInputKeyReleased(final KeyEvent event) {

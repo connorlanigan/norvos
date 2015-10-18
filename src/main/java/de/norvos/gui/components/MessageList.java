@@ -18,12 +18,17 @@ package de.norvos.gui.components;
 
 import static de.norvos.i18n.Translations.translate;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
 import de.norvos.contacts.Contact;
 import de.norvos.contacts.ContactService;
+import de.norvos.eventbus.Event;
+import de.norvos.eventbus.EventBusListener;
+import de.norvos.eventbus.events.MessageReceivedEvent;
+import de.norvos.eventbus.events.MessageSentEvent;
 import de.norvos.messages.DecryptedMessage;
 import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
@@ -35,6 +40,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 
 /**
@@ -42,19 +48,28 @@ import javafx.scene.text.Text;
  *
  * @author Connor Lanigan
  */
-public class MessageList extends BorderPane {
+public class MessageList extends BorderPane implements EventBusListener {
+
+	private static MessageList activeInstance;
+
+	public static MessageList getActiveInstance() {
+		return activeInstance;
+	}
 
 	private Contact contact;
 	@FXML
 	private TextArea messageInput;
-
 	@FXML
 	private VBox messageList;
-	private String user;
+
 	@FXML
 	private Text usernameDisplay;
+
 	@FXML
 	private CheckBox verified;
+
+	private static final String verifiedColor = "#06f50a";
+	private static final String unverifiedColor = "#FF0000";
 
 	public MessageList() {
 		final FXMLLoader fxmlLoader = new FXMLLoader();
@@ -66,13 +81,27 @@ public class MessageList extends BorderPane {
 
 		try {
 			fxmlLoader.load(fxml.openStream());
+			activeInstance = this;
 		} catch (final IOException exception) {
 			throw new RuntimeException(exception);
 		}
 	}
 
+	private void addMessage(final String message, final long timestamp, final File attachment, final boolean sent) {
+		final SingleMessage singleMessage = new SingleMessage();
+		singleMessage.setMessage(message);
+		singleMessage.setSent(String.valueOf(sent));
+		singleMessage.setTime(timestamp);
+		messageList.getChildren().add(singleMessage);
+
+	}
+
+	public Contact getContact() {
+		return contact;
+	}
+
 	public String getUser() {
-		return user;
+		return contact.getPhoneNumber();
 	}
 
 	public void initialize() {
@@ -84,19 +113,18 @@ public class MessageList extends BorderPane {
 		contact.setDraftMessage(messageInput.getText());
 	}
 
-	public void setUser(final String user) {
-		this.user = user;
-		contact = ContactService.getInstance().getByNumber(user);
+	public void setUser(final Contact user) {
+		contact = user;
 		usernameDisplay.setText(contact.getDisplayName());
 		messageInput.setText(contact.getDraftMessage());
 		final List<DecryptedMessage> list = MessageService.getInstance().getMessages(contact);
 		for (final DecryptedMessage message : list) {
-			final SingleMessage singleMessage = new SingleMessage();
-			singleMessage.setMessage(message.getBody());
-			singleMessage.setSent(String.valueOf(message.isSent()));
-			singleMessage.setTime(message.getTimestamp());
-			messageList.getChildren().add(singleMessage);
+			addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), message.isSent());
 		}
+	}
+
+	public void setUser(final String user) {
+		setUser(ContactService.getInstance().getByNumber(user));
 	}
 
 	private void setVerified(final boolean value) {
@@ -105,8 +133,27 @@ public class MessageList extends BorderPane {
 		// TODO change color
 		if (value) {
 			verified.setText(translate("verified_label"));
+			verified.setTextFill(Paint.valueOf(verifiedColor));
 		} else {
 			verified.setText(translate("not_verified_label"));
+			verified.setTextFill(Paint.valueOf(unverifiedColor));
+		}
+	}
+
+	@Override
+	public void update(final Event event) {
+		if (event instanceof MessageSentEvent) {
+			final MessageSentEvent messageSentEvent = (MessageSentEvent) event;
+			if (getContact().equals(messageSentEvent.getContact())) {
+				addMessage(messageSentEvent.getMessage(), messageSentEvent.getTimestamp(),
+						messageSentEvent.getAttachment(), true);
+			}
+		} else if (event instanceof MessageReceivedEvent) {
+			final MessageReceivedEvent messageReceivedEvent = (MessageReceivedEvent) event;
+			final DecryptedMessage message = messageReceivedEvent.getMessage();
+			if (getContact().equals(message.getContact())) {
+				addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), false);
+			}
 		}
 	}
 

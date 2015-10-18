@@ -13,14 +13,15 @@ public class ApplicationSingleton {
 
 	synchronized public static void checkAndLock() {
 		if (!alreadyLocked) {
-			Thread t = new Thread(() -> {
+			final Thread t = new Thread(() -> {
 				try {
 					final InetAddress localhost = InetAddress.getByName("127.0.0.1");
 
 					@SuppressWarnings("resource") // this resource leak is
-													// intended: the socket
-													// should only close when
-													// the application closes.
+					final
+					// intended: the socket
+					// should only close when
+					// the application closes.
 					ServerSocket socket = new ServerSocket(Constants.SINGLETON_LOCK_PORT, 1, localhost);
 					while (true) {
 						socket.accept().close();
@@ -28,7 +29,7 @@ public class ApplicationSingleton {
 								"Someone has connected to the locking port (port {}). The connection has thus been reset.",
 								Constants.SINGLETON_LOCK_PORT);
 					}
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					portLockingFailed = true;
 				}
 			} , "Port Locking Thread");
@@ -37,7 +38,7 @@ public class ApplicationSingleton {
 
 			try {
 				Thread.sleep(1000);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				Thread.currentThread().interrupt();
 				LOGGER.info(
 						"Waiting for the port locking to happen has failed. It is not safe starting the application now.");

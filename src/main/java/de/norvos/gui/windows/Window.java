@@ -31,7 +31,6 @@ import de.norvos.utils.Constants;
 import de.norvos.utils.Errors;
 import de.norvos.utils.ResourceUtils;
 import de.norvos.utils.UnreachableCodeException;
-import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -47,13 +46,13 @@ public abstract class Window {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Window.class);
 	private final URL FXML;
+	private Boolean hasQuit;
+	private final Object hasQuitLock = new Object();
 	private final double initialHeight;
 	private final double initialWidth;
 	private final URL LOCATION;
 	private final boolean minimizeOnClose;
 	private Stage stage;
-	private Boolean hasQuit;
-	private final Object hasQuitLock = new Object();
 
 	/**
 	 * Creates a Window which loads the given FXML file. It is important to
@@ -106,13 +105,6 @@ public abstract class Window {
 
 	}
 
-	public void releaseWindowQuitLock() {
-		synchronized (hasQuitLock) {
-			hasQuit = true;
-			hasQuitLock.notifyAll();
-		}
-	}
-
 	private void loadWindowContent() {
 		final FXMLLoader loader = new FXMLLoader();
 		loader.setLocation(LOCATION);
@@ -135,10 +127,24 @@ public abstract class Window {
 		}
 	}
 
+	public void releaseWindowQuitLock() {
+		synchronized (hasQuitLock) {
+			hasQuit = true;
+			hasQuitLock.notifyAll();
+		}
+	}
+
 	public void start(final Stage primaryStage) {
-		this.stage = primaryStage;
+		stage = primaryStage;
 		initWindow();
 		loadWindowContent();
+	}
+
+	/**
+	 * Brings the window to the front.
+	 */
+	public void toFront() {
+		stage.toFront();
 	}
 
 	public void waitForClose() {
@@ -149,16 +155,9 @@ public abstract class Window {
 			while (!hasQuit) {
 				try {
 					hasQuitLock.wait();
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Brings the window to the front.
-	 */
-	public void toFront() {
-		stage.toFront();
 	}
 }
