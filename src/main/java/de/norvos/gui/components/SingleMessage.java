@@ -19,9 +19,11 @@ package de.norvos.gui.components;
 import java.io.IOException;
 import java.net.URL;
 
+import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
 import de.norvos.utils.TimeUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -43,6 +45,7 @@ public class SingleMessage extends BorderPane {
 	private BorderPane messageBox;
 
 	private boolean sent;
+	private long messageId;
 
 	@FXML
 	private Label time;
@@ -72,8 +75,17 @@ public class SingleMessage extends BorderPane {
 		return String.valueOf(sent);
 	}
 
+	public void setMessageId(long messageId){
+		this.messageId = messageId;
+	}
+
 	public String getTime() {
 		return String.valueOf(timestamp);
+	}
+
+	public void deleteMessage(final ActionEvent event) {
+		MessageService.getInstance().deleteMessage(messageId);
+		MessageList.getActiveInstance().removeMessage(this);
 	}
 
 	public void setMessage(final String message) {

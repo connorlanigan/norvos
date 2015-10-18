@@ -28,13 +28,34 @@
 	visibility:hidden;
 }
 
-.verifiedContactLabel{
-	
+.deleteMessageButton{
+	visibility:hidden;
+	-fx-text-fill:white;
 }
-.unverifiedContactLabel{
-	
+.message:hover .deleteMessageButton{
+	visibility:visible;
+	-fx-background-radius:35px;
+	-fx-background-color:rgb(220, 20, 20);
+}
+.deleteMessageButton:hover{
+	-fx-background-color:rgb(200, 10, 10);
+}
+.deleteMessageButton:pressed{
+	-fx-background-color:rgb(160, 00, 00);
 }
 
+.verifiedContactLabel{
+
+}
+.unverifiedContactLabel{
+
+}
+
+
+.lastMessageEmpty{
+	-fx-font-style: italic;
+	-fx-font-size: 0.8em;
+}
 
 .message{
 	-fx-border-radius:5px;

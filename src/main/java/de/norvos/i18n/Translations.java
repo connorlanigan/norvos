@@ -20,7 +20,11 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.norvos.account.SettingsService;
+import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
 
@@ -30,6 +34,7 @@ import de.norvos.utils.ResourceUtils;
  * @author Connor Lanigan
  */
 public class Translations {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Translations.class);
 
 	private static String format(final String patternString, final Object[] args) {
 		final Locale locale = SettingsService.getLanguage().getLocale();
@@ -62,8 +67,8 @@ public class Translations {
 
 			return formatted;
 		} catch (final Exception e) {
-			e.printStackTrace();
-			return Constants.I18N_ERROR;
+			LOGGER.warn("Could not translate \"{}\"",stringId);
+			return stringId;
 		}
 
 	}

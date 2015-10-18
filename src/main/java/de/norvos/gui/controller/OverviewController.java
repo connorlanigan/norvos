@@ -164,6 +164,7 @@ public class OverviewController {
 		final MessageList messageList = new MessageList();
 		messageList.setUser(contact.getPhoneNumber());
 		contentPane.setCenter(messageList);
+		messageList.focusInput();
 		currentlyDisplayedContact = contact;
 	}
 
@@ -171,7 +172,7 @@ public class OverviewController {
 		if (searchInput.getLength() > 0) {
 			searchClearButton.setDisable(false);
 			searchClearButton.setManaged(true);
-			
+
 			String searchQuery = searchInput.getText().toUpperCase();
 			for (Node contact : contactsList.getChildren()) {
 				if (contact instanceof ContactListEntry) {
@@ -188,7 +189,6 @@ public class OverviewController {
 		} else {
 			searchClearButton.setDisable(true);
 			searchClearButton.setManaged(false);
-			
 			for (Node contact : contactsList.getChildren()) {
 				if (contact instanceof ContactListEntry) {
 					contact.setVisible(true);
