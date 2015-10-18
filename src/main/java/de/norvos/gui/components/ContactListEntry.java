@@ -85,6 +85,10 @@ public class ContactListEntry extends Button implements EventBusListener {
 	public String getUser() {
 		return contact.getPhoneNumber();
 	}
+	
+	public String getDisplayName() {
+		return contactName.getText();
+	}
 
 	public void handleClick(final ActionEvent event) {
 		setNewMessage("false");
@@ -119,6 +123,10 @@ public class ContactListEntry extends Button implements EventBusListener {
 	public void setUser(final String value) {
 		contact = ContactService.getInstance().getByNumber(value);
 		contactName.setText(contact.getDisplayName());
+	}
+	
+	public void test(final String name) {
+		contactName.setText(name);
 	}
 
 	@Override
