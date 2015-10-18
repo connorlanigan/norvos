@@ -145,10 +145,10 @@ public class OverviewController {
 			searchClearButton.setManaged(true);
 			
 			String searchQuery = searchInput.getText();
-			for(Node contact : contactList.getChildren()) {
-				if(contact instanceof ContactListEntry) {
+			for (Node contact : contactList.getChildren()) {
+				if (contact instanceof ContactListEntry) {
 					String contactName = ((ContactListEntry) contact).getDisplayName();
-					if(contactName.contains(searchQuery)) {
+					if (contactName.contains(searchQuery)) {
 						contact.setVisible(true);
 						contact.setManaged(true);
 					} else {
@@ -161,8 +161,8 @@ public class OverviewController {
 			searchClearButton.setDisable(true);
 			searchClearButton.setManaged(false);
 			
-			for(Node contact : contactList.getChildren()) {
-				if(contact instanceof ContactListEntry) {
+			for (Node contact : contactList.getChildren()) {
+				if (contact instanceof ContactListEntry) {
 					contact.setVisible(true);
 					contact.setManaged(true);
 				}
