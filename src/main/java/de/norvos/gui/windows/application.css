@@ -28,6 +28,22 @@
 	visibility:hidden;
 }
 
+.deleteMessageButton{
+	visibility:hidden;
+}
+
+.message:hover .deleteMessageButton{
+	visibility:visible;
+	-fx-background-radius:35px;
+	-fx-background-color:rgb(220, 220, 220);
+}
+.deleteMessageButton:hover{
+	-fx-background-color:rgb(200, 200, 200);
+}
+.deleteMessageButton:pressed{
+	-fx-background-color:rgb(160, 160, 160);
+}
+
 .verifiedContactLabel{
 
 }

@@ -22,7 +22,7 @@
 	</center>
 	<right>
 		<HBox>
-			<Button styleClass="XButton" alignment="CENTER_RIGHT" mnemonicParsing="false"
+			<Button styleClass="deleteMessageButton" alignment="CENTER_RIGHT" mnemonicParsing="false"
 				onAction="#deleteMessage" text="X">
 				<HBox.margin>
 					<Insets left="5.0" />
