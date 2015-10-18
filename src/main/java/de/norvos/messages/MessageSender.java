@@ -72,7 +72,13 @@ class MessageSender {
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message)
 				.withAttachment(createAttachment(attachment)).build();
 		getMessageSender().sendMessage(contact.toTSAddress(), messageBody);
+		saveMessage(contact, message, saveAttachment(attachment));
 		EventBus.sendEvent(new MessageSentEvent(contact, message, System.currentTimeMillis(), attachment));
+	}
+
+	private static long saveAttachment(File attachment) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 	public static void sendTextMessage(final Contact contact, final String message)
@@ -80,7 +86,15 @@ class MessageSender {
 		LOGGER.debug("About to send message: [{}]", message);
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
 		getMessageSender().sendMessage(contact.toTSAddress(), messageBody);
+		saveMessage(contact, message, 0);
 		EventBus.sendEvent(new MessageSentEvent(contact, message, System.currentTimeMillis(), null));
+	}
+
+	private static void saveMessage(Contact contact, String message, long attachmentId) {
+		final DecryptedMessage decryptedMessage = new DecryptedMessage(System.currentTimeMillis(), true, message,
+				contact.getPhoneNumber(), "", true, attachmentId);
+		MessageService.getInstance().storeMessage(decryptedMessage);
+
 	}
 
 }
