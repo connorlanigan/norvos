@@ -75,6 +75,7 @@ public class MainApplication extends Application {
 
 		initLibraries();
 		initListeners();
+		Platform.setImplicitExit(false);
 		Application.launch(MainApplication.class, args);
 
 	}
