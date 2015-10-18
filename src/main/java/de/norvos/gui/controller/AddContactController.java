@@ -33,6 +33,7 @@ public class AddContactController {
 	public void handleAddContactButton(final ActionEvent event) {
 		ContactService.getInstance().setContactData(
 				new ContactData(contactNumber.getText(), contactName.getText(), "", ContactState.KNOWN_USER));
+		AddContactWindow.getInstance().closeWindow();
 		OverviewController.getInstance().refreshContactsList();
 	}
 
