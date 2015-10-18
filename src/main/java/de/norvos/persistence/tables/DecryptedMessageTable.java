@@ -41,7 +41,7 @@ public class DecryptedMessageTable implements Table {
 	@Override
 	public String getCreationStatement() {
 		return "CREATE TABLE IF NOT EXISTS decrypted_messages ("
-				+ "id VARCHAR PRIMARY KEY auto_increment, time_received LONG, thread_id INTEGER,"
+				+ "id VARCHAR PRIMARY KEY auto_increment, timestamp LONG, thread_id INTEGER,"
 				+ "read BOOLEAN, body VARCHAR, address VARCHAR, mismatched_identities VARCHAR, sent BOOLEAN)";
 	}
 
@@ -76,8 +76,8 @@ public class DecryptedMessageTable implements Table {
 	}
 
 	public void storeMessage(final DecryptedMessage message) throws SQLException {
-		final String query = "INSERT INTO decrypted_messages VALUES"
-				+ "time_received, read, body, address, mismatched_identities, sent" + "(?, ?, ?, ?, ?, ?)";
+		final String query = "INSERT INTO decrypted_messages "
+				+ "(timestamp, read, body, address, mismatched_identities, sent) VALUES (?, ?, ?, ?, ?, ?)";
 
 		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
 

@@ -25,6 +25,5 @@ public class MessageSentHandler implements EventBusListener {
 		final MessageSentEvent messageSentEvent = (MessageSentEvent) event;
 
 		MessageList.getActiveInstance().update(messageSentEvent);
-		// TODO ContactListManager.getInstance().handle(messageSentEvent);
 	}
 }

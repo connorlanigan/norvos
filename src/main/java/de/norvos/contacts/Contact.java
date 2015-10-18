@@ -82,4 +82,18 @@ public class Contact {
 		return new TextSecureAddress(phoneNumber);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof Contact) {
+			Contact other = (Contact) o;
+			if (other.phoneNumber.equals(this.phoneNumber)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

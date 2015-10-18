@@ -55,6 +55,8 @@ public class ContactListEntry extends Button implements EventBusListener {
 	@FXML
 	private Circle newMessageIndicator;
 
+	private boolean sent;
+
 	public ContactListEntry() {
 		final FXMLLoader fxmlLoader = new FXMLLoader();
 
@@ -89,13 +91,19 @@ public class ContactListEntry extends Button implements EventBusListener {
 		OverviewController.getInstance().loadChat(contact);
 	}
 
+	public void setSent(boolean sent){
+		this.sent = sent;
+	}
+
 	@FXML
 	public void initialize() {
 		newMessageIndicator.managedProperty().bind(newMessageIndicator.visibleProperty());
 	}
 
 	public void setLastMessage(final String value) {
-		lastMessage.setText(value);
+		String prefix = sent ? "↗ " : "↘ ";
+
+		lastMessage.setText(prefix+value);
 	}
 
 	public void setNewMessage(final String value) {
@@ -116,11 +124,17 @@ public class ContactListEntry extends Button implements EventBusListener {
 	@Override
 	public void update(final Event event) {
 		if (event instanceof MessageReceivedEvent) {
-			setNewMessage("true");
-			setLastMessage("↘ " + ((MessageSentEvent) event).getMessage());
+			if (contact.equals(((MessageReceivedEvent) event).getMessage().getContact())) {
+				setNewMessage("true");
+				setSent(false);
+				setLastMessage(((MessageSentEvent) event).getMessage());
+			}
 		} else if (event instanceof MessageSentEvent) {
-			setNewMessage("false");
-			setLastMessage("↗ " + ((MessageSentEvent) event).getMessage());
+			if (contact.equals(((MessageSentEvent) event).getContact())) {
+				setNewMessage("false");
+				setSent(true);
+				setLastMessage(((MessageSentEvent) event).getMessage());
+			}
 		}
 	}
 }

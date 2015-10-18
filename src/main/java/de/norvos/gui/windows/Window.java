@@ -127,6 +127,10 @@ public abstract class Window {
 		}
 	}
 
+	public void closeWindow() {
+		stage.close();
+	}
+
 	public void releaseWindowQuitLock() {
 		synchronized (hasQuitLock) {
 			hasQuit = true;

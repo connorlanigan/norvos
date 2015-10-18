@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.whispersystems.libaxolotl.logging.AxolotlLoggerProvider;
 
 import de.norvos.account.SettingsService;
+import de.norvos.eventbus.eventhandlers.MessageSentHandler;
 import de.norvos.gui.windows.MainWindow;
 import de.norvos.gui.windows.RegisterWindow;
 import de.norvos.gui.windows.Window;
@@ -73,8 +74,14 @@ public class MainApplication extends Application {
 		ArgumentsHandler.INSTANCE.init(args);
 
 		initLibraries();
-
+		initListeners();
 		Application.launch(MainApplication.class, args);
+
+	}
+
+	private static void initListeners() {
+
+		new MessageSentHandler();
 
 	}
 

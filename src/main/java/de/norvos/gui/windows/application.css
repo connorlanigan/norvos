@@ -28,6 +28,13 @@
 	visibility:hidden;
 }
 
+.verifiedContactLabel{
+	
+}
+.unverifiedContactLabel{
+	
+}
+
 
 .message{
 	-fx-border-radius:5px;
