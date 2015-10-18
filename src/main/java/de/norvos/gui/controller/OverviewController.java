@@ -24,6 +24,7 @@ import de.norvos.contacts.Contact;
 import de.norvos.contacts.ContactService;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.ApplicationQuitEvent;
+import de.norvos.gui.components.ContactListEntry;
 import de.norvos.gui.components.MessageList;
 import de.norvos.gui.windows.MainWindow;
 import de.norvos.messages.MessageService;
@@ -34,6 +35,7 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -141,10 +143,30 @@ public class OverviewController {
 		if (searchInput.getLength() > 0) {
 			searchClearButton.setDisable(false);
 			searchClearButton.setManaged(true);
+			
+			String searchQuery = searchInput.getText().toUpperCase();
+			for (Node contact : contactList.getChildren()) {
+				if (contact instanceof ContactListEntry) {
+					String contactName = ((ContactListEntry) contact).getDisplayName();
+					if (contactName.toUpperCase().contains(searchQuery)) {
+						contact.setVisible(true);
+						contact.setManaged(true);
+					} else {
+						contact.setVisible(false);
+						contact.setManaged(false);
+					}
+				}
+			}
 		} else {
 			searchClearButton.setDisable(true);
 			searchClearButton.setManaged(false);
+			
+			for (Node contact : contactList.getChildren()) {
+				if (contact instanceof ContactListEntry) {
+					contact.setVisible(true);
+					contact.setManaged(true);
+				}
+			}
 		}
-		// TODO start search
 	}
 }
