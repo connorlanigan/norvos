@@ -35,6 +35,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Modality;
 
 /**
  * An abstract class providing functionality for loading a Window containing an
@@ -94,6 +95,7 @@ public abstract class Window {
 	private void initWindow() {
 		stage.setTitle(Constants.WINDOW_TITLE);
 		stage.centerOnScreen();
+		stage.initModality(Modality.APPLICATION_MODAL);;
 		stage.setOnCloseRequest(event -> {
 			if (minimizeOnClose) {
 				stage.setIconified(true);
@@ -111,7 +113,7 @@ public abstract class Window {
 		loader.setResources(ResourceUtils.getLocalizedStringsBundle());
 		Parent parent;
 		try {
-			LOGGER.debug("Loading [{}] in location [{}[ with language [{}].", FXML, LOCATION,
+			LOGGER.debug("Loading [{}] in location [{}] with language [{}].", FXML, LOCATION,
 					SettingsService.getLanguage().name());
 			parent = loader.load(FXML.openStream());
 			final Scene scene = new Scene(parent, initialWidth, initialHeight);
@@ -163,5 +165,9 @@ public abstract class Window {
 				}
 			}
 		}
+	}
+	
+	public boolean hasQuit() {
+		return hasQuit;
 	}
 }

@@ -33,7 +33,7 @@ public class Contact {
 	 * @param phoneNumber
 	 *            the contact's phone number
 	 */
-	Contact(final String phoneNumber) {
+	public Contact(final String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 

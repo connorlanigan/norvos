@@ -47,8 +47,7 @@ public class ContactService {
 	}
 
 	public List<Contact> getAllContacts() {
-		// TODO fetch all contacts from database
-		return Collections.emptyList();
+		return ContactsTable.getInstance().getAllContacts();
 	}
 
 	public Contact getByNumber(final String number) {
@@ -65,7 +64,7 @@ public class ContactService {
 		}
 	}
 
-	void setContactData(final ContactData contactData) {
+	public void setContactData(final ContactData contactData) {
 		ContactsTable.getInstance().storeContactData(contactData);
 	}
 

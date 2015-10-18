@@ -72,7 +72,6 @@ public class DecryptedMessageTable implements Table {
 		}
 
 		return list;
-
 	}
 
 	public void storeMessage(final DecryptedMessage message) throws SQLException {

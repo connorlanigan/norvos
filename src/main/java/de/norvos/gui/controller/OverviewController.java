@@ -18,6 +18,8 @@ package de.norvos.gui.controller;
 
 import static de.norvos.i18n.Translations.translate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import de.norvos.contacts.Contact;
@@ -26,7 +28,9 @@ import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.ApplicationQuitEvent;
 import de.norvos.gui.components.ContactListEntry;
 import de.norvos.gui.components.MessageList;
+import de.norvos.gui.windows.AddContactWindow;
 import de.norvos.gui.windows.MainWindow;
+import de.norvos.gui.windows.Window;
 import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import edu.stanford.ejalbert.BrowserLauncher;
@@ -45,6 +49,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
@@ -59,7 +64,7 @@ public class OverviewController {
 	}
 
 	@FXML
-	private VBox contactList;
+	private VBox contactsList;
 
 	@FXML
 	private BorderPane contentPane;
@@ -75,6 +80,11 @@ public class OverviewController {
 
 	@FXML
 	private TextField searchInput;
+	
+	@FXML
+	private Button addContactButton;
+	
+	private Window addContactWindow;
 
 	public OverviewController() {
 		instance = this;
@@ -126,10 +136,28 @@ public class OverviewController {
 			}
 		});
 	}
-
+	
+	public void handleAddContactButton(final ActionEvent event) {
+		addContactWindow = new AddContactWindow();
+		addContactWindow.start(new Stage());
+	}
+	
 	@FXML
 	public void initialize() {
 		searchClearButton.setManaged(false);
+		refreshContactsList();
+	}
+	
+	public void refreshContactsList() {
+		List<Contact> contacts = ContactService.getInstance().getAllContacts();
+		List<ContactListEntry> contactsListEntries = new ArrayList<ContactListEntry>();
+		for(Contact contact : contacts) {
+			ContactListEntry entry = new ContactListEntry();
+			entry.setUser(contact.getPhoneNumber());
+			contactsListEntries.add(entry);
+			// TODO: Add "new message" indicator
+		}
+		contactsList.getChildren().setAll(contactsListEntries);
 	}
 
 	public void loadChat(final Contact contact) {
@@ -145,7 +173,7 @@ public class OverviewController {
 			searchClearButton.setManaged(true);
 			
 			String searchQuery = searchInput.getText().toUpperCase();
-			for (Node contact : contactList.getChildren()) {
+			for (Node contact : contactsList.getChildren()) {
 				if (contact instanceof ContactListEntry) {
 					String contactName = ((ContactListEntry) contact).getDisplayName();
 					if (contactName.toUpperCase().contains(searchQuery)) {
@@ -161,7 +189,7 @@ public class OverviewController {
 			searchClearButton.setDisable(true);
 			searchClearButton.setManaged(false);
 			
-			for (Node contact : contactList.getChildren()) {
+			for (Node contact : contactsList.getChildren()) {
 				if (contact instanceof ContactListEntry) {
 					contact.setVisible(true);
 					contact.setManaged(true);

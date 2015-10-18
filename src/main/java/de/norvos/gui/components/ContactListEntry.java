@@ -124,10 +124,6 @@ public class ContactListEntry extends Button implements EventBusListener {
 		contact = ContactService.getInstance().getByNumber(value);
 		contactName.setText(contact.getDisplayName());
 	}
-	
-	public void test(final String name) {
-		contactName.setText(name);
-	}
 
 	@Override
 	public void update(final Event event) {

@@ -21,11 +21,15 @@ import static de.norvos.i18n.Translations.translate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.norvos.contacts.Contact;
 import de.norvos.contacts.ContactData;
+import de.norvos.messages.DecryptedMessage;
 import de.norvos.persistence.Database;
 import de.norvos.utils.Errors;
 import de.norvos.utils.UnreachableCodeException;
@@ -45,6 +49,27 @@ public class ContactsTable implements Table {
 	private ContactsTable() {
 	}
 
+	public List<Contact> getAllContacts() {
+		final List<Contact> list = new LinkedList<>();
+		final String query = "SELECT * FROM contacts";
+
+		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
+			final ResultSet result = stmt.executeQuery();
+
+			while (result.next()) {
+				final String phoneNumber = result.getString("phone_number");
+
+				final Contact contact = new Contact(phoneNumber);
+				list.add(contact);
+			}
+		} catch (final SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+	
 	public ContactData getContactData(final String phoneNumber) {
 		final String query = "SELECT * FROM contacts WHERE phone_number = ?";
 
