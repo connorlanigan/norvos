@@ -36,6 +36,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.input.KeyCode;
 
 /**
  * The GUI area containg the messages for a contact.
@@ -56,7 +57,18 @@ public class MessageList extends BorderPane {
 	@FXML
 	private CheckBox verified;
 
+	private static MessageList instance;
+	private boolean shiftHeld;
+
+	synchronized public static MessageList getInstance() {
+		if (instance == null) {
+			instance = new MessageList();
+		}
+		return instance;
+	}
+	
 	public MessageList() {
+		shiftHeld = false;
 		final FXMLLoader fxmlLoader = new FXMLLoader();
 
 		final URL fxml = getClass().getResource(Constants.FXML_LOCATION + "MessageList.fxml");
@@ -66,6 +78,7 @@ public class MessageList extends BorderPane {
 
 		try {
 			fxmlLoader.load(fxml.openStream());
+			instance = this;
 		} catch (final IOException exception) {
 			throw new RuntimeException(exception);
 		}
@@ -81,7 +94,28 @@ public class MessageList extends BorderPane {
 	}
 
 	public void keyReleased(final KeyEvent event) {
+		if(event.getCode() == KeyCode.SHIFT) {
+			System.out.println("shift released");
+			shiftHeld = false;
+		} else if(event.getCode() == KeyCode.ENTER) {
+			if(shiftHeld) {
+				messageInput.setText(messageInput.getText() + "\n");
+				messageInput.positionCaret(messageInput.getText().length());
+				System.out.println(messageInput.getText().length()-1);
+			} else {
+				MessageList.getInstance().sendMessage();
+				messageInput.setText("");
+				return;
+			}
+		}
 		contact.setDraftMessage(messageInput.getText());
+	}
+	
+	public void keyPressed(final KeyEvent event) {
+		if(event.getCode() == KeyCode.SHIFT) {
+			System.out.println("shift held");
+			shiftHeld = true;
+		}
 	}
 
 	public void setUser(final String user) {
@@ -110,4 +144,7 @@ public class MessageList extends BorderPane {
 		}
 	}
 
+	public void sendMessage() {
+		MessageService.getInstance().sendMessage(ContactService.getInstance().getByNumber("+491788174362"), messageInput.getText().trim());
+	}
 }

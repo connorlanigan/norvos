@@ -13,7 +13,7 @@
 
 <fx:root fx:id="centralPane" prefHeight="200.0" prefWidth="200.0" type="BorderPane" BorderPane.alignment="CENTER" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40">
 	<bottom>
-		<TextArea fx:id="messageInput" minHeight="80.0" onKeyReleased="#keyReleased" prefHeight="80.0" prefWidth="200.0" promptText="%prompt_message_placeholder" wrapText="true" BorderPane.alignment="CENTER">
+		<TextArea fx:id="messageInput" minHeight="80.0" onKeyPressed="#keyPressed" onKeyReleased="#keyReleased" prefHeight="80.0" prefWidth="200.0" promptText="%prompt_message_placeholder" wrapText="true" BorderPane.alignment="CENTER">
 			<BorderPane.margin>
 				<Insets />
 			</BorderPane.margin>

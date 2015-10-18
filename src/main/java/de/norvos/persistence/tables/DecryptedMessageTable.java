@@ -42,7 +42,7 @@ public class DecryptedMessageTable implements Table {
 	public String getCreationStatement() {
 		return "CREATE TABLE IF NOT EXISTS decrypted_messages ("
 				+ "id VARCHAR PRIMARY KEY auto_increment, time_received LONG, thread_id INTEGER,"
-				+ "read BOOLEAN, body VARCHAR, address VARCHAR, mismatched_identities VARCHAR, sent BOOLEAN";
+				+ "read BOOLEAN, body VARCHAR, address VARCHAR, mismatched_identities VARCHAR, sent BOOLEAN)";
 	}
 
 	public List<DecryptedMessage> getMessages(final String address) {

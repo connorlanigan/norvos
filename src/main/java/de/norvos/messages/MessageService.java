@@ -64,15 +64,16 @@ public class MessageService {
 	 * @return List of all messages locally stored for that user
 	 */
 	public List<DecryptedMessage> getMessages(final Contact user) {
-		// TODO this is debug code
-		final DecryptedMessage one = new DecryptedMessage(System.currentTimeMillis() - 300000, false, "Hi there!",
-				"+491234", "", true);
-		final DecryptedMessage two = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
-				"Hello " + user.getDisplayName() + "!", "+491234", "", false);
-		final DecryptedMessage three = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
-				translate("databaseError"), "+491234", "", false);
-
-		return Arrays.asList(one, two, three);
+//		// TODO this is debug code
+//		final DecryptedMessage one = new DecryptedMessage(System.currentTimeMillis() - 300000, false, "Hi there!",
+//				"+491234", "", true);
+//		final DecryptedMessage two = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
+//				"Hello " + user.getDisplayName() + "!", "+491234", "", false);
+//		final DecryptedMessage three = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
+//				translate("databaseError"), "+491234", "", false);
+//
+//		return Arrays.asList(one, two, three);
+		return DecryptedMessageTable.getInstance().getMessages(user.getPhoneNumber());
 	}
 
 	public void storeMessage(final DecryptedMessage message) {
@@ -96,6 +97,7 @@ public class MessageService {
 
 	public void sendMessage(final Contact contact, final String message) {
 		try {
+			System.out.println("sending a message");
 			MessageSender.sendTextMessage(contact, message);
 		} catch (UntrustedIdentityException e) {
 			LOGGER.error("Untrusted Identity while sending message.", e);

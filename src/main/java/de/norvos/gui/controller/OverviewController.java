@@ -21,10 +21,12 @@ import static de.norvos.i18n.Translations.translate;
 import java.util.Optional;
 
 import de.norvos.contacts.Contact;
+import de.norvos.contacts.ContactService;
 import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.ApplicationQuitEvent;
 import de.norvos.gui.components.MessageList;
 import de.norvos.gui.windows.MainWindow;
+import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -59,8 +61,7 @@ public class OverviewController {
 
 	@FXML
 	private BorderPane contentPane;
-	@FXML
-	private TextArea messageInput;
+
 	@FXML
 	private Button quitButton;
 
@@ -98,7 +99,6 @@ public class OverviewController {
 				alert.show();
 			});
 		}
-
 	}
 
 	public void handleQuitButton(final ActionEvent event) {
