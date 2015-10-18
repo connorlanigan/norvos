@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.norvos.contacts.Contact;
 import de.norvos.contacts.ContactService;
 import de.norvos.eventbus.Event;
@@ -42,6 +45,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
+import javafx.scene.input.KeyCode;
 
 /**
  * The GUI area containg the messages for a contact.
@@ -50,6 +54,7 @@ import javafx.scene.text.Text;
  */
 public class MessageList extends BorderPane implements EventBusListener {
 
+	final static Logger LOGGER = LoggerFactory.getLogger(MessageList.class);
 	private static MessageList activeInstance;
 
 	public static MessageList getActiveInstance() {
@@ -71,7 +76,10 @@ public class MessageList extends BorderPane implements EventBusListener {
 	private static final String verifiedColor = "#06f50a";
 	private static final String unverifiedColor = "#FF0000";
 
+	private boolean shiftHeld;
+
 	public MessageList() {
+		shiftHeld = false;
 		final FXMLLoader fxmlLoader = new FXMLLoader();
 
 		final URL fxml = getClass().getResource(Constants.FXML_LOCATION + "MessageList.fxml");
@@ -110,7 +118,30 @@ public class MessageList extends BorderPane implements EventBusListener {
 	}
 
 	public void keyReleased(final KeyEvent event) {
+		if(event.getCode() == KeyCode.SHIFT) {
+			LOGGER.debug("shift released");
+			shiftHeld = false;
+		} else
 		contact.setDraftMessage(messageInput.getText());
+	}
+
+	public void keyPressed(final KeyEvent event) {
+		if(event.getCode() == KeyCode.SHIFT) {
+			LOGGER.debug("shift held");
+			shiftHeld = true;
+		} else if(event.getCode() == KeyCode.ENTER) {
+			if(shiftHeld) {
+				messageInput.setText(messageInput.getText() + "\n");
+				messageInput.positionCaret(messageInput.getText().length());
+				LOGGER.debug("New text length: {}", messageInput.getText().length()-1);
+			} else {
+				sendMessage();
+				messageInput.setText("");
+			}
+			contact.setDraftMessage(messageInput.getText());
+		}
+
+
 	}
 
 	public void setUser(final Contact user) {
@@ -157,4 +188,7 @@ public class MessageList extends BorderPane implements EventBusListener {
 		}
 	}
 
+	public void sendMessage() {
+		MessageService.getInstance().sendMessage(ContactService.getInstance().getByNumber("+491788174362"), messageInput.getText().trim());
+	}
 }

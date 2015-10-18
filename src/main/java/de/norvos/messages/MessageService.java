@@ -60,15 +60,6 @@ public class MessageService {
 	 */
 	public List<DecryptedMessage> getMessages(final Contact user) {
 		return DecryptedMessageTable.getInstance().getMessages(user.getPhoneNumber());
-//		// TODO this is debug code
-//		final DecryptedMessage one = new DecryptedMessage(System.currentTimeMillis() - 300000, false, "Hi there!",
-//				"+491234", "", true, 0);
-//		final DecryptedMessage two = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
-//				"Hello " + user.getDisplayName() + "!", "+491234", "", false, 0);
-//		final DecryptedMessage three = new DecryptedMessage(System.currentTimeMillis() - 100000, false,
-//				translate("databaseError"), "+491234", "", false, 0);
-//
-//		return Arrays.asList(one, two, three);
 	}
 
 	public void sendMessage(final Contact contact, final String message) {
@@ -101,7 +92,7 @@ public class MessageService {
 		try {
 			DecryptedMessageTable.getInstance().storeMessage(message);
 		} catch (final SQLException e) {
-			LOGGER.error("Untrusted Identity while sending message.", e);
+			LOGGER.error("Error while saving message to database.", e);
 		}
 	}
 
