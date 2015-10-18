@@ -115,6 +115,11 @@ public class MessageList extends BorderPane implements EventBusListener {
 		return contact;
 	}
 
+	public void focusInput(){
+		messageInput.requestFocus();
+		messageInput.positionCaret(messageInput.getText().length());
+	}
+
 	public String getUser() {
 		return contact.getPhoneNumber();
 	}

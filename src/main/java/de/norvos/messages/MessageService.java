@@ -62,6 +62,10 @@ public class MessageService {
 		return DecryptedMessageTable.getInstance().getMessages(user.getPhoneNumber());
 	}
 
+	public DecryptedMessage getLastMessage(final Contact user){
+		return DecryptedMessageTable.getInstance().getLastMessage(user.getPhoneNumber());
+	}
+
 	public void sendMessage(final Contact contact, final String message) {
 		try {
 			MessageSender.sendTextMessage(contact, message);

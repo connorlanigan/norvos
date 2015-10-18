@@ -113,4 +113,32 @@ public class DecryptedMessageTable implements Table {
 		}
 	}
 
+	public DecryptedMessage getLastMessage(String address) {
+		final String query = "SELECT * FROM decrypted_messages WHERE address = ? ORDER BY id DESC LIMIT 1";
+
+		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
+
+			stmt.setString(1, address);
+			final ResultSet result = stmt.executeQuery();
+
+			if(result.first()) {
+				final long timestamp = result.getLong("timestamp");
+				final boolean read = result.getBoolean("read");
+				final String body = result.getString("body");
+				final String mismatchedIdentities = result.getString("mismatched_identities");
+				final boolean sent = result.getBoolean("sent");
+				final long messageId = result.getLong("id");
+
+				// TODO store and read attachments
+				final DecryptedMessage message = new DecryptedMessage(timestamp, read, body, address,
+						mismatchedIdentities, sent, -1, messageId);
+				return message;
+			}
+		} catch (final SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

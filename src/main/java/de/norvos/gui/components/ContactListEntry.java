@@ -16,6 +16,8 @@
  *******************************************************************************/
 package de.norvos.gui.components;
 
+import static de.norvos.i18n.Translations.translate;
+
 import java.io.IOException;
 import java.net.URL;
 
@@ -27,6 +29,8 @@ import de.norvos.eventbus.EventBusListener;
 import de.norvos.eventbus.events.MessageReceivedEvent;
 import de.norvos.eventbus.events.MessageSentEvent;
 import de.norvos.gui.controller.OverviewController;
+import de.norvos.messages.DecryptedMessage;
+import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
 import javafx.event.ActionEvent;
@@ -85,7 +89,7 @@ public class ContactListEntry extends Button implements EventBusListener {
 	public String getUser() {
 		return contact.getPhoneNumber();
 	}
-	
+
 	public String getDisplayName() {
 		return contactName.getText();
 	}
@@ -95,7 +99,7 @@ public class ContactListEntry extends Button implements EventBusListener {
 		OverviewController.getInstance().loadChat(contact);
 	}
 
-	public void setSent(boolean sent){
+	public void setSent(boolean sent) {
 		this.sent = sent;
 	}
 
@@ -104,10 +108,26 @@ public class ContactListEntry extends Button implements EventBusListener {
 		newMessageIndicator.managedProperty().bind(newMessageIndicator.visibleProperty());
 	}
 
+	private void loadLatestMessage(){
+		DecryptedMessage lastMessage = MessageService.getInstance().getLastMessage(contact);
+		if (lastMessage == null) {
+			clearLastMessage();
+		} else {
+			setSent(lastMessage.isSent());
+			setLastMessage(lastMessage.getBody());
+		}
+	}
+
+	public void clearLastMessage() {
+		lastMessage.setText("");
+		lastMessage.getStyleClass().add("lastMessageEmpty");
+		lastMessage.setText(translate("no_messages_yet_preview"));
+	}
+
 	public void setLastMessage(final String value) {
 		String prefix = sent ? "↗ " : "↘ ";
-
-		lastMessage.setText(prefix+value);
+		lastMessage.getStyleClass().remove("lastMessageEmpty");
+		lastMessage.setText(prefix + value);
 	}
 
 	public void setNewMessage(final String value) {
@@ -123,8 +143,9 @@ public class ContactListEntry extends Button implements EventBusListener {
 	public void setUser(final String value) {
 		contact = ContactService.getInstance().getByNumber(value);
 		contactName.setText(contact.getDisplayName());
+		loadLatestMessage();
 	}
-	
+
 	public void test(final String name) {
 		contactName.setText(name);
 	}

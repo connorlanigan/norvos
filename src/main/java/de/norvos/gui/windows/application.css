@@ -14,34 +14,34 @@
 	-fx-border-style: solid;
 }
 
-.XButton{
+#searchClearButton{
 	-fx-background-radius:35px;
 	-fx-background-color:rgb(220, 220, 220);
 }
-.XButton:hover{
+#searchClearButton:hover{
 	-fx-background-color:rgb(200, 200, 200);
 }
-.XButton:pressed{
+#searchClearButton:pressed{
 	-fx-background-color:rgb(160, 160, 160);
 }
-.XButton:disabled{
+#searchClearButton:disabled{
 	visibility:hidden;
 }
 
 .deleteMessageButton{
 	visibility:hidden;
+	-fx-text-fill:white;
 }
-
 .message:hover .deleteMessageButton{
 	visibility:visible;
 	-fx-background-radius:35px;
-	-fx-background-color:rgb(220, 220, 220);
+	-fx-background-color:rgb(220, 20, 20);
 }
 .deleteMessageButton:hover{
-	-fx-background-color:rgb(200, 200, 200);
+	-fx-background-color:rgb(200, 10, 10);
 }
 .deleteMessageButton:pressed{
-	-fx-background-color:rgb(160, 160, 160);
+	-fx-background-color:rgb(160, 00, 00);
 }
 
 .verifiedContactLabel{
@@ -51,6 +51,11 @@
 
 }
 
+
+.lastMessageEmpty{
+	-fx-font-style: italic;
+	-fx-font-size: 0.8em;
+}
 
 .message{
 	-fx-border-radius:5px;
