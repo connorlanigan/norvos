@@ -144,11 +144,11 @@ public class OverviewController {
 			searchClearButton.setDisable(false);
 			searchClearButton.setManaged(true);
 			
-			String searchQuery = searchInput.getText();
+			String searchQuery = searchInput.getText().toUpperCase();
 			for (Node contact : contactList.getChildren()) {
 				if (contact instanceof ContactListEntry) {
 					String contactName = ((ContactListEntry) contact).getDisplayName();
-					if (contactName.contains(searchQuery)) {
+					if (contactName.toUpperCase().contains(searchQuery)) {
 						contact.setVisible(true);
 						contact.setManaged(true);
 					} else {
@@ -168,6 +168,5 @@ public class OverviewController {
 				}
 			}
 		}
-		// TODO start search
 	}
 }
