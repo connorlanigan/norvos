@@ -36,6 +36,8 @@ import de.norvos.messages.DecryptedMessage;
 import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
@@ -118,10 +120,10 @@ public class MessageList extends BorderPane implements EventBusListener {
 	}
 
 	public void keyReleased(final KeyEvent event) {
-		if(event.getCode() == KeyCode.SHIFT) {
+		if (event.getCode() == KeyCode.SHIFT) {
 			LOGGER.debug("shift released");
 			shiftHeld = false;
-		} else if(!shiftHeld && event.getCode() == KeyCode.ENTER) {
+		} else if (!shiftHeld && event.getCode() == KeyCode.ENTER) {
 			messageInput.clear();
 		} else {
 			contact.setDraftMessage(messageInput.getText());
@@ -129,16 +131,18 @@ public class MessageList extends BorderPane implements EventBusListener {
 	}
 
 	public void keyPressed(final KeyEvent event) {
-		if(event.getCode() == KeyCode.SHIFT) {
+		if (event.getCode() == KeyCode.SHIFT) {
 			LOGGER.debug("shift held");
 			shiftHeld = true;
-		} else if(event.getCode() == KeyCode.ENTER) {
-			if(shiftHeld) {
+		} else if (event.getCode() == KeyCode.ENTER) {
+			if (shiftHeld) {
 				messageInput.setText(messageInput.getText() + "\n");
 				messageInput.positionCaret(messageInput.getText().length());
-				LOGGER.debug("New text length: {}", messageInput.getText().length()-1);
+				LOGGER.debug("New text length: {}", messageInput.getText().length() - 1);
 			} else {
-				sendMessage(messageInput.getText().trim());
+				String message = messageInput.getText().trim();
+				messageInput.setText("");
+				sendMessage(message);
 			}
 			contact.setDraftMessage(messageInput.getText());
 		}
