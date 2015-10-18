@@ -36,18 +36,16 @@ import de.norvos.messages.DecryptedMessage;
 import de.norvos.messages.MessageService;
 import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
-import javafx.scene.input.KeyCode;
 
 /**
  * The GUI area containg the messages for a contact.
@@ -56,29 +54,31 @@ import javafx.scene.input.KeyCode;
  */
 public class MessageList extends BorderPane implements EventBusListener {
 
-	final static Logger LOGGER = LoggerFactory.getLogger(MessageList.class);
 	private static MessageList activeInstance;
+	final static Logger LOGGER = LoggerFactory.getLogger(MessageList.class);
+
+	private static final String unverifiedColor = "#FF0000";
+
+	private static final String verifiedColor = "#06f50a";
 
 	public static MessageList getActiveInstance() {
 		return activeInstance;
 	}
 
 	private Contact contact;
+
 	@FXML
 	private TextArea messageInput;
+
 	@FXML
 	private VBox messageList;
 
+	private boolean shiftHeld;
 	@FXML
 	private Text usernameDisplay;
 
 	@FXML
 	private CheckBox verified;
-
-	private static final String verifiedColor = "#06f50a";
-	private static final String unverifiedColor = "#FF0000";
-
-	private boolean shiftHeld;
 
 	public MessageList() {
 		shiftHeld = false;
@@ -97,11 +97,8 @@ public class MessageList extends BorderPane implements EventBusListener {
 		}
 	}
 
-	public void removeMessage(SingleMessage message){
-		messageList.getChildren().remove(message);
-	}
-
-	private void addMessage(final String message, final long timestamp, final File attachment, final boolean sent, final long messageId) {
+	private void addMessage(final String message, final long timestamp, final File attachment, final boolean sent,
+			final long messageId) {
 		final SingleMessage singleMessage = new SingleMessage();
 		singleMessage.setMessage(message);
 		singleMessage.setSent(String.valueOf(sent));
@@ -111,13 +108,13 @@ public class MessageList extends BorderPane implements EventBusListener {
 
 	}
 
-	public Contact getContact() {
-		return contact;
-	}
-
-	public void focusInput(){
+	public void focusInput() {
 		messageInput.requestFocus();
 		messageInput.positionCaret(messageInput.getText().length());
+	}
+
+	public Contact getContact() {
+		return contact;
 	}
 
 	public String getUser() {
@@ -127,6 +124,24 @@ public class MessageList extends BorderPane implements EventBusListener {
 	public void initialize() {
 		// TODO get verified status
 		setVerified(false);
+	}
+
+	public void keyPressed(final KeyEvent event) {
+		if (event.getCode() == KeyCode.SHIFT) {
+			LOGGER.debug("shift held");
+			shiftHeld = true;
+		} else if (event.getCode() == KeyCode.ENTER) {
+			if (shiftHeld) {
+				messageInput.setText(messageInput.getText() + "\n");
+				messageInput.positionCaret(messageInput.getText().length());
+				LOGGER.debug("New text length: {}", messageInput.getText().length() - 1);
+			} else {
+				final String message = messageInput.getText().trim();
+				messageInput.setText("");
+				sendMessage(message);
+			}
+			contact.setDraftMessage(messageInput.getText());
+		}
 	}
 
 	public void keyReleased(final KeyEvent event) {
@@ -140,22 +155,12 @@ public class MessageList extends BorderPane implements EventBusListener {
 		}
 	}
 
-	public void keyPressed(final KeyEvent event) {
-		if (event.getCode() == KeyCode.SHIFT) {
-			LOGGER.debug("shift held");
-			shiftHeld = true;
-		} else if (event.getCode() == KeyCode.ENTER) {
-			if (shiftHeld) {
-				messageInput.setText(messageInput.getText() + "\n");
-				messageInput.positionCaret(messageInput.getText().length());
-				LOGGER.debug("New text length: {}", messageInput.getText().length() - 1);
-			} else {
-				String message = messageInput.getText().trim();
-				messageInput.setText("");
-				sendMessage(message);
-			}
-			contact.setDraftMessage(messageInput.getText());
-		}
+	public void removeMessage(final SingleMessage message) {
+		messageList.getChildren().remove(message);
+	}
+
+	public void sendMessage(final String message) {
+		MessageService.getInstance().sendMessage(ContactService.getInstance().getByNumber("+491788174362"), message);
 	}
 
 	public void setUser(final Contact user) {
@@ -164,7 +169,8 @@ public class MessageList extends BorderPane implements EventBusListener {
 		messageInput.setText(contact.getDraftMessage());
 		final List<DecryptedMessage> list = MessageService.getInstance().getMessages(contact);
 		for (final DecryptedMessage message : list) {
-			addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), message.isSent(), message.getMessageId());
+			addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), message.isSent(),
+					message.getMessageId());
 		}
 	}
 
@@ -200,9 +206,5 @@ public class MessageList extends BorderPane implements EventBusListener {
 				addMessage(message.getBody(), message.getTimestamp(), message.getAttachment(), false, -1);
 			}
 		}
-	}
-
-	public void sendMessage(String message) {
-		MessageService.getInstance().sendMessage(ContactService.getInstance().getByNumber("+491788174362"), message);
 	}
 }

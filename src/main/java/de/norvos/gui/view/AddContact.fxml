@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="270.0" prefWidth="400.0" style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.norvos.gui.controller.AddContactController">
+   <children>
+      <TextField fx:id="contactName" layoutX="155.0" layoutY="61.0" prefWidth="200.0" />
+      <Label layoutX="155.0" layoutY="34.0" text="Contact Name">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Label layoutX="155.0" layoutY="117.0" text="Contact Number">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <TextField fx:id="contactNumber" layoutX="155.0" layoutY="144.0" prefWidth="200.0" />
+      <Button layoutX="40.0" layoutY="148.0" mnemonicParsing="false" text="Upload..." />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="83.0" layoutX="30.0" layoutY="44.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 16px; -fx-arc-width: 16px;" width="83.0" />
+      <Button fx:id="addContactButton" layoutX="256.0" layoutY="207.0" mnemonicParsing="false" onAction="#handleAddContactButton" text="Add Contact">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button fx:id="cancelButton" layoutX="183.0" layoutY="207.0" mnemonicParsing="false" onAction="#handleCancelButton" text="Cancel">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+   </children>
+</Pane>

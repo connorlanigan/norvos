@@ -16,7 +16,6 @@
  *******************************************************************************/
 package de.norvos.gui.controller.register;
 
-import de.norvos.gui.windows.MainWindow;
 import de.norvos.gui.windows.RegisterWindow;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

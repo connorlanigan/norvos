@@ -66,19 +66,26 @@ class MessageSender {
 		return "application/octet-stream";
 	}
 
+	private static long saveAttachment(final File attachment) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	private static long saveMessage(final Contact contact, final String message, final long attachmentId) {
+		final DecryptedMessage decryptedMessage = new DecryptedMessage(System.currentTimeMillis(), true, message,
+				contact.getPhoneNumber(), "", true, attachmentId, -1);
+		return MessageService.getInstance().storeMessage(decryptedMessage);
+
+	}
+
 	public static void sendMediaMessage(final Contact contact, final String message, final File attachment)
 			throws UntrustedIdentityException, IOException {
 
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message)
 				.withAttachment(createAttachment(attachment)).build();
 		getMessageSender().sendMessage(contact.toTSAddress(), messageBody);
-		long messageId = saveMessage(contact, message, saveAttachment(attachment));
+		final long messageId = saveMessage(contact, message, saveAttachment(attachment));
 		EventBus.sendEvent(new MessageSentEvent(contact, message, System.currentTimeMillis(), attachment, messageId));
-	}
-
-	private static long saveAttachment(File attachment) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	public static void sendTextMessage(final Contact contact, final String message)
@@ -86,15 +93,8 @@ class MessageSender {
 		LOGGER.debug("About to send message: [{}]", message);
 		final TextSecureDataMessage messageBody = TextSecureDataMessage.newBuilder().withBody(message).build();
 		getMessageSender().sendMessage(contact.toTSAddress(), messageBody);
-		long messageId = saveMessage(contact, message, Constants.NO_ATTACHMENT_ID);
+		final long messageId = saveMessage(contact, message, Constants.NO_ATTACHMENT_ID);
 		EventBus.sendEvent(new MessageSentEvent(contact, message, System.currentTimeMillis(), null, messageId));
-	}
-
-	private static long saveMessage(Contact contact, String message, long attachmentId) {
-		final DecryptedMessage decryptedMessage = new DecryptedMessage(System.currentTimeMillis(), true, message,
-				contact.getPhoneNumber(), "", true, attachmentId, -1);
-		return MessageService.getInstance().storeMessage(decryptedMessage);
-
 	}
 
 }

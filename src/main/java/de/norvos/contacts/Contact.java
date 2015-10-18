@@ -33,8 +33,22 @@ public class Contact {
 	 * @param phoneNumber
 	 *            the contact's phone number
 	 */
-	Contact(final String phoneNumber) {
+	public Contact(final String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof Contact) {
+			final Contact other = (Contact) o;
+			if (other.phoneNumber.equals(phoneNumber)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -80,20 +94,6 @@ public class Contact {
 
 	public TextSecureAddress toTSAddress() {
 		return new TextSecureAddress(phoneNumber);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o == this) {
-			return true;
-		}
-		if (o instanceof Contact) {
-			Contact other = (Contact) o;
-			if (other.phoneNumber.equals(this.phoneNumber)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

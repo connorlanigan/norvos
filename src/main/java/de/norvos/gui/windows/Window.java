@@ -34,6 +34,7 @@ import de.norvos.utils.UnreachableCodeException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -52,6 +53,7 @@ public abstract class Window {
 	private final double initialWidth;
 	private final URL LOCATION;
 	private final boolean minimizeOnClose;
+	private final Modality modality;
 	private Stage stage;
 
 	/**
@@ -69,7 +71,7 @@ public abstract class Window {
 	 *            requested to close
 	 */
 	protected Window(final String fxml, final String includeLocation, final boolean minimizeOnClose,
-			final double initialWidth, final double initialHeight) {
+			final double initialWidth, final double initialHeight, final Modality modality) {
 
 		if (fxml == null || includeLocation == null) {
 			throw new NullPointerException(
@@ -81,6 +83,11 @@ public abstract class Window {
 		LOCATION = getClass().getResource(Constants.FXML_LOCATION + includeLocation);
 		this.minimizeOnClose = minimizeOnClose;
 		hasQuit = false;
+		this.modality = modality;
+	}
+
+	public void closeWindow() {
+		stage.close();
 	}
 
 	/**
@@ -91,9 +98,16 @@ public abstract class Window {
 		stage.requestFocus();
 	}
 
+	public boolean hasQuit() {
+		return hasQuit;
+	}
+
 	private void initWindow() {
 		stage.setTitle(Constants.WINDOW_TITLE);
 		stage.centerOnScreen();
+		if(modality != null) {
+			stage.initModality(modality);
+		}
 		stage.setOnCloseRequest(event -> {
 			if (minimizeOnClose) {
 				stage.setIconified(true);
@@ -111,7 +125,7 @@ public abstract class Window {
 		loader.setResources(ResourceUtils.getLocalizedStringsBundle());
 		Parent parent;
 		try {
-			LOGGER.debug("Loading [{}] in location [{}[ with language [{}].", FXML, LOCATION,
+			LOGGER.debug("Loading [{}] in location [{}] with language [{}].", FXML, LOCATION,
 					SettingsService.getLanguage().name());
 			parent = loader.load(FXML.openStream());
 			final Scene scene = new Scene(parent, initialWidth, initialHeight);
@@ -125,10 +139,6 @@ public abstract class Window {
 			Errors.stopApplication();
 			throw new UnreachableCodeException();
 		}
-	}
-
-	public void closeWindow() {
-		stage.close();
 	}
 
 	public void releaseWindowQuitLock() {

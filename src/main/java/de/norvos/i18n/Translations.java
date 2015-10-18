@@ -24,8 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.norvos.account.SettingsService;
-import de.norvos.messages.MessageService;
-import de.norvos.utils.Constants;
 import de.norvos.utils.ResourceUtils;
 
 /**
@@ -67,7 +65,7 @@ public class Translations {
 
 			return formatted;
 		} catch (final Exception e) {
-			LOGGER.warn("Could not translate \"{}\"",stringId);
+			LOGGER.warn("Could not translate \"{}\"", stringId);
 			return stringId;
 		}
 

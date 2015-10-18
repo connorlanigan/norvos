@@ -67,6 +67,12 @@ public class MainApplication extends Application {
 		AxolotlLoggerProvider.setProvider(new AxolotlLoggerImpl());
 	}
 
+	private static void initListeners() {
+
+		new MessageSentHandler();
+
+	}
+
 	public static void main(final String[] args) {
 		ApplicationSingleton.checkAndLock();
 		LOGGER.info("Starting application.");
@@ -77,12 +83,6 @@ public class MainApplication extends Application {
 		initListeners();
 		Platform.setImplicitExit(false);
 		Application.launch(MainApplication.class, args);
-
-	}
-
-	private static void initListeners() {
-
-		new MessageSentHandler();
 
 	}
 

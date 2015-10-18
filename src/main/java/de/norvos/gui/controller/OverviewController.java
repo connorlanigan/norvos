@@ -18,6 +18,8 @@ package de.norvos.gui.controller;
 
 import static de.norvos.i18n.Translations.translate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import de.norvos.contacts.Contact;
@@ -26,8 +28,9 @@ import de.norvos.eventbus.EventBus;
 import de.norvos.eventbus.events.ApplicationQuitEvent;
 import de.norvos.gui.components.ContactListEntry;
 import de.norvos.gui.components.MessageList;
+import de.norvos.gui.windows.AddContactWindow;
 import de.norvos.gui.windows.MainWindow;
-import de.norvos.messages.MessageService;
+import de.norvos.gui.windows.Window;
 import de.norvos.utils.Constants;
 import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
@@ -45,6 +48,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 /**
@@ -59,11 +63,16 @@ public class OverviewController {
 	}
 
 	@FXML
-	private VBox contactList;
+	private Button addContactButton;
 
+	private Window addContactWindow;
+	@FXML
+	private VBox contactsList;
 	@FXML
 	private BorderPane contentPane;
+
 	private Contact currentlyDisplayedContact;
+
 	@FXML
 	private TextArea messageInput;
 
@@ -90,6 +99,11 @@ public class OverviewController {
 
 	public Contact getCurrentlyDisplayedContact() {
 		return currentlyDisplayedContact;
+	}
+
+	public void handleAddContactButton(final ActionEvent event) {
+		addContactWindow = new AddContactWindow();
+		addContactWindow.start(new Stage());
 	}
 
 	public void handleHelpButton(final ActionEvent event) {
@@ -130,6 +144,7 @@ public class OverviewController {
 	@FXML
 	public void initialize() {
 		searchClearButton.setManaged(false);
+		refreshContactsList();
 	}
 
 	public void loadChat(final Contact contact) {
@@ -140,15 +155,27 @@ public class OverviewController {
 		currentlyDisplayedContact = contact;
 	}
 
+	public void refreshContactsList() {
+		final List<Contact> contacts = ContactService.getInstance().getAllContacts();
+		final List<ContactListEntry> contactsListEntries = new ArrayList<ContactListEntry>();
+		for (final Contact contact : contacts) {
+			final ContactListEntry entry = new ContactListEntry();
+			entry.setUser(contact.getPhoneNumber());
+			contactsListEntries.add(entry);
+			// TODO: Add "new message" indicator
+		}
+		contactsList.getChildren().setAll(contactsListEntries);
+	}
+
 	public void searchInputKeyReleased(final KeyEvent event) {
 		if (searchInput.getLength() > 0) {
 			searchClearButton.setDisable(false);
 			searchClearButton.setManaged(true);
 
-			String searchQuery = searchInput.getText().toUpperCase();
-			for (Node contact : contactList.getChildren()) {
+			final String searchQuery = searchInput.getText().toUpperCase();
+			for (final Node contact : contactsList.getChildren()) {
 				if (contact instanceof ContactListEntry) {
-					String contactName = ((ContactListEntry) contact).getDisplayName();
+					final String contactName = ((ContactListEntry) contact).getDisplayName();
 					if (contactName.toUpperCase().contains(searchQuery)) {
 						contact.setVisible(true);
 						contact.setManaged(true);
@@ -161,8 +188,7 @@ public class OverviewController {
 		} else {
 			searchClearButton.setDisable(true);
 			searchClearButton.setManaged(false);
-
-			for (Node contact : contactList.getChildren()) {
+			for (final Node contact : contactsList.getChildren()) {
 				if (contact instanceof ContactListEntry) {
 					contact.setVisible(true);
 					contact.setManaged(true);

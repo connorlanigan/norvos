@@ -47,7 +47,7 @@
 						</HBox>
 					</top>
 					<center>
-						<VBox fx:id="contactList" prefHeight="200.0" prefWidth="400.0" spacing="5.0" BorderPane.alignment="CENTER">
+						<VBox fx:id="contactsList" prefHeight="200.0" prefWidth="400.0" spacing="5.0" BorderPane.alignment="CENTER">
 							<children>
 
 								<ContactListEntry lastMessage="Hi! How are you doing today?" user="+491788174362" newMessage="false" />
@@ -58,7 +58,7 @@
 						</VBox>
 					</center>
 					<bottom>
-						<Button fx:id="addContactButton" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" text="%add_contact_button">
+						<Button fx:id="addContactButton" maxWidth="1.7976931348623157E308" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleAddContactButton" text="%add_contact_button">
 							<HBox.margin>
 								<Insets />
 							</HBox.margin>

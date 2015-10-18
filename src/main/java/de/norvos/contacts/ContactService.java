@@ -18,7 +18,6 @@ package de.norvos.contacts;
 
 import static de.norvos.i18n.Translations.translate;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -47,8 +46,7 @@ public class ContactService {
 	}
 
 	public List<Contact> getAllContacts() {
-		// TODO fetch all contacts from database
-		return Collections.emptyList();
+		return ContactsTable.getInstance().getAllContacts();
 	}
 
 	public Contact getByNumber(final String number) {
@@ -65,7 +63,7 @@ public class ContactService {
 		}
 	}
 
-	void setContactData(final ContactData contactData) {
+	public void setContactData(final ContactData contactData) {
 		ContactsTable.getInstance().storeContactData(contactData);
 	}
 

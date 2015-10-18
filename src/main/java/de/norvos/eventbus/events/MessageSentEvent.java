@@ -31,10 +31,11 @@ public class MessageSentEvent implements Event {
 	private final File attachment;
 	private final Contact contact;
 	private final String message;
-	private final long timestamp;
 	private final long messageId;
+	private final long timestamp;
 
-	public MessageSentEvent(final Contact contact, final String message, final long timestamp, final File attachment, final long messageId) {
+	public MessageSentEvent(final Contact contact, final String message, final long timestamp, final File attachment,
+			final long messageId) {
 		this.contact = contact;
 		this.message = message;
 		this.timestamp = timestamp;
@@ -54,12 +55,12 @@ public class MessageSentEvent implements Event {
 		return message;
 	}
 
-	public long getTimestamp() {
-		return timestamp;
+	public long getMessageId() {
+		return messageId;
 	}
 
-	public long getMessageId(){
-		return messageId;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 }
