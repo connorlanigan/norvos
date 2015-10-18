@@ -16,12 +16,9 @@
  *******************************************************************************/
 package de.norvos.messages;
 
-import static de.norvos.i18n.Translations.translate;
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -51,6 +48,18 @@ public class MessageService {
 	private MessageService() {
 	}
 
+	public void deleteMessage(final long messageId) {
+		try {
+			DecryptedMessageTable.getInstance().deleteMessage(messageId);
+		} catch (final SQLException e) {
+			LOGGER.error("Error while deleting message {} to database.", messageId);
+		}
+	}
+
+	public DecryptedMessage getLastMessage(final Contact user) {
+		return DecryptedMessageTable.getInstance().getLastMessage(user.getPhoneNumber());
+	}
+
 	/**
 	 * Return all messages stored for a given user.
 	 *
@@ -60,10 +69,6 @@ public class MessageService {
 	 */
 	public List<DecryptedMessage> getMessages(final Contact user) {
 		return DecryptedMessageTable.getInstance().getMessages(user.getPhoneNumber());
-	}
-
-	public DecryptedMessage getLastMessage(final Contact user){
-		return DecryptedMessageTable.getInstance().getLastMessage(user.getPhoneNumber());
 	}
 
 	public void sendMessage(final Contact contact, final String message) {
@@ -85,13 +90,6 @@ public class MessageService {
 			LOGGER.error("IOException while sending message.", e);
 		}
 
-	}
-	public void deleteMessage(long messageId){
-		try {
-			DecryptedMessageTable.getInstance().deleteMessage(messageId);
-		} catch (final SQLException e) {
-			LOGGER.error("Error while deleting message {} to database.", messageId);
-		}
 	}
 
 	synchronized public void startReceiving() {

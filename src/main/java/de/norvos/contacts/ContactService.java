@@ -18,7 +18,6 @@ package de.norvos.contacts;
 
 import static de.norvos.i18n.Translations.translate;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;

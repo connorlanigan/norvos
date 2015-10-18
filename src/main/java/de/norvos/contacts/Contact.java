@@ -37,6 +37,20 @@ public class Contact {
 		this.phoneNumber = phoneNumber;
 	}
 
+	@Override
+	public boolean equals(final Object o) {
+		if (o == this) {
+			return true;
+		}
+		if (o instanceof Contact) {
+			final Contact other = (Contact) o;
+			if (other.phoneNumber.equals(phoneNumber)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * Returns the name of the contact that should be displayed for interaction
 	 * with the user.
@@ -80,20 +94,6 @@ public class Contact {
 
 	public TextSecureAddress toTSAddress() {
 		return new TextSecureAddress(phoneNumber);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o == this) {
-			return true;
-		}
-		if (o instanceof Contact) {
-			Contact other = (Contact) o;
-			if (other.phoneNumber.equals(this.phoneNumber)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

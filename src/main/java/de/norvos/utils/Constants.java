@@ -37,17 +37,17 @@ public class Constants {
 	 * The placeholder for untranslatable texts.
 	 */
 	public final static String I18N_ERROR = "{i18n-ERR}";
+	public final static int NO_ATTACHMENT_ID = 0;
+
+	public final static int NO_MESSAGE_ID = -1;
+
 	public final static int SINGLETON_LOCK_PORT = 64308;
 
 	public final static String USER_AGENT = "Norvos";
-
 	/**
 	 * The title for the main application window.
 	 */
 	public final static String WINDOW_TITLE = "Norvos";
-
-	public final static int NO_ATTACHMENT_ID = 0;
-	public final static int NO_MESSAGE_ID = -1;
 
 	private Constants() {
 	}

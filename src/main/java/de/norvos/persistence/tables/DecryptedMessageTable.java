@@ -39,15 +39,8 @@ public class DecryptedMessageTable implements Table {
 	private DecryptedMessageTable() {
 	}
 
-	@Override
-	public String getCreationStatement() {
-		return "CREATE TABLE IF NOT EXISTS decrypted_messages ("
-				+ "id BIGINT PRIMARY KEY auto_increment, timestamp LONG, thread_id INTEGER,"
-				+ "read BOOLEAN, body VARCHAR, address VARCHAR, mismatched_identities VARCHAR, sent BOOLEAN)";
-	}
-
-	public void deleteMessage(long messageId) throws SQLException {
-		if(messageId == -1){
+	public void deleteMessage(final long messageId) throws SQLException {
+		if (messageId == -1) {
 			return;
 		}
 		final String query = "DELETE FROM decrypted_messages WHERE id = ?";
@@ -59,6 +52,41 @@ public class DecryptedMessageTable implements Table {
 
 			stmt.execute();
 		}
+	}
+
+	@Override
+	public String getCreationStatement() {
+		return "CREATE TABLE IF NOT EXISTS decrypted_messages ("
+				+ "id BIGINT PRIMARY KEY auto_increment, timestamp LONG, thread_id INTEGER,"
+				+ "read BOOLEAN, body VARCHAR, address VARCHAR, mismatched_identities VARCHAR, sent BOOLEAN)";
+	}
+
+	public DecryptedMessage getLastMessage(final String address) {
+		final String query = "SELECT * FROM decrypted_messages WHERE address = ? ORDER BY id DESC LIMIT 1";
+
+		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
+
+			stmt.setString(1, address);
+			final ResultSet result = stmt.executeQuery();
+
+			if (result.first()) {
+				final long timestamp = result.getLong("timestamp");
+				final boolean read = result.getBoolean("read");
+				final String body = result.getString("body");
+				final String mismatchedIdentities = result.getString("mismatched_identities");
+				final boolean sent = result.getBoolean("sent");
+				final long messageId = result.getLong("id");
+
+				// TODO store and read attachments
+				final DecryptedMessage message = new DecryptedMessage(timestamp, read, body, address,
+						mismatchedIdentities, sent, -1, messageId);
+				return message;
+			}
+		} catch (final SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public List<DecryptedMessage> getMessages(final String address) {
@@ -95,7 +123,8 @@ public class DecryptedMessageTable implements Table {
 		final String query = "INSERT INTO decrypted_messages "
 				+ "(timestamp, read, body, address, mismatched_identities, sent) VALUES (?, ?, ?, ?, ?, ?)";
 
-		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query,
+				Statement.RETURN_GENERATED_KEYS)) {
 
 			stmt.setDouble(1, message.getTimestamp());
 			stmt.setBoolean(2, message.isRead());
@@ -106,38 +135,10 @@ public class DecryptedMessageTable implements Table {
 
 			stmt.execute();
 
-			ResultSet rs = stmt.getGeneratedKeys();
-		    rs.next();
-		    return rs.getLong(1);
+			final ResultSet rs = stmt.getGeneratedKeys();
+			rs.next();
+			return rs.getLong(1);
 		}
-	}
-
-	public DecryptedMessage getLastMessage(String address) {
-		final String query = "SELECT * FROM decrypted_messages WHERE address = ? ORDER BY id DESC LIMIT 1";
-
-		try (PreparedStatement stmt = Database.ensureTableExists(this).prepareStatement(query)) {
-
-			stmt.setString(1, address);
-			final ResultSet result = stmt.executeQuery();
-
-			if(result.first()) {
-				final long timestamp = result.getLong("timestamp");
-				final boolean read = result.getBoolean("read");
-				final String body = result.getString("body");
-				final String mismatchedIdentities = result.getString("mismatched_identities");
-				final boolean sent = result.getBoolean("sent");
-				final long messageId = result.getLong("id");
-
-				// TODO store and read attachments
-				final DecryptedMessage message = new DecryptedMessage(timestamp, read, body, address,
-						mismatchedIdentities, sent, -1, messageId);
-				return message;
-			}
-		} catch (final SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 }

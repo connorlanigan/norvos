@@ -78,6 +78,16 @@ public class ContactListEntry extends Button implements EventBusListener {
 		}
 	}
 
+	public void clearLastMessage() {
+		lastMessage.setText("");
+		lastMessage.getStyleClass().add("lastMessageEmpty");
+		lastMessage.setText(translate("no_messages_yet_preview"));
+	}
+
+	public String getDisplayName() {
+		return contactName.getText();
+	}
+
 	public String getLastMessage() {
 		return lastMessage.getText();
 	}
@@ -90,17 +100,9 @@ public class ContactListEntry extends Button implements EventBusListener {
 		return contact.getPhoneNumber();
 	}
 
-	public String getDisplayName() {
-		return contactName.getText();
-	}
-
 	public void handleClick(final ActionEvent event) {
 		setNewMessage("false");
 		OverviewController.getInstance().loadChat(contact);
-	}
-
-	public void setSent(boolean sent) {
-		this.sent = sent;
 	}
 
 	@FXML
@@ -108,8 +110,8 @@ public class ContactListEntry extends Button implements EventBusListener {
 		newMessageIndicator.managedProperty().bind(newMessageIndicator.visibleProperty());
 	}
 
-	private void loadLatestMessage(){
-		DecryptedMessage lastMessage = MessageService.getInstance().getLastMessage(contact);
+	private void loadLatestMessage() {
+		final DecryptedMessage lastMessage = MessageService.getInstance().getLastMessage(contact);
 		if (lastMessage == null) {
 			clearLastMessage();
 		} else {
@@ -118,14 +120,8 @@ public class ContactListEntry extends Button implements EventBusListener {
 		}
 	}
 
-	public void clearLastMessage() {
-		lastMessage.setText("");
-		lastMessage.getStyleClass().add("lastMessageEmpty");
-		lastMessage.setText(translate("no_messages_yet_preview"));
-	}
-
 	public void setLastMessage(final String value) {
-		String prefix = sent ? "↗ " : "↘ ";
+		final String prefix = sent ? "↗ " : "↘ ";
 		lastMessage.getStyleClass().remove("lastMessageEmpty");
 		lastMessage.setText(prefix + value);
 	}
@@ -138,6 +134,10 @@ public class ContactListEntry extends Button implements EventBusListener {
 		} else {
 			getStyleClass().remove("newMessage");
 		}
+	}
+
+	public void setSent(final boolean sent) {
+		this.sent = sent;
 	}
 
 	public void setUser(final String value) {

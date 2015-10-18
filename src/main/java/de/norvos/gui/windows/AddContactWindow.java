@@ -1,6 +1,6 @@
 package de.norvos.gui.windows;
 
-import java.awt.event.ActionEvent;
+import javafx.stage.Modality;
 
 public class AddContactWindow extends Window {
 
@@ -11,8 +11,8 @@ public class AddContactWindow extends Window {
 	}
 
 	public AddContactWindow() {
-		super("AddContact.fxml", "/", false, 400, 270);
+		super("AddContact.fxml", "/", false, 400, 270, Modality.APPLICATION_MODAL);
 		instance = this;
 	}
-	
+
 }

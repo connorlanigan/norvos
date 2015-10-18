@@ -44,8 +44,8 @@ public class SingleMessage extends BorderPane {
 	@FXML
 	private BorderPane messageBox;
 
-	private boolean sent;
 	private long messageId;
+	private boolean sent;
 
 	@FXML
 	private Label time;
@@ -67,6 +67,11 @@ public class SingleMessage extends BorderPane {
 		}
 	}
 
+	public void deleteMessage(final ActionEvent event) {
+		MessageService.getInstance().deleteMessage(messageId);
+		MessageList.getActiveInstance().removeMessage(this);
+	}
+
 	public String getMessage() {
 		return message.getText();
 	}
@@ -75,21 +80,16 @@ public class SingleMessage extends BorderPane {
 		return String.valueOf(sent);
 	}
 
-	public void setMessageId(long messageId){
-		this.messageId = messageId;
-	}
-
 	public String getTime() {
 		return String.valueOf(timestamp);
 	}
 
-	public void deleteMessage(final ActionEvent event) {
-		MessageService.getInstance().deleteMessage(messageId);
-		MessageList.getActiveInstance().removeMessage(this);
-	}
-
 	public void setMessage(final String message) {
 		this.message.setText(message);
+	}
+
+	public void setMessageId(final long messageId) {
+		this.messageId = messageId;
 	}
 
 	public void setSent(final String sent) {

@@ -16,6 +16,8 @@
  *******************************************************************************/
 package de.norvos.gui.windows;
 
+import javafx.stage.Modality;
+
 /**
  * The window containing the main user interface.
  *
@@ -30,7 +32,7 @@ public class MainWindow extends Window {
 	}
 
 	public MainWindow() {
-		super("Overview.fxml", "/", true, 900, 600);
+		super("Overview.fxml", "/", true, 900, 600, null);
 		instance = this;
 	}
 

@@ -34,13 +34,13 @@ public class DecryptedMessage {
 
 	private final String body;
 
+	private final long messageId;
+
 	private final String mismatchedIdentities;
 
 	private final boolean read;
-
 	private final boolean sent;
 	private final long timestamp;
-	private final long messageId;
 
 	public DecryptedMessage(final long timestamp, final boolean read, final String body, final String address,
 			final String mismatchedIdentities, final boolean sent, final long attachmentId, final long messageId) {
@@ -58,10 +58,6 @@ public class DecryptedMessage {
 		return address;
 	}
 
-	public long getMessageId(){
-		return messageId;
-	}
-
 	public File getAttachment() {
 		return AttachmentStore.getAttachment(attachmentId);
 	}
@@ -72,6 +68,10 @@ public class DecryptedMessage {
 
 	public Contact getContact() {
 		return ContactService.getInstance().getByNumber(getAddress());
+	}
+
+	public long getMessageId() {
+		return messageId;
 	}
 
 	public String getMismatchedIdentities() {
