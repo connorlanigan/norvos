@@ -121,8 +121,11 @@ public class MessageList extends BorderPane implements EventBusListener {
 		if(event.getCode() == KeyCode.SHIFT) {
 			LOGGER.debug("shift released");
 			shiftHeld = false;
-		} else
-		contact.setDraftMessage(messageInput.getText());
+		} else if(!shiftHeld && event.getCode() == KeyCode.ENTER) {
+			messageInput.clear();
+		} else {
+			contact.setDraftMessage(messageInput.getText());
+		}
 	}
 
 	public void keyPressed(final KeyEvent event) {
@@ -135,13 +138,10 @@ public class MessageList extends BorderPane implements EventBusListener {
 				messageInput.positionCaret(messageInput.getText().length());
 				LOGGER.debug("New text length: {}", messageInput.getText().length()-1);
 			} else {
-				sendMessage();
-				messageInput.setText("");
+				sendMessage(messageInput.getText().trim());
 			}
 			contact.setDraftMessage(messageInput.getText());
 		}
-
-
 	}
 
 	public void setUser(final Contact user) {
@@ -188,7 +188,7 @@ public class MessageList extends BorderPane implements EventBusListener {
 		}
 	}
 
-	public void sendMessage() {
-		MessageService.getInstance().sendMessage(ContactService.getInstance().getByNumber("+491788174362"), messageInput.getText().trim());
+	public void sendMessage(String message) {
+		MessageService.getInstance().sendMessage(ContactService.getInstance().getByNumber("+491788174362"), message);
 	}
 }
