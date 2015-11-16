@@ -6,7 +6,7 @@ The project website is located at https://norvos.de.
 
 The development blog, where updates and other announcements are placed, is located at https://blog.norvos.de
 
-The current progress can be seen on the [project board](https://waffle.io/StarfishInteractive/norvos/join).
+The development process is managed on a JIRA board. You can register or log in at https://starfishinteractive.atlassian.net.
 
 
 ## Instructions
