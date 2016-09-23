@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/StarfishInteractive/norvos.png?label=ready&title=Ready)](https://waffle.io/StarfishInteractive/norvos)
 # Secure desktop and cross-platform messaging
 
 Norvos is an application to send and receive encrypted chat messages. It is compatible with [TextSecure](https://whispersystems.org/), which enables people to communicate securely with their mobile phones all over the world.
