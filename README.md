@@ -1,3 +1,12 @@
+# Notice
+⚠️ This project is currently not maintained. ⚠️
+
+As far as I know, there currently is unfortunately no other project that fulfils the same purpose as this application (using Signal without a phone).
+
+I recommend using the regular [Signal desktop client](https://signal.org/download/), which unfortunately doesn't support signing up without a phone.
+
+If you absolutely need to use Signal without a phone, you could try [using its development mode](https://github.com/signalapp/Signal-Desktop/blob/master/CONTRIBUTING.md#setting-up-standalone) - **but please be aware that this is not an officially supported way of using it** and you might **endanger the security of your communication!**
+
 # Secure desktop and cross-platform messaging
 
 Norvos is an application to send and receive encrypted chat messages. It is compatible with [TextSecure](https://whispersystems.org/), which enables people to communicate securely with their mobile phones all over the world.
